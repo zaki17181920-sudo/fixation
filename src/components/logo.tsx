@@ -7,7 +7,7 @@ export function Logo() {
         <FileText className="h-6 w-6 text-primary" />
       </div>
       <h1 className="text-2xl font-bold font-headline text-foreground">
-        वेतन प्रपत्र संपादक
+        Fixation Slip
       </h1>
     </div>
   );
