@@ -9,7 +9,7 @@ type PrintPreviewProps = {
 };
 
 const DataRow = ({ label, value, number }: { label: string; value?: string | Date | number; number?: string }) => {
-  if (!value) return null;
+  if (!value && value !== 0) return null;
   
   let displayValue: string;
   if (value instanceof Date) {
@@ -20,10 +20,10 @@ const DataRow = ({ label, value, number }: { label: string; value?: string | Dat
 
   return (
     <tr className="border-b">
-      <td className="w-10 py-2 pr-2">{number}</td>
-      <td className="w-1/2 py-2 pr-4 font-medium">{label}</td>
-      <td className="w-10 py-2 text-center">:</td>
-      <td className="w-1/2 py-2">{displayValue || '-'}</td>
+      <td className="py-1 pr-2 w-8">{number}</td>
+      <td className="w-1/2 py-1 pr-2 font-medium">{label}</td>
+      <td className="w-8 py-1 text-center">:</td>
+      <td className="w-1/2 py-1">{displayValue || '-'}</td>
     </tr>
   );
 };
@@ -39,17 +39,17 @@ export function PrintPreview({ data }: PrintPreviewProps) {
   }
 
   return (
-    <div id="print-area" className="p-8 bg-white text-black font-body text-sm">
-      <header className="text-center mb-6">
-        <h1 className="text-lg font-bold">कार्यालय, जिला शिक्षा पदाधिकारी, मुजफ्फरपुर |</h1>
-        <h2 className="text-md font-bold">(स्थापना-शाखा)</h2>
-        <p className="text-xs mt-2 max-w-xl mx-auto">
+    <div id="print-area" className="p-6 bg-white text-black font-body text-xs">
+      <header className="text-center mb-4">
+        <h1 className="text-base font-bold">कार्यालय, जिला शिक्षा पदाधिकारी, मुजफ्फरपुर |</h1>
+        <h2 className="text-sm font-bold">(स्थापना-शाखा)</h2>
+        <p className="text-xs mt-1 max-w-xl mx-auto">
         निदेशक (मा.शि.), शिक्षा विभाग, बिहार सरकार, पटना के पत्रांक-2999, दिनांक 14.10.2025 एवं जिला कार्यक्रम पदाधिकारी, स्थापना, मुजफ्फरपुर के पत्रांक 5876, मुजफ्फरपुर दिनांक 15.02.2025 के आलोक में
         </p>
-        <h3 className="text-md font-bold mt-2 underline">विशिष्ट शिक्षकों का वेतन निर्धारण प्रपत्र</h3>
+        <h3 className="text-sm font-bold mt-2 underline">विशिष्ट शिक्षकों का वेतन निर्धारण प्रपत्र</h3>
       </header>
 
-      <div className="flex justify-between mb-4">
+      <div className="flex justify-between mb-2 text-xs">
         <span>PRAN NO.:- {data.pran || '-'}</span>
         <span>सक्षमता आवेदन संख्या :- {data.competencyApplicationNumber || '-'}</span>
       </div>
@@ -73,7 +73,7 @@ export function PrintPreview({ data }: PrintPreviewProps) {
             <DataRow number="14." label="IFSC कोड" value={data.ifscCode} />
             <DataRow number="15." label="स्थानीय निकाय शिक्षक के रूप में प्रथम योगदान की तिथि" value={data.dateOfFirstJoiningAsLocalBodyTeacher} />
             <tr>
-              <td colSpan={4} className="text-xs pl-10 pb-2">
+              <td colSpan={4} className="text-[10px] pl-8 pb-1">
               (शिक्षा मित्र के रूप में जो 01/07/2006 के पूर्व नियोजित है वे पूर्व नियोजित हैं वे योगदान की तिथि 01.07.2006 अंकित करेंगे)
               </td>
             </tr>
@@ -86,21 +86,21 @@ export function PrintPreview({ data }: PrintPreviewProps) {
           </tbody>
         </table>
 
-        <footer className="mt-16 text-xs">
+        <footer className="mt-8 text-[10px]">
             <div className="flex justify-between items-end text-center">
-                <div className="mt-8">
+                <div className="mt-4">
                     <p className="border-t border-black pt-1">शिक्षक का हस्ताक्षर</p>
                 </div>
-                 <div className="mt-8">
+                 <div className="mt-4">
                     <p className="border-t border-black pt-1">प्रधानाध्यापक का <br/> हस्ताक्षर एवं मुहर</p>
                 </div>
-                <div className="mt-8">
+                <div className="mt-4">
                     <p className="border-t border-black pt-1">प्रधानाध्यापक <br/> चिन्हित मध्य <br/> विद्यालय का <br/> हस्ताक्षर एवं मुहर</p>
                 </div>
-                 <div className="mt-8">
+                 <div className="mt-4">
                     <p className="border-t border-black pt-1">प्रखण्ड शिक्षा पदाधिकारी <br/> साहेबगंज मुजफ्फरपुर।</p>
                 </div>
-                 <div className="mt-8">
+                 <div className="mt-4">
                     <p className="border-t border-black pt-1">जिला कार्यक्रम पदाधिकारी <br/> स्थापना, मुजफ्फरपुर।</p>
                 </div>
             </div>
