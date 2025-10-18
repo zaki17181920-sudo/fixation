@@ -19,6 +19,8 @@ export default function SalaryFormEditorPage() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      pran: '',
+      competencyApplicationNumber: '',
       office: '',
       districtEducationOfficer: 'जिला शिक्षा पदाधिकारी, मुजफ्फरपुर',
       district: 'मुजफ्फरपुर',
@@ -30,6 +32,12 @@ export default function SalaryFormEditorPage() {
       appointmentCategory: '',
       bankDetails: '',
       efficiencyType: '',
+      ifscCode: '',
+      bankAccountNumber: '',
+      serviceBreak: 'नहीं',
+      december2024Salary: '',
+      newSalaryWithIncrement: '',
+      payMatrixSalary: '',
     },
   });
 
