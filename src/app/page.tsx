@@ -5,13 +5,14 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { formSchema, type FormValues } from '@/lib/schema';
 import { Button } from '@/components/ui/button';
-import { Loader2, Printer, Save, ShieldCheck } from 'lucide-react';
+import { Eye, Loader2, Printer, Save, ShieldCheck } from 'lucide-react';
 import { SalaryForm } from '@/components/salary-form';
 import { PrintPreview } from '@/components/print-preview';
 import { Logo } from '@/components/logo';
 import { useToast } from '@/hooks/use-toast';
 import { saveAndValidateForm, validateFormWithAI } from './actions';
 import { FirebaseClientProvider } from '@/firebase';
+import Link from 'next/link';
 
 export default function SalaryFormEditorPage() {
   const [isValidationPending, startValidationTransition] = React.useTransition();
@@ -129,7 +130,7 @@ export default function SalaryFormEditorPage() {
       <div className="container mx-auto p-4 md:p-8">
         <header className="flex flex-col sm:flex-row justify-between sm:items-center mb-8 gap-4 no-print">
           <Logo />
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <Button
               onClick={form.handleSubmit(handleSave)}
               disabled={isSavePending}
@@ -154,6 +155,11 @@ export default function SalaryFormEditorPage() {
             </Button>
             <Button onClick={handlePrint}>
               <Printer className="mr-2 h-4 w-4" /> प्रिंट करें
+            </Button>
+            <Button asChild variant="outline">
+              <Link href="/payslips">
+                <Eye className="mr-2 h-4 w-4" /> सहेजे गए स्लिप्स देखें
+              </Link>
             </Button>
           </div>
         </header>

@@ -43,3 +43,15 @@ export const formSchema = z.object({
 });
 
 export type FormValues = z.infer<typeof formSchema>;
+
+// This is the type that will be stored in Firestore.
+// It's derived from the form values but with dates as strings.
+export type PaySlip = Omit<FormValues, 'dateOfBirth' | 'dateOfJoiningAsSpecificTeacher' | 'dateOfTraining' | 'dateOfFirstJoiningAsLocalBodyTeacher' | 'dateOfReceivingTrainedPayScale' | 'nextIncrementDate'> & {
+    dateOfBirth: string;
+    dateOfJoiningAsSpecificTeacher: string;
+    dateOfTraining: string;
+    dateOfFirstJoiningAsLocalBodyTeacher: string;
+    dateOfReceivingTrainedPayScale: string;
+    nextIncrementDate: string;
+    createdAt: string;
+};
