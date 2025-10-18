@@ -6,6 +6,8 @@ import {
 } from '@/ai/flows/validate-input-data';
 import { formSchema, type FormValues } from '@/lib/schema';
 import { format } from 'date-fns';
+import { initializeFirebase } from '@/firebase';
+import { collection, addDoc } from 'firebase/firestore';
 
 type AIValidationResult = {
   success: boolean;
@@ -16,19 +18,7 @@ function toSnakeCase(str: string) {
   return str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
 }
 
-export async function validateFormWithAI(
-  data: FormValues,
-): Promise<AIValidationResult> {
-  const parsedData = formSchema.safeParse(data);
-
-  if (!parsedData.success) {
-    console.error('Zod validation failed:', parsedData.error);
-    return {
-      success: false,
-      errors: { form: 'भेजे गए डेटा का प्रारूप अमान्य है।' },
-    };
-  }
-
+function buildAIInput(data: FormValues): ValidateInputDataInput {
   const {
     office,
     districtEducationOfficer,
@@ -46,9 +36,9 @@ export async function validateFormWithAI(
     bankDetails,
     dateOfFirstJoiningAsLocalBodyTeacher,
     dateOfReceivingTrainedPayScale,
-  } = parsedData.data;
+  } = data;
 
-  const inputForAI: ValidateInputDataInput = {
+  return {
     officeDetails: {
       office,
       districtEducationOfficer,
@@ -83,6 +73,23 @@ export async function validateFormWithAI(
       ),
     },
   };
+}
+
+
+export async function validateFormWithAI(
+  data: FormValues,
+): Promise<AIValidationResult> {
+  const parsedData = formSchema.safeParse(data);
+
+  if (!parsedData.success) {
+    console.error('Zod validation failed:', parsedData.error);
+    return {
+      success: false,
+      errors: { form: 'भेजे गए डेटा का प्रारूप अमान्य है।' },
+    };
+  }
+  
+  const inputForAI = buildAIInput(parsedData.data);
 
   try {
     const result = await validateInputData(inputForAI);
@@ -106,6 +113,48 @@ export async function validateFormWithAI(
     return {
       success: false,
       errors: { form: 'AI सत्यापन के दौरान कोई त्रुटि हुई।' },
+    };
+  }
+}
+
+export async function saveAndValidateForm(
+  data: FormValues,
+): Promise<AIValidationResult> {
+  const parsedData = formSchema.safeParse(data);
+
+  if (!parsedData.success) {
+    return { success: false, errors: parsedData.error.flatten().fieldErrors };
+  }
+
+  // First, validate with AI
+  const aiValidationResult = await validateFormWithAI(data);
+  if (!aiValidationResult.success) {
+    return aiValidationResult;
+  }
+
+  // If validation is successful, save to Firestore
+  try {
+    const { firestore } = initializeFirebase();
+    
+    // Convert dates to string format for Firestore
+    const dataToSave = {
+      ...parsedData.data,
+      dateOfBirth: format(parsedData.data.dateOfBirth, 'yyyy-MM-dd'),
+      dateOfJoiningAsSpecificTeacher: format(parsedData.data.dateOfJoiningAsSpecificTeacher, 'yyyy-MM-dd'),
+      dateOfTraining: format(parsedData.data.dateOfTraining, 'yyyy-MM-dd'),
+      dateOfFirstJoiningAsLocalBodyTeacher: format(parsedData.data.dateOfFirstJoiningAsLocalBodyTeacher, 'yyyy-MM-dd'),
+      dateOfReceivingTrainedPayScale: format(parsedData.data.dateOfReceivingTrainedPayScale, 'yyyy-MM-dd'),
+      nextIncrementDate: format(parsedData.data.nextIncrementDate, 'yyyy-MM-dd'),
+      createdAt: new Date().toISOString(),
+    };
+    
+    await addDoc(collection(firestore, 'payslips'), dataToSave);
+    return { success: true };
+  } catch (error) {
+    console.error('Firestore Error:', error);
+    return {
+      success: false,
+      errors: { form: 'डेटाबेस में सहेजते समय कोई त्रुटि हुई।' },
     };
   }
 }

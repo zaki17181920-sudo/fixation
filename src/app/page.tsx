@@ -5,15 +5,17 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { formSchema, type FormValues } from '@/lib/schema';
 import { Button } from '@/components/ui/button';
-import { Loader2, Printer, ShieldCheck } from 'lucide-react';
+import { Loader2, Printer, Save, ShieldCheck } from 'lucide-react';
 import { SalaryForm } from '@/components/salary-form';
 import { PrintPreview } from '@/components/print-preview';
 import { Logo } from '@/components/logo';
 import { useToast } from '@/hooks/use-toast';
-import { validateFormWithAI } from './actions';
+import { saveAndValidateForm, validateFormWithAI } from './actions';
+import { FirebaseClientProvider } from '@/firebase';
 
 export default function SalaryFormEditorPage() {
   const [isValidationPending, startValidationTransition] = React.useTransition();
+  const [isSavePending, startSaveTransition] = React.useTransition();
   const { toast } = useToast();
 
   const form = useForm<FormValues>({
@@ -91,12 +93,54 @@ export default function SalaryFormEditorPage() {
     });
   };
 
+  const handleSave = async (data: FormValues) => {
+    startSaveTransition(async () => {
+      const result = await saveAndValidateForm(data);
+
+      if (result.success) {
+        toast({
+          title: 'सफलतापूर्वक सहेजा गया',
+          description: 'आपका डेटा सफलतापूर्वक सहेज लिया गया है।',
+          variant: 'default',
+        });
+      } else {
+        toast({
+          title: 'त्रुटि सहेजी जा रही है',
+          description: result.errors?.form || 'डेटा सहेजते समय एक त्रुटि हुई।',
+          variant: 'destructive',
+        });
+        if (result.errors) {
+          Object.entries(result.errors).forEach(([key, message]) => {
+            if (key !== 'form' && key in form.getValues()) {
+              form.setError(key as keyof FormValues, {
+                type: 'manual',
+                message: message as string,
+              });
+            }
+          });
+        }
+      }
+    });
+  };
+
+
   return (
-    <>
+    <FirebaseClientProvider>
       <div className="container mx-auto p-4 md:p-8">
         <header className="flex flex-col sm:flex-row justify-between sm:items-center mb-8 gap-4 no-print">
           <Logo />
           <div className="flex items-center gap-2">
+            <Button
+              onClick={form.handleSubmit(handleSave)}
+              disabled={isSavePending}
+            >
+              {isSavePending ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Save className="mr-2 h-4 w-4" />
+              )}
+              सहेजें
+            </Button>
             <Button
               onClick={form.handleSubmit(handleValidation)}
               disabled={isValidationPending}
@@ -128,6 +172,6 @@ export default function SalaryFormEditorPage() {
           </div>
         </main>
       </div>
-    </>
+    </FirebaseClientProvider>
   );
 }

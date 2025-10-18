@@ -1,194 +1,64 @@
 {
   "entities": {
-    "OfficeDetail": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "OfficeDetail",
-      "type": "object",
-      "description": "Represents the details of the office, such as the office name and district education officer.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the OfficeDetail entity."
-        },
-        "officeName": {
-          "type": "string",
-          "description": "Name of the office."
-        },
-        "districtEducationOfficer": {
-          "type": "string",
-          "description": "Name of the District Education Officer."
-        }
-      },
-      "required": [
-        "id",
-        "officeName",
-        "districtEducationOfficer"
-      ]
-    },
-    "TeacherInfo": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "TeacherInfo",
-      "type": "object",
-      "description": "Represents information about a teacher, including name, school, and U-DISE code.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the TeacherInfo entity."
-        },
-        "teacherName": {
-          "type": "string",
-          "description": "Name of the teacher."
-        },
-        "schoolName": {
-          "type": "string",
-          "description": "Name of the school."
-        },
-        "udiseCode": {
-          "type": "string",
-          "description": "U-DISE code of the school."
-        },
-        "class": {
-          "type": "string",
-          "description": "Class taught by the teacher."
-        },
-        "subject": {
-          "type": "string",
-          "description": "Subject taught by the teacher."
-        },
-        "categoryOfAppointment": {
-          "type": "string",
-          "description": "Category of appointment of the teacher."
-        },
-        "dateOfBirth": {
-          "type": "string",
-          "description": "Date of birth of the teacher.",
-          "format": "date-time"
-        }
-      },
-      "required": [
-        "id",
-        "teacherName",
-        "schoolName",
-        "udiseCode",
-        "class",
-        "subject",
-        "categoryOfAppointment",
-        "dateOfBirth"
-      ]
-    },
-    "SalaryDetail": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "SalaryDetail",
-      "type": "object",
-      "description": "Represents the salary details of a teacher, including contribution date, training date, and bank details.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the SalaryDetail entity."
-        },
-        "teacherInfoId": {
-          "type": "string",
-          "description": "Reference to TeacherInfo. (Relationship: TeacherInfo 1:N SalaryDetail)"
-        },
-        "dateOfJoiningAsSpecificTeacher": {
-          "type": "string",
-          "description": "Date of joining as a specific teacher.",
-          "format": "date-time"
-        },
-        "trainingDate": {
-          "type": "string",
-          "description": "Date of training.",
-          "format": "date-time"
-        },
-        "efficiencyType": {
-          "type": "string",
-          "description": "Type of efficiency."
-        },
-        "bankDetails": {
-          "type": "string",
-          "description": "Bank details of the teacher."
-        }
-      },
-      "required": [
-        "id",
-        "teacherInfoId",
-        "dateOfJoiningAsSpecificTeacher",
-        "trainingDate",
-        "efficiencyType",
-        "bankDetails"
-      ]
-    },
-    "OtherDetail": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "OtherDetail",
-      "type": "object",
-      "description": "Represents other details of a teacher, such as the date of first contribution as a local body teacher and the date of obtaining trained pay scale.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the OtherDetail entity."
-        },
-        "salaryDetailId": {
-          "type": "string",
-          "description": "Reference to SalaryDetail. (Relationship: SalaryDetail 1:N OtherDetail)"
-        },
-        "dateOfFirstContributionAsLocalBodyTeacher": {
-          "type": "string",
-          "description": "Date of first contribution as a local body teacher.",
-          "format": "date-time"
-        },
-        "dateOfObtainingTrainedPayScale": {
-          "type": "string",
-          "description": "Date of obtaining trained pay scale.",
-          "format": "date-time"
-        }
-      },
-      "required": [
-        "id",
-        "salaryDetailId",
-        "dateOfFirstContributionAsLocalBodyTeacher",
-        "dateOfObtainingTrainedPayScale"
-      ]
-    },
     "PaySlip": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "PaySlip",
       "type": "object",
-      "description": "Represents the complete pay slip information for a teacher, combining details from various entities.",
+      "description": "Represents the complete pay slip information for a teacher.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the PaySlip entity."
-        },
-        "officeDetailId": {
-          "type": "string",
-          "description": "Reference to OfficeDetail. (Relationship: OfficeDetail 1:N PaySlip)"
-        },
-        "teacherInfoId": {
-          "type": "string",
-          "description": "Reference to TeacherInfo. (Relationship: TeacherInfo 1:N PaySlip)"
-        },
-        "salaryDetailId": {
-          "type": "string",
-          "description": "Reference to SalaryDetail. (Relationship: SalaryDetail 1:N PaySlip)"
-        },
-        "otherDetailId": {
-          "type": "string",
-          "description": "Reference to OtherDetail. (Relationship: OtherDetail 1:N PaySlip)"
-        },
-        "generatedDate": {
-          "type": "string",
-          "description": "Date when the payslip was generated.",
-          "format": "date-time"
-        }
+        "pran": { "type": "string", "description": "PRAN number." },
+        "competencyApplicationNumber": { "type": "string", "description": "Competency application number." },
+        "office": { "type": "string", "description": "Office name." },
+        "districtEducationOfficer": { "type": "string", "description": "District Education Officer." },
+        "district": { "type": "string", "description": "District name." },
+        "teacherName": { "type": "string", "description": "Name of the teacher." },
+        "schoolName": { "type": "string", "description": "Name of the school." },
+        "udiseCode": { "type": "string", "description": "U-DISE code of the school." },
+        "className": { "type": "string", "description": "Class taught by the teacher." },
+        "subject": { "type": "string", "description": "Subject taught by the teacher." },
+        "appointmentCategory": { "type": "string", "description": "Category of appointment." },
+        "dateOfBirth": { "type": "string", "format": "date", "description": "Date of birth of the teacher." },
+        "dateOfJoiningAsSpecificTeacher": { "type": "string", "format": "date", "description": "Date of joining as a specific teacher." },
+        "dateOfTraining": { "type": "string", "format": "date", "description": "Date of training." },
+        "efficiencyType": { "type": "string", "description": "Type of efficiency (e.g., BTET, CTET, STET)." },
+        "bankDetails": { "type": "string", "description": "Name of the bank." },
+        "ifscCode": { "type": "string", "description": "IFSC code of the bank." },
+        "bankAccountNumber": { "type": "string", "description": "Bank account number." },
+        "dateOfFirstJoiningAsLocalBodyTeacher": { "type": "string", "format": "date", "description": "Date of first joining as a local body teacher." },
+        "dateOfReceivingTrainedPayScale": { "type": "string", "format": "date", "description": "Date of obtaining trained pay scale." },
+        "serviceBreak": { "type": "string", "description": "Whether there is a service break (Yes/No)." },
+        "december2024Salary": { "type": "string", "description": "Basic salary in December 2024." },
+        "newSalaryWithIncrement": { "type": "string", "description": "New basic salary with increment." },
+        "payMatrixSalary": { "type": "string", "description": "Basic salary as per pay matrix." },
+        "nextIncrementDate": { "type": "string", "format": "date", "description": "Date of next increment." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp of when the record was created." }
       },
       "required": [
-        "id",
-        "officeDetailId",
-        "teacherInfoId",
-        "salaryDetailId",
-        "otherDetailId",
-        "generatedDate"
+        "pran",
+        "competencyApplicationNumber",
+        "office",
+        "districtEducationOfficer",
+        "district",
+        "teacherName",
+        "schoolName",
+        "udiseCode",
+        "className",
+        "subject",
+        "appointmentCategory",
+        "dateOfBirth",
+        "dateOfJoiningAsSpecificTeacher",
+        "dateOfTraining",
+        "efficiencyType",
+        "bankDetails",
+        "ifscCode",
+        "bankAccountNumber",
+        "dateOfFirstJoiningAsLocalBodyTeacher",
+        "dateOfReceivingTrainedPayScale",
+        "december2024Salary",
+        "newSalaryWithIncrement",
+        "payMatrixSalary",
+        "nextIncrementDate",
+        "createdAt"
       ]
     }
   },
@@ -199,104 +69,11 @@
     ]
   },
   "firestore": {
-    "structure": [
-      {
-        "path": "/office_details/{officeDetailId}",
-        "definition": {
-          "entityName": "OfficeDetail",
-          "schema": {
-            "$ref": "#/backend/entities/OfficeDetail"
-          },
-          "description": "Stores details of offices. Supports QAPs by restricting access based on user roles (e.g., admin can list all, regular users can only access relevant entries).",
-          "params": [
-            {
-              "name": "officeDetailId",
-              "description": "Unique identifier for the OfficeDetail document."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/teacher_infos/{teacherInfoId}",
-        "definition": {
-          "entityName": "TeacherInfo",
-          "schema": {
-            "$ref": "#/backend/entities/TeacherInfo"
-          },
-          "description": "Stores information about teachers.  Supports QAPs by restricting access based on user roles.",
-          "params": [
-            {
-              "name": "teacherInfoId",
-              "description": "Unique identifier for the TeacherInfo document."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/teacher_infos/{teacherInfoId}/salary_details/{salaryDetailId}",
-        "definition": {
-          "entityName": "SalaryDetail",
-          "schema": {
-            "$ref": "#/backend/entities/SalaryDetail"
-          },
-          "description": "Stores salary details for each teacher.  Is a subcollection of teacher_infos. Supports QAPs as salary details are directly tied to a teacher's record.",
-          "params": [
-            {
-              "name": "teacherInfoId",
-              "description": "Unique identifier for the parent TeacherInfo document."
-            },
-            {
-              "name": "salaryDetailId",
-              "description": "Unique identifier for the SalaryDetail document."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/teacher_infos/{teacherInfoId}/salary_details/{salaryDetailId}/other_details/{otherDetailId}",
-        "definition": {
-          "entityName": "OtherDetail",
-          "schema": {
-            "$ref": "#/backend/entities/OtherDetail"
-          },
-          "description": "Stores other details related to salary for each teacher. It is a subcollection of SalaryDetail which in turn is a subcollection of teacher_infos. Supports QAPs because other details are linked through SalaryDetail to the TeacherInfo document, maintaining referential integrity.",
-          "params": [
-            {
-              "name": "teacherInfoId",
-              "description": "Unique identifier for the parent TeacherInfo document."
-            },
-            {
-              "name": "salaryDetailId",
-              "description": "Unique identifier for the parent SalaryDetail document."
-            },
-            {
-              "name": "otherDetailId",
-              "description": "Unique identifier for the OtherDetail document."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/teacher_infos/{teacherInfoId}/pay_slips/{paySlipId}",
-        "definition": {
-          "entityName": "PaySlip",
-          "schema": {
-            "$ref": "#/backend/entities/PaySlip"
-          },
-          "description": "Stores pay slip information for each teacher. It is a subcollection of teacher_infos. Supports QAPs because the payslips are directly related to the teacher info record.  Includes denormalized 'teacherInfoId' and potentially a 'members' map for authorization independence if collaborative payslip management is required.",
-          "params": [
-            {
-              "name": "teacherInfoId",
-              "description": "Unique identifier for the parent TeacherInfo document."
-            },
-            {
-              "name": "paySlipId",
-              "description": "Unique identifier for the PaySlip document."
-            }
-          ]
-        }
+    "collections": {
+      "/payslips/{payslipId}": {
+        "schema": { "$ref": "#/backend/entities/PaySlip" },
+        "description": "Stores all the payslip form data submitted by users."
       }
-    ],
-    "reasoning": "The Firestore structure is designed to organize data related to teacher salary details in a clear and scalable manner.  Since there are multiple entities involved in the payslip generation, and some entities share a 1:N relationship, the structure is designed to reflect these relationships explicitly. The root collection `office_details` stores office information. The `teacher_infos` collection holds individual teacher details. `salary_details` and `other_details` are subcollections under `teacher_infos` to capture salary and other related information, enabling efficient querying and management. Finally, `pay_slips` are stored as subcollections under `teacher_infos`, linking them directly to a teacher's record.\n\nThis design prioritizes Authorization Independence by not relying on parent document lookups for access control. Security rules can be written based on the current document and the user's authentication state. Furthermore, the segregation of data into separate collections based on entity type allows for tailored security rules for each data category. QAPs are supported due to the clear ownership structure where pay slips are directly linked to teachers, enabling secure list operations within the scope of a user or teacher ID.\n\nTo further enhance Authorization Independence, if there were collaborative aspects (e.g., multiple users managing payslips for a teacher), membership maps could be added to the `pay_slips` documents, explicitly defining roles and permissions."
+    }
   }
 }
