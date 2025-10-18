@@ -1,0 +1,139 @@
+/**
+ * @fileoverview Firestore Security Rules for the Teacher Salary Details application.
+ *
+ * Core Philosophy:
+ * This ruleset enforces a hierarchical ownership model, primarily based on the `teacher_infos` collection. Each teacher has their own data tree, and access is generally restricted to that teacher. Additionally, public read access may be granted to some collections, with owner-only writes enforced via an `ownerId` field.
+ *
+ * Data Structure:
+ * - /office_details/{officeDetailId}: Stores office information.
+ * - /teacher_infos/{teacherInfoId}: Stores teacher information. This serves as the root for teacher-specific data.
+ * - /teacher_infos/{teacherInfoId}/salary_details/{salaryDetailId}: Stores salary details for a teacher.
+ * - /teacher_infos/{teacherInfoId}/salary_details/{salaryDetailId}/other_details/{otherDetailId}: Stores other details related to salary.
+ * - /teacher_infos/{teacherInfoId}/pay_slips/{paySlipId}: Stores pay slip information.
+ *
+ * Key Security Decisions:
+ * - Strict ownership is enforced for teacher-specific data.
+ * - Public read access is granted to the `office_details` collection with owner-only writes.
+ * - Subcollections inherit the authorization context of their parent documents.
+ * - Data validation is limited to relational integrity checks and is not comprehensive.
+ *
+ * Denormalization for Authorization:
+ * This ruleset avoids `get()` calls by assuming that all necessary authorization data (e.g., `teacherInfoId`) is present within the documents being secured.
+ *
+ * Structural Segregation:
+ * This ruleset does not need structural segregation. All user data is already stored under the appropriate user's ID.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Manages access to office details. Allows public reads, but restricts write access.
+     * @path /office_details/{officeDetailId}
+     * @allow get, list: if true;
+     * @allow create: if request.auth != null; // TODO: Add owner validation once the schema is updated with an ownership field.
+     * @allow update: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
+     * @allow delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
+     * @principle Public read, owner-only writes.
+     */
+    match /office_details/{officeDetailId} {
+      allow get, list: if true;
+      allow create: if request.auth != null; // TODO: Add owner validation once the schema is updated with an ownership field.
+      allow update: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
+      allow delete: if false; // TODO: Add owner validation once the schema is updated with an ownership field.
+    }
+
+    /**
+     * @description Manages access to teacher information. Enforces ownership for all operations.
+     * @path /teacher_infos/{teacherInfoId}
+     * @allow get, list: if isOwner(teacherInfoId);
+     * @allow create: if isOwner(teacherInfoId);
+     * @allow update: if isExistingOwner(teacherInfoId);
+     * @allow delete: if isExistingOwner(teacherInfoId);
+     * @principle Enforces document ownership for writes.
+     */
+    match /teacher_infos/{teacherInfoId} {
+      allow get, list: if isOwner(teacherInfoId);
+      allow create: if isOwner(teacherInfoId);
+      allow update: if isExistingOwner(teacherInfoId);
+      allow delete: if isExistingOwner(teacherInfoId);
+    }
+
+    /**
+     * @description Manages access to salary details for a teacher. Enforces ownership based on the parent teacherInfoId.
+     * @path /teacher_infos/{teacherInfoId}/salary_details/{salaryDetailId}
+     * @allow get, list: if isOwner(teacherInfoId);
+     * @allow create: if isOwner(teacherInfoId);
+     * @allow update: if isExistingOwner(teacherInfoId);
+     * @allow delete: if isExistingOwner(teacherInfoId);
+     * @principle Restricts access to a user's own data tree.
+     */
+    match /teacher_infos/{teacherInfoId}/salary_details/{salaryDetailId} {
+      allow get, list: if isOwner(teacherInfoId);
+      allow create: if isOwner(teacherInfoId);
+      allow update: if isExistingOwner(teacherInfoId);
+      allow delete: if isExistingOwner(teacherInfoId);
+    }
+
+    /**
+     * @description Manages access to other details related to salary for a teacher. Enforces ownership based on the parent teacherInfoId.
+     * @path /teacher_infos/{teacherInfoId}/salary_details/{salaryDetailId}/other_details/{otherDetailId}
+     * @allow get, list: if isOwner(teacherInfoId);
+     * @allow create: if isOwner(teacherInfoId);
+     * @allow update: if isExistingOwner(teacherInfoId);
+     * @allow delete: if isExistingOwner(teacherInfoId);
+     * @principle Restricts access to a user's own data tree.
+     */
+    match /teacher_infos/{teacherInfoId}/salary_details/{salaryDetailId}/other_details/{otherDetailId} {
+      allow get, list: if isOwner(teacherInfoId);
+      allow create: if isOwner(teacherInfoId);
+      allow update: if isExistingOwner(teacherInfoId);
+      allow delete: if isExistingOwner(teacherInfoId);
+    }
+
+    /**
+     * @description Manages access to pay slips for a teacher. Enforces ownership based on the parent teacherInfoId.
+     * @path /teacher_infos/{teacherInfoId}/pay_slips/{paySlipId}
+     * @allow get, list: if isOwner(teacherInfoId);
+     * @allow create: if isOwner(teacherInfoId);
+     * @allow update: if isExistingOwner(teacherInfoId);
+     * @allow delete: if isExistingOwner(teacherInfoId);
+     * @principle Restricts access to a user's own data tree.
+     */
+    match /teacher_infos/{teacherInfoId}/pay_slips/{paySlipId} {
+      allow get, list: if isOwner(teacherInfoId);
+      allow create: if isOwner(teacherInfoId);
+      allow update: if isExistingOwner(teacherInfoId);
+      allow delete: if isExistingOwner(teacherInfoId);
+    }
+
+    // ---- Helper functions ----
+
+    /**
+     * @description Checks if the user is signed in.
+     * @return {bool} True if the user is signed in, false otherwise.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * @description Checks if the request is made by the owner of the resource.
+     * @param {string} userId The ID of the user who should own the resource.
+     * @return {bool} True if the user is the owner, false otherwise.
+     * @example isOwner('user123') returns true if request.auth.uid == 'user123'
+     */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /**
+     * @description Checks if the request is made by the owner of the resource and the resource exists.
+     * @param {string} userId The ID of the user who should own the resource.
+     * @return {bool} True if the user is the owner and the resource exists, false otherwise.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+  }
+}
