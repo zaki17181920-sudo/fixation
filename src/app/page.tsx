@@ -106,7 +106,7 @@ export default function SalaryFormEditorPage() {
               ) : (
                 <ShieldCheck className="mr-2 h-4 w-4" />
               )}
-              AI से सत्यापित करें
+              सत्यापित करें
             </Button>
             <Button onClick={handlePrint}>
               <Printer className="mr-2 h-4 w-4" /> प्रिंट करें
