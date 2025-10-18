@@ -228,7 +228,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
                                 )}
                               >
                                 {field.value ? (
-                                  format(field.value, "PPP")
+                                  format(field.value, "yyyy-MM-dd")
                                 ) : (
                                   <span>एक तारीख चुनें</span>
                                 )}
@@ -238,6 +238,9 @@ export function SalaryForm({ form }: SalaryFormProps) {
                           </PopoverTrigger>
                           <PopoverContent className="w-auto p-0" align="start">
                             <Calendar
+                              captionLayout="dropdown-buttons"
+                              fromYear={1930}
+                              toYear={new Date().getFullYear()}
                               mode="single"
                               selected={field.value}
                               onSelect={field.onChange}
@@ -269,7 +272,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
                                 )}
                               >
                                 {field.value ? (
-                                  format(field.value, "PPP")
+                                  format(field.value, "yyyy-MM-dd")
                                 ) : (
                                   <span>एक तारीख चुनें</span>
                                 )}
@@ -279,6 +282,9 @@ export function SalaryForm({ form }: SalaryFormProps) {
                           </PopoverTrigger>
                           <PopoverContent className="w-auto p-0" align="start">
                             <Calendar
+                              captionLayout="dropdown-buttons"
+                              fromYear={1980}
+                              toYear={new Date().getFullYear()}
                               mode="single"
                               selected={field.value}
                               onSelect={field.onChange}
@@ -307,7 +313,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
                                 )}
                               >
                                 {field.value ? (
-                                  format(field.value, "PPP")
+                                  format(field.value, "yyyy-MM-dd")
                                 ) : (
                                   <span>एक तारीख चुनें</span>
                                 )}
@@ -317,6 +323,9 @@ export function SalaryForm({ form }: SalaryFormProps) {
                           </PopoverTrigger>
                           <PopoverContent className="w-auto p-0" align="start">
                             <Calendar
+                              captionLayout="dropdown-buttons"
+                              fromYear={1980}
+                              toYear={new Date().getFullYear()}
                               mode="single"
                               selected={field.value}
                               onSelect={field.onChange}
@@ -422,7 +431,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
                                 )}
                               >
                                 {field.value ? (
-                                  format(field.value, "PPP")
+                                  format(field.value, "yyyy-MM-dd")
                                 ) : (
                                   <span>एक तारीख चुनें</span>
                                 )}
@@ -432,6 +441,9 @@ export function SalaryForm({ form }: SalaryFormProps) {
                           </PopoverTrigger>
                           <PopoverContent className="w-auto p-0" align="start">
                             <Calendar
+                              captionLayout="dropdown-buttons"
+                              fromYear={1980}
+                              toYear={new Date().getFullYear()}
                               mode="single"
                               selected={field.value}
                               onSelect={field.onChange}
@@ -460,7 +472,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
                                 )}
                               >
                                 {field.value ? (
-                                  format(field.value, "PPP")
+                                  format(field.value, "yyyy-MM-dd")
                                 ) : (
                                   <span>एक तारीख चुनें</span>
                                 )}
@@ -470,6 +482,9 @@ export function SalaryForm({ form }: SalaryFormProps) {
                           </PopoverTrigger>
                           <PopoverContent className="w-auto p-0" align="start">
                             <Calendar
+                              captionLayout="dropdown-buttons"
+                              fromYear={1980}
+                              toYear={new Date().getFullYear()}
                               mode="single"
                               selected={field.value}
                               onSelect={field.onChange}
@@ -550,7 +565,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
                                 )}
                               >
                                 {field.value ? (
-                                  format(field.value, "PPP")
+                                  format(field.value, "yyyy-MM-dd")
                                 ) : (
                                   <span>एक तारीख चुनें</span>
                                 )}
@@ -560,6 +575,9 @@ export function SalaryForm({ form }: SalaryFormProps) {
                           </PopoverTrigger>
                           <PopoverContent className="w-auto p-0" align="start">
                             <Calendar
+                              captionLayout="dropdown-buttons"
+                              fromYear={1980}
+                              toYear={new Date().getFullYear()}
                               mode="single"
                               selected={field.value}
                               onSelect={field.onChange}

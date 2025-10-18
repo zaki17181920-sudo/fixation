@@ -13,7 +13,7 @@ const DataRow = ({ label, value, number }: { label: string; value?: string | Dat
   
   let displayValue: string;
   if (value instanceof Date) {
-    displayValue = format(value, 'dd-MM-yyyy', { locale: hi });
+    displayValue = format(value, 'yyyy-MM-dd');
   } else {
     displayValue = String(value);
   }
@@ -32,7 +32,7 @@ export function PrintPreview({ data }: PrintPreviewProps) {
   const formatDate = (date: Date | undefined) => {
     if (!date) return '-';
     try {
-      return format(date, 'dd.MM.yyyy');
+      return format(date, 'yyyy-MM-dd');
     } catch (error) {
       return '-';
     }
@@ -67,7 +67,7 @@ export function PrintPreview({ data }: PrintPreviewProps) {
             <DataRow number="8." label="विशिष्ट शिक्षक के रूप में योगदान तिथि" value={data.dateOfJoiningAsSpecificTeacher} />
             <DataRow number="9." label="प्रशिक्षण तिथि" value={data.dateOfTraining} />
             <DataRow number="10." label="दक्षता/BTET/CTET/STET का प्रकार" value={data.efficiencyType} />
-            <DataRow number="11." label="दक्षता/BTET/CTET/STET उतीर्णता तिथि" value={data.dateOfTraining ? format(data.dateOfTraining, 'dd-MM-yyyy', { locale: hi }) : '-'} />
+            <DataRow number="11." label="दक्षता/BTET/CTET/STET उतीर्णता तिथि" value={data.dateOfTraining ? format(data.dateOfTraining, 'yyyy-MM-dd') : '-'} />
             <DataRow number="12." label="बैंक का नाम" value={data.bankDetails} />
             <DataRow number="13." label="बैंक खाता संख्या" value={data.bankAccountNumber} />
             <DataRow number="14." label="IFSC कोड" value={data.ifscCode} />
