@@ -40,7 +40,7 @@ export function PrintPreview({ data }: PrintPreviewProps) {
   }
   
   const salaryText = `Level ${data.levelForDecember2024Salary || '..........'} Index ${data.indexForDecember2024Salary || '..........'} में प्राप्त मूल वेतन ${data.december2024Salary || ''}`;
-  const newSalaryText = `Level-${data.levelForNewSalary || '2/3/5/6'}, Index ${data.indexForNewSalary || '............'} मूल वेतन ${data.newSalaryWithIncrement || ''}`;
+  const newSalaryText = `Level-${data.levelForNewSalary || '.....'}, Index ${data.indexForNewSalary || '............'} मूल वेतन ${data.newSalaryWithIncrement || ''}`;
 
 
   return (
