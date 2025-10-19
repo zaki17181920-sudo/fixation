@@ -331,7 +331,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
                     name="dateOfReceivingTrainedPayScale"
                     render={({ field }) => (
                       <FormItem className="flex flex-col">
-                        <FormLabel>दक्षता/BTET/CTET उत्तीर्णता तिथि</FormLabel>
+                        <FormLabel>प्रशिक्षित वेतनमान प्राप्त करने की तिथि</FormLabel>
                          <Popover>
                           <PopoverTrigger asChild>
                             <FormControl>
