@@ -10,11 +10,6 @@ export const formSchema = z.object({
   pran: requiredString,
   competencyApplicationNumber: requiredString,
 
-  // Office Details
-  office: requiredString,
-  districtEducationOfficer: requiredString,
-  district: requiredString,
-
   // Teacher Information
   teacherName: requiredString,
   schoolName: requiredString,
@@ -23,6 +18,7 @@ export const formSchema = z.object({
   subject: requiredString,
   appointmentCategory: requiredString,
   dateOfBirth: requiredDate,
+  block: requiredString, // New field for 'प्रखंड'
 
   // Salary Details
   dateOfJoiningAsSpecificTeacher: requiredDate,
@@ -36,9 +32,9 @@ export const formSchema = z.object({
   dateOfFirstJoiningAsLocalBodyTeacher: requiredDate,
   dateOfReceivingTrainedPayScale: requiredDate,
   serviceBreak: z.string().optional(),
-  december2024Salary: requiredString,
-  newSalaryWithIncrement: requiredString,
-  payMatrixSalary: requiredString,
+  december2024Salary: requiredString, // Corresponds to item 20
+  newSalaryWithIncrement: requiredString, // Corresponds to item 21
+  payMatrixSalary: requiredString, // Also part of item 21
   nextIncrementDate: requiredDate,
 });
 

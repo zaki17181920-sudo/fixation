@@ -40,9 +40,9 @@ function buildAIInput(data: FormValues): ValidateInputDataInput {
 
   return {
     officeDetails: {
-      office,
-      districtEducationOfficer,
-      district,
+      office: office || '',
+      districtEducationOfficer: districtEducationOfficer || '',
+      district: district || '',
     },
     teacherInfo: {
       teacherName,

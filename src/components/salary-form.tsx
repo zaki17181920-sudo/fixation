@@ -40,19 +40,19 @@ export function SalaryForm({ form }: SalaryFormProps) {
         <Accordion type="multiple" defaultValue={['item-0', 'item-2', 'item-3', 'item-4']} className="w-full">
           <AccordionItem value="item-0">
             <AccordionTrigger>
-              <h3 className="font-headline text-lg">PRAN/आवेदन संख्या</h3>
+              <h3 className="font-headline text-lg">ID और PRAN</h3>
             </AccordionTrigger>
             <AccordionContent>
               <Card className="border-0 shadow-none">
                 <CardContent className="pt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
+                   <FormField
                     control={form.control}
-                    name="pran"
+                    name="competencyApplicationNumber"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>PRAN NO.</FormLabel>
+                        <FormLabel>विशिष्ट शिक्षक का आई०डी०सं०</FormLabel>
                         <FormControl>
-                          <Input placeholder="PRAN NO." {...field} />
+                          <Input placeholder="ID संख्या" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -60,12 +60,12 @@ export function SalaryForm({ form }: SalaryFormProps) {
                   />
                   <FormField
                     control={form.control}
-                    name="competencyApplicationNumber"
+                    name="pran"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>सक्षमता आवेदन संख्या</FormLabel>
+                        <FormLabel>PRAN संख्या</FormLabel>
                         <FormControl>
-                          <Input placeholder="सक्षमता आवेदन संख्या" {...field} />
+                          <Input placeholder="PRAN संख्या" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -78,7 +78,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
           
           <AccordionItem value="item-2">
             <AccordionTrigger>
-              <h3 className="font-headline text-lg">2. शिक्षक सूचना</h3>
+              <h3 className="font-headline text-lg">शिक्षक सूचना</h3>
             </AccordionTrigger>
             <AccordionContent>
               <Card className="border-0 shadow-none">
@@ -88,7 +88,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
                     name="teacherName"
                     render={({ field }) => (
                       <FormItem className="md:col-span-2">
-                        <FormLabel>शिक्षक का नाम</FormLabel>
+                        <FormLabel>विशिष्ट शिक्षक का नाम</FormLabel>
                         <FormControl>
                           <Input placeholder="पूरा नाम" {...field} />
                         </FormControl>
@@ -96,11 +96,11 @@ export function SalaryForm({ form }: SalaryFormProps) {
                       </FormItem>
                     )}
                   />
-                  <FormField
+                   <FormField
                     control={form.control}
                     name="schoolName"
                     render={({ field }) => (
-                      <FormItem className="md:col-span-2">
+                      <FormItem>
                         <FormLabel>विद्यालय का नाम</FormLabel>
                         <FormControl>
                           <Input placeholder="विद्यालय का पूरा नाम" {...field} />
@@ -114,9 +114,22 @@ export function SalaryForm({ form }: SalaryFormProps) {
                     name="udiseCode"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>विद्यालय का यू-डायस कोड</FormLabel>
+                        <FormLabel>विद्यालय का U-DISE CODE</FormLabel>
                         <FormControl>
                           <Input placeholder="U-DISE कोड" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="block"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>प्रखंड</FormLabel>
+                        <FormControl>
+                          <Input placeholder="प्रखंड का नाम" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -153,7 +166,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
                     name="appointmentCategory"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>नियुक्ति की कोटि (UR/BC/EBC/SC/EWS)</FormLabel>
+                        <FormLabel>नियुक्ति की कोटि (UR/BC/EBC/SC/ST/EWS)</FormLabel>
                         <FormControl>
                           <Input placeholder="नियुक्ति कोटि" {...field} />
                         </FormControl>
@@ -294,7 +307,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
 
           <AccordionItem value="item-3">
             <AccordionTrigger>
-              <h3 className="font-headline text-lg">3. वेतन और बैंक विवरण</h3>
+              <h3 className="font-headline text-lg">वेतन और बैंक विवरण</h3>
             </AccordionTrigger>
             <AccordionContent>
                <Card className="border-0 shadow-none">
@@ -305,7 +318,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
                     name="efficiencyType"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>दक्षता/BTET/CTET/STET का प्रकार</FormLabel>
+                        <FormLabel>दक्षता/BTET/CTET का प्रकार</FormLabel>
                         <FormControl>
                           <Input placeholder="दक्षता / पात्रता" {...field} />
                         </FormControl>
@@ -313,15 +326,43 @@ export function SalaryForm({ form }: SalaryFormProps) {
                       </FormItem>
                     )}
                   />
-                   <FormField
+                  <FormField
                     control={form.control}
-                    name="bankDetails"
+                    name="dateOfReceivingTrainedPayScale"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>बैंक का नाम</FormLabel>
-                        <FormControl>
-                          <Input placeholder="बैंक का नाम" {...field} />
-                        </FormControl>
+                      <FormItem className="flex flex-col">
+                        <FormLabel>दक्षता/BTET/CTET उत्तीर्णता तिथि</FormLabel>
+                         <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "w-full pl-3 text-left font-normal",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                {field.value ? (
+                                  format(field.value, "yyyy-MM-dd")
+                                ) : (
+                                  <span>एक तारीख चुनें</span>
+                                )}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              captionLayout="dropdown-buttons"
+                              fromYear={1980}
+                              toYear={new Date().getFullYear()}
+                              mode="single"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -359,7 +400,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
 
           <AccordionItem value="item-4">
             <AccordionTrigger>
-              <h3 className="font-headline text-lg">4. अन्य विवरण</h3>
+              <h3 className="font-headline text-lg">अन्य विवरण</h3>
             </AccordionTrigger>
             <AccordionContent>
                <Card className="border-0 shadow-none">
@@ -370,47 +411,6 @@ export function SalaryForm({ form }: SalaryFormProps) {
                     render={({ field }) => (
                       <FormItem className="flex flex-col md:col-span-2">
                         <FormLabel>स्थानीय निकाय शिक्षक के रूप में प्रथम योगदान की तिथि</FormLabel>
-                         <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant={"outline"}
-                                className={cn(
-                                  "w-full pl-3 text-left font-normal",
-                                  !field.value && "text-muted-foreground"
-                                )}
-                              >
-                                {field.value ? (
-                                  format(field.value, "yyyy-MM-dd")
-                                ) : (
-                                  <span>एक तारीख चुनें</span>
-                                )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              captionLayout="dropdown-buttons"
-                              fromYear={1980}
-                              toYear={new Date().getFullYear()}
-                              mode="single"
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="dateOfReceivingTrainedPayScale"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col md:col-span-2">
-                        <FormLabel>प्रशिक्षित वेतनमान प्राप्त करने की तिथि</FormLabel>
                          <Popover>
                           <PopoverTrigger asChild>
                             <FormControl>
@@ -464,9 +464,9 @@ export function SalaryForm({ form }: SalaryFormProps) {
                     name="december2024Salary"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>स्थानीय निकाय शिक्षक के रूप में माह दिसम्बर 2024 में प्राप्त मूल वेतन</FormLabel>
+                        <FormLabel>स्थानीय निकाय शिक्षक के रूप में विशिष्ट शिक्षक के योगदान तिथि को प्राप्त मूल वेतन</FormLabel>
                         <FormControl>
-                          <Input type="number" {...field} />
+                          <Input type="number" placeholder="Level...Index... में प्राप्त मूल वेतन" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -477,20 +477,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
                     name="newSalaryWithIncrement"
                     render={({ field }) => (
                       <FormItem className="md:col-span-2">
-                        <FormLabel>विशिष्ट शिक्षक के रूप में योगदान की तिथि को स्थानीय निकाय शिक्षक के रूप में अनुमान्य वेतन वृद्धि के साथ प्राप्त होने वाला मूल वेतन</FormLabel>
-                        <FormControl>
-                          <Input type="number" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                   <FormField
-                    control={form.control}
-                    name="payMatrixSalary"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>विशिष्ट शिक्षक के रूप में पे-मैट्रिक के अनुरूप में मूल वेतन</FormLabel>
+                        <FormLabel>विशिष्ट शिक्षक नियमावली 2023 के फिटमेंट मैट्रिक्स 'अनुलग्नक-क' के अनुसार योगदान तिथि को निर्धारित Level-2/3/5/6, Index...मूल वेतन...</FormLabel>
                         <FormControl>
                           <Input type="number" {...field} />
                         </FormControl>
