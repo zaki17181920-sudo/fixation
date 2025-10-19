@@ -159,6 +159,9 @@ export default function SalaryFormEditorPage() {
             <Button onClick={handlePrint}>
               <Printer className="mr-2 h-4 w-4" /> प्रिंट करें
             </Button>
+             <Button asChild variant="outline">
+                <Link href="/payslips">सहेजी गई पर्चियाँ देखें</Link>
+            </Button>
           </div>
         </header>
 

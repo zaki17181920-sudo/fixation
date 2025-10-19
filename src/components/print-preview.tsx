@@ -42,10 +42,10 @@ export function PrintPreview({ data }: PrintPreviewProps) {
   
   const salaryText = `को Level ${data.levelForDecember2024Salary || '..........'} Index ${data.indexForDecember2024Salary || '..........'} में प्राप्त मूल वेतन..............................`;
   const newSalaryText = `को निर्धारित Level-${data.levelForNewSalary || '.....'}, Index ${data.indexForNewSalary || '............'} मूल वेतन..............................`;
-
+  const contributionDate = data.dateOfJoiningForNewSalary ? formatDate(data.dateOfJoiningForNewSalary) : '..............................';
 
   return (
-    <div id="print-area" className="p-10 bg-white text-black font-body text-[15px] leading-tight">
+    <div id="print-area" className="p-10 bg-white text-black font-body text-[13px] leading-tight">
       <header className="text-center mb-4">
         <h1 className="text-[17px] font-bold">कार्यालय, जिला शिक्षा पदाधिकारी, पूर्वी चम्पारण, मोतिहारी</h1>
         <h2 className="text-[16px] font-bold">(स्थापना शाखा)</h2>
@@ -75,7 +75,7 @@ export function PrintPreview({ data }: PrintPreviewProps) {
             <DataRow number="16." label="IFSC कोड" value={data.ifscCode} />
             <DataRow number="17." label="स्थानीय निकाय शिक्षक के रूप में प्रथम योगदान तिथि" value={data.dateOfFirstJoiningAsLocalBodyTeacher ? formatDate(data.dateOfFirstJoiningAsLocalBodyTeacher) : '..............................'} />
             <tr>
-              <td colSpan={4} className="text-[12px] pl-8 pb-1 pt-0">
+              <td colSpan={4} className="text-[10px] pl-8 pb-1 pt-0">
               (शिक्षा मित्र के रूप में जो दिनांक 01.07.2006 के पूर्व नियोजित हैं, वे योगदान की तिथि 01.07.2006 अंकित करेंगे।)
               </td>
             </tr>
@@ -91,7 +91,7 @@ export function PrintPreview({ data }: PrintPreviewProps) {
             <tr>
                <td className="py-1 pr-2 w-8 align-top">21.</td>
               <td colSpan={3} className="w-auto py-1">
-                विशिष्ट शिक्षक नियमावली 2023 (यथा संशोधित) के फिटमेंट मैट्रिक्स 'अनुलग्नक-क' के अनुसार योगदान तिथि.............................. {newSalaryText}
+                विशिष्ट शिक्षक नियमावली 2023 (यथा संशोधित) के फिटमेंट मैट्रिक्स 'अनुलग्नक-क' के अनुसार योगदान तिथि {contributionDate} {newSalaryText}
               </td>
             </tr>
 
@@ -99,11 +99,11 @@ export function PrintPreview({ data }: PrintPreviewProps) {
           </tbody>
         </table>
         
-        <p className="mt-4 text-[14px]">
+        <p className="mt-4 text-[12px]">
             नोट :- स्थानीय निकाय शिक्षक के रूप में निर्धारित वेतन प्रपत्र, प्रशिक्षण प्रमाण पत्र, दक्षता/BTET/CTET प्रमाण पत्र एवं विशिष्ट शिक्षक का योगदान पत्र (स्व-अभिप्रमाणित छाया प्रति) संलग्न करें।
         </p>
 
-        <footer className="mt-16 text-[15px]">
+        <footer className="mt-16 text-[13px]">
             <div className="flex justify-between items-end text-center px-4">
                 <div>
                     <p className="mb-4">........................................</p>

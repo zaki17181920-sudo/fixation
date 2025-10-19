@@ -503,43 +503,86 @@ export function SalaryForm({ form }: SalaryFormProps) {
                    
                   <div className="md:col-span-2 space-y-2">
                     <FormLabel>विशिष्ट शिक्षक नियमावली 2023 के फिटमेंट मैट्रिक्स 'अनुलग्नक-क' के अनुसार योगदान तिथि को निर्धारित</FormLabel>
-                    <div className="grid grid-cols-3 gap-2">
-                         <FormField
-                            control={form.control}
-                            name="levelForNewSalary"
-                            render={({ field }) => (
-                            <FormItem>
+                    <div className="grid grid-cols-1 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="dateOfJoiningForNewSalary"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-col">
+                            <FormLabel>योगदान तिथि</FormLabel>
+                            <Popover>
+                              <PopoverTrigger asChild>
                                 <FormControl>
-                                <Input placeholder="Level" {...field} />
+                                  <Button
+                                    variant={"outline"}
+                                    className={cn(
+                                      "w-full pl-3 text-left font-normal",
+                                      !field.value && "text-muted-foreground"
+                                    )}
+                                  >
+                                    {field.value ? (
+                                      format(field.value, "dd-MM-yyyy")
+                                    ) : (
+                                      <span>एक तारीख चुनें</span>
+                                    )}
+                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                  </Button>
                                 </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="indexForNewSalary"
-                            render={({ field }) => (
-                            <FormItem>
-                                <FormControl>
-                                <Input placeholder="Index" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="newSalaryWithIncrement"
-                            render={({ field }) => (
-                            <FormItem>
-                                <FormControl>
-                                <Input type="number" placeholder="मूल वेतन" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                            )}
-                        />
+                              </PopoverTrigger>
+                              <PopoverContent className="w-auto p-0" align="start">
+                                <Calendar
+                                  captionLayout="dropdown-buttons"
+                                  fromYear={1980}
+                                  toYear={new Date().getFullYear()}
+                                  mode="single"
+                                  selected={field.value}
+                                  onSelect={field.onChange}
+                                  initialFocus
+                                />
+                              </PopoverContent>
+                            </Popover>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <div className="grid grid-cols-3 gap-2">
+                          <FormField
+                              control={form.control}
+                              name="levelForNewSalary"
+                              render={({ field }) => (
+                              <FormItem>
+                                  <FormControl>
+                                  <Input placeholder="Level" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                              </FormItem>
+                              )}
+                          />
+                          <FormField
+                              control={form.control}
+                              name="indexForNewSalary"
+                              render={({ field }) => (
+                              <FormItem>
+                                  <FormControl>
+                                  <Input placeholder="Index" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                              </FormItem>
+                              )}
+                          />
+                          <FormField
+                              control={form.control}
+                              name="newSalaryWithIncrement"
+                              render={({ field }) => (
+                              <FormItem>
+                                  <FormControl>
+                                  <Input type="number" placeholder="मूल वेतन" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                              </FormItem>
+                              )}
+                          />
+                      </div>
                     </div>
                   </div>
                   <FormField

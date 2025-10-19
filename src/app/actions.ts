@@ -141,6 +141,7 @@ export async function saveAndValidateForm(
       dateOfTraining: format(parsedData.data.dateOfTraining, 'dd-MM-yyyy'),
       dateOfFirstJoiningAsLocalBodyTeacher: format(parsedData.data.dateOfFirstJoiningAsLocalBodyTeacher, 'dd-MM-yyyy'),
       dateOfReceivingTrainedPayScale: format(parsedData.data.dateOfReceivingTrainedPayScale, 'dd-MM-yyyy'),
+      dateOfJoiningForNewSalary: format(parsedData.data.dateOfJoiningForNewSalary, 'dd-MM-yyyy'),
       nextIncrementDate: format(parsedData.data.nextIncrementDate, 'dd-MM-yyyy'),
       createdAt: new Date().toISOString(),
     };
