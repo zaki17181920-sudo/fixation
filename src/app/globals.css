@@ -89,6 +89,14 @@
     .no-print {
       display: none !important;
     }
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        height: 100%;
+        width: 100%;
+        background: white;
+    }
     body * {
       visibility: hidden;
     }
@@ -97,11 +105,9 @@
       visibility: visible;
     }
     #print-area {
-      position: absolute;
-      left: 0;
-      top: 0;
+      position: relative;
       width: 100%;
-      height: 100%;
+      height: auto;
       margin: 0;
       padding: 0;
       background: white;
