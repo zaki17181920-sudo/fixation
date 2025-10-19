@@ -37,7 +37,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
   return (
     <Form {...form}>
       <form className="space-y-6">
-        <Accordion type="multiple" defaultValue={['item-0', 'item-1', 'item-2', 'item-3', 'item-4']} className="w-full">
+        <Accordion type="multiple" defaultValue={['item-0', 'item-2', 'item-3', 'item-4']} className="w-full">
           <AccordionItem value="item-0">
             <AccordionTrigger>
               <h3 className="font-headline text-lg">PRAN/आवेदन संख्या</h3>
@@ -75,31 +75,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
               </Card>
             </AccordionContent>
           </AccordionItem>
-          <AccordionItem value="item-1">
-            <AccordionTrigger>
-              <h3 className="font-headline text-lg">1. कार्यालय विवरण</h3>
-            </AccordionTrigger>
-            <AccordionContent>
-              <Card className="border-0 shadow-none">
-                <CardContent className="pt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="office"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>कार्यालय</FormLabel>
-                        <FormControl>
-                          <Input placeholder="कार्यालय का नाम" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </CardContent>
-              </Card>
-            </AccordionContent>
-          </AccordionItem>
-
+          
           <AccordionItem value="item-2">
             <AccordionTrigger>
               <h3 className="font-headline text-lg">2. शिक्षक सूचना</h3>
