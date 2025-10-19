@@ -191,7 +191,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
                                 )}
                               >
                                 {field.value ? (
-                                  format(field.value, "yyyy-MM-dd")
+                                  format(field.value, "dd-MM-yyyy")
                                 ) : (
                                   <span>एक तारीख चुनें</span>
                                 )}
@@ -235,7 +235,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
                                 )}
                               >
                                 {field.value ? (
-                                  format(field.value, "yyyy-MM-dd")
+                                  format(field.value, "dd-MM-yyyy")
                                 ) : (
                                   <span>एक तारीख चुनें</span>
                                 )}
@@ -276,7 +276,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
                                 )}
                               >
                                 {field.value ? (
-                                  format(field.value, "yyyy-MM-dd")
+                                  format(field.value, "dd-MM-yyyy")
                                 ) : (
                                   <span>एक तारीख चुनें</span>
                                 )}
@@ -343,7 +343,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
                                 )}
                               >
                                 {field.value ? (
-                                  format(field.value, "yyyy-MM-dd")
+                                  format(field.value, "dd-MM-yyyy")
                                 ) : (
                                   <span>एक तारीख चुनें</span>
                                 )}
@@ -422,7 +422,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
                                 )}
                               >
                                 {field.value ? (
-                                  format(field.value, "yyyy-MM-dd")
+                                  format(field.value, "dd-MM-yyyy")
                                 ) : (
                                   <span>एक तारीख चुनें</span>
                                 )}
@@ -559,7 +559,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
                                 )}
                               >
                                 {field.value ? (
-                                  format(field.value, "yyyy-MM-dd")
+                                  format(field.value, "dd-MM-yyyy")
                                 ) : (
                                   <span>एक तारीख चुनें</span>
                                 )}

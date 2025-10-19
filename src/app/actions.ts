@@ -48,25 +48,25 @@ function buildAIInput(data: FormValues): ValidateInputDataInput {
       className,
       subject,
       appointmentCategory,
-      dateOfBirth: format(dateOfBirth, 'yyyy-MM-dd'),
+      dateOfBirth: format(dateOfBirth, 'dd-MM-yyyy'),
     },
     salaryDetails: {
       dateOfJoiningAsSpecificTeacher: format(
         dateOfJoiningAsSpecificTeacher,
-        'yyyy-MM-dd',
+        'dd-MM-yyyy',
       ),
-      dateOfTraining: format(dateOfTraining, 'yyyy-MM-dd'),
+      dateOfTraining: format(dateOfTraining, 'dd-MM-yyyy'),
       efficiencyType,
       bankDetails,
     },
     otherDetails: {
       dateOfFirstJoiningAsLocalBodyTeacher: format(
         dateOfFirstJoiningAsLocalBodyTeacher,
-        'yyyy-MM-dd',
+        'dd-MM-yyyy',
       ),
       dateOfReceivingTrainedPayScale: format(
         dateOfReceivingTrainedPayScale,
-        'yyyy-MM-dd',
+        'dd-MM-yyyy',
       ),
     },
   };
@@ -136,12 +136,12 @@ export async function saveAndValidateForm(
     // Convert dates to string format for Firestore
     const dataToSave = {
       ...parsedData.data,
-      dateOfBirth: format(parsedData.data.dateOfBirth, 'yyyy-MM-dd'),
-      dateOfJoiningAsSpecificTeacher: format(parsedData.data.dateOfJoiningAsSpecificTeacher, 'yyyy-MM-dd'),
-      dateOfTraining: format(parsedData.data.dateOfTraining, 'yyyy-MM-dd'),
-      dateOfFirstJoiningAsLocalBodyTeacher: format(parsedData.data.dateOfFirstJoiningAsLocalBodyTeacher, 'yyyy-MM-dd'),
-      dateOfReceivingTrainedPayScale: format(parsedData.data.dateOfReceivingTrainedPayScale, 'yyyy-MM-dd'),
-      nextIncrementDate: format(parsedData.data.nextIncrementDate, 'yyyy-MM-dd'),
+      dateOfBirth: format(parsedData.data.dateOfBirth, 'dd-MM-yyyy'),
+      dateOfJoiningAsSpecificTeacher: format(parsedData.data.dateOfJoiningAsSpecificTeacher, 'dd-MM-yyyy'),
+      dateOfTraining: format(parsedData.data.dateOfTraining, 'dd-MM-yyyy'),
+      dateOfFirstJoiningAsLocalBodyTeacher: format(parsedData.data.dateOfFirstJoiningAsLocalBodyTeacher, 'dd-MM-yyyy'),
+      dateOfReceivingTrainedPayScale: format(parsedData.data.dateOfReceivingTrainedPayScale, 'dd-MM-yyyy'),
+      nextIncrementDate: format(parsedData.data.nextIncrementDate, 'dd-MM-yyyy'),
       createdAt: new Date().toISOString(),
     };
     

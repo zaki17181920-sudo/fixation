@@ -7,11 +7,11 @@ type PrintPreviewProps = {
   data: FormValues;
 };
 
-const DataRow = ({ label, value, number }: { label: string; value?: string | Date | number; number?: string }) => {
+const DataRow = ({ label, value, number, wideLabel = false }: { label: string; value?: string | Date | number; number?: string, wideLabel?: boolean }) => {
   let displayValue: string;
   if (value instanceof Date) {
     try {
-      displayValue = format(value, 'yyyy-MM-dd');
+      displayValue = format(value, 'dd-MM-yyyy');
     } catch (e) {
       displayValue = '..............................';
     }
@@ -22,33 +22,34 @@ const DataRow = ({ label, value, number }: { label: string; value?: string | Dat
   return (
     <tr className="border-b-0">
       <td className="py-1 pr-2 w-8 align-top">{number}</td>
-      <td className="w-2/5 py-1 pr-2 font-medium align-top">{label}</td>
+      <td className={`py-1 pr-2 font-medium align-top ${wideLabel ? 'w-2/5' : 'w-1/3'}`}>{label}</td>
       <td className="w-4 py-1 text-center align-top">:</td>
       <td className="w-auto py-1 font-body">{displayValue}</td>
     </tr>
   );
 };
 
+
 export function PrintPreview({ data }: PrintPreviewProps) {
   const formatDate = (date: Date | undefined) => {
     if (!date) return '..............................';
     try {
-      return format(date, 'yyyy-MM-dd');
+      return format(date, 'dd-MM-yyyy');
     } catch (error) {
       return '..............................';
     }
   }
   
-  const salaryText = `Level ${data.levelForDecember2024Salary || '..........'} Index ${data.indexForDecember2024Salary || '..........'} में प्राप्त मूल वेतन ${data.december2024Salary || '....................'}`;
-  const newSalaryText = ` योगदान तिथि ......................... को निर्धारित Level-${data.levelForNewSalary || '.....'}, Index ${data.indexForNewSalary || '............'} मूल वेतन ${data.newSalaryWithIncrement || '....................'}`;
+  const salaryText = `को Level ${data.levelForDecember2024Salary || '..........'} Index ${data.indexForDecember2024Salary || '..........'} में प्राप्त मूल वेतन..............................`;
+  const newSalaryText = `को निर्धारित Level-${data.levelForNewSalary || '.....'}, Index ${data.indexForNewSalary || '............'} मूल वेतन..............................`;
 
 
   return (
-    <div id="print-area" className="p-10 bg-white text-black font-body text-[13px] leading-tight">
+    <div id="print-area" className="p-10 bg-white text-black font-body text-[15px] leading-tight">
       <header className="text-center mb-4">
-        <h1 className="text-[15px] font-bold">कार्यालय, जिला शिक्षा पदाधिकारी, पूर्वी चम्पारण, मोतिहारी</h1>
-        <h2 className="text-[14px] font-bold">(स्थापना शाखा)</h2>
-        <p className="text-[12px] mt-1 max-w-2xl mx-auto">
+        <h1 className="text-[17px] font-bold">कार्यालय, जिला शिक्षा पदाधिकारी, पूर्वी चम्पारण, मोतिहारी</h1>
+        <h2 className="text-[16px] font-bold">(स्थापना शाखा)</h2>
+        <p className="text-[14px] mt-1 max-w-2xl mx-auto">
         (निदेशक (प्रा०शि०), शिक्षा विभाग, बिहार सरकार के पत्रांक-281 दिनांक 23.01.2025 के आलोक में)
         </p>
       </header>
@@ -60,7 +61,7 @@ export function PrintPreview({ data }: PrintPreviewProps) {
             <DataRow number="2." label="PRAN संख्या" value={data.pran} />
             <DataRow number="3." label="वर्ग" value={data.className} />
             <DataRow number="4." label="विषय" value={data.subject} />
-            <DataRow number="5." label="नियुक्ति की कोटि(UR/BC/EBC/SC/ST/EWS)" value={data.appointmentCategory} />
+            <DataRow number="5." label="नियुक्ति की कोटि(UR/BC/EBC/SC/ST/EWS)" value={data.appointmentCategory} wideLabel />
             <DataRow number="6." label="विद्यालय का नाम" value={data.schoolName} />
             <DataRow number="7." label="विद्यालय का U-DISE CODE" value={data.udiseCode} />
             <DataRow number="8." label="प्रखंड" value={data.block} />
@@ -74,23 +75,23 @@ export function PrintPreview({ data }: PrintPreviewProps) {
             <DataRow number="16." label="IFSC कोड" value={data.ifscCode} />
             <DataRow number="17." label="स्थानीय निकाय शिक्षक के रूप में प्रथम योगदान तिथि" value={data.dateOfFirstJoiningAsLocalBodyTeacher ? formatDate(data.dateOfFirstJoiningAsLocalBodyTeacher) : '..............................'} />
             <tr>
-              <td colSpan={4} className="text-[11px] pl-8 pb-1 pt-0">
+              <td colSpan={4} className="text-[12px] pl-8 pb-1 pt-0">
               (शिक्षा मित्र के रूप में जो दिनांक 01.07.2006 के पूर्व नियोजित हैं, वे योगदान की तिथि 01.07.2006 अंकित करेंगे।)
               </td>
             </tr>
             <DataRow number="18." label="प्रशिक्षित वेतनमान प्राप्त करने की तिथि" value={data.dateOfReceivingTrainedPayScale ? formatDate(data.dateOfReceivingTrainedPayScale) : '..............................'} />
-            <DataRow number="19." label="क्या स्थानीय निकाय शिक्षक के रूप में योगदान तिथि से अध्यावधि तक कोई सेवा में टूट है (हाँ/नही)?" value={data.serviceBreak || '..............................'} />
+            <DataRow number="19." label="क्या स्थानीय निकाय शिक्षक के रूप में योगदान तिथि से अध्यावधि तक कोई सेवा में टूट है (हाँ/नही)?" value={data.serviceBreak || '..............................'} wideLabel/>
             
             <tr>
               <td className="py-1 pr-2 w-8 align-top">20.</td>
               <td colSpan={3} className="w-auto py-1">
-                स्थानीय निकाय शिक्षक के रूप में विशिष्ट शिक्षक के योगदान तिथि को {salaryText}
+                स्थानीय निकाय शिक्षक के रूप में विशिष्ट शिक्षक के योगदान तिथि {salaryText}
               </td>
             </tr>
             <tr>
                <td className="py-1 pr-2 w-8 align-top">21.</td>
               <td colSpan={3} className="w-auto py-1">
-                विशिष्ट शिक्षक नियमावली 2023 (यथा संशोधित) के फिटमेंट मैट्रिक्स 'अनुलग्नक-क' के अनुसार {newSalaryText}
+                विशिष्ट शिक्षक नियमावली 2023 (यथा संशोधित) के फिटमेंट मैट्रिक्स 'अनुलग्नक-क' के अनुसार योगदान तिथि.............................. {newSalaryText}
               </td>
             </tr>
 
@@ -98,22 +99,26 @@ export function PrintPreview({ data }: PrintPreviewProps) {
           </tbody>
         </table>
         
-        <p className="mt-4 text-[12px]">
+        <p className="mt-4 text-[14px]">
             नोट :- स्थानीय निकाय शिक्षक के रूप में निर्धारित वेतन प्रपत्र, प्रशिक्षण प्रमाण पत्र, दक्षता/BTET/CTET प्रमाण पत्र एवं विशिष्ट शिक्षक का योगदान पत्र (स्व-अभिप्रमाणित छाया प्रति) संलग्न करें।
         </p>
 
-        <footer className="mt-8 text-[13px]">
+        <footer className="mt-16 text-[15px]">
             <div className="flex justify-between items-end text-center px-4">
-                <div className="mt-4">
+                <div>
+                    <p className="mb-4">........................................</p>
                     <p>शिक्षक का हस्ताक्षर</p>
                 </div>
-                 <div className="mt-4">
+                 <div>
+                    <p className="mb-4">........................................</p>
                     <p>प्रधानाध्यापक का <br/> हस्ताक्षर</p>
                 </div>
-                <div className="mt-4">
+                <div>
+                    <p className="mb-4">........................................</p>
                     <p>प्रखंड शिक्षा पदाधिकारी <br/> का हस्ताक्षर</p>
                 </div>
-                 <div className="mt-4">
+                 <div>
+                    <p className="mb-4">........................................</p>
                     <p>जिला कार्यक्रम पदाधिकारी <br/> स्थापना, पूर्वी चम्पारण, मोतिहारी</p>
                 </div>
             </div>
