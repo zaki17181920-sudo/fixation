@@ -459,32 +459,89 @@ export function SalaryForm({ form }: SalaryFormProps) {
                       </FormItem>
                     )}
                   />
-                   <FormField
-                    control={form.control}
-                    name="december2024Salary"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>स्थानीय निकाय शिक्षक के रूप में विशिष्ट शिक्षक के योगदान तिथि को प्राप्त मूल वेतन</FormLabel>
-                        <FormControl>
-                          <Input type="number" placeholder="Level...Index... में प्राप्त मूल वेतन" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                   <FormField
-                    control={form.control}
-                    name="newSalaryWithIncrement"
-                    render={({ field }) => (
-                      <FormItem className="md:col-span-2">
-                        <FormLabel>विशिष्ट शिक्षक नियमावली 2023 के फिटमेंट मैट्रिक्स 'अनुलग्नक-क' के अनुसार योगदान तिथि को निर्धारित Level-2/3/5/6, Index...मूल वेतन...</FormLabel>
-                        <FormControl>
-                          <Input type="number" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div className="md:col-span-2 space-y-2">
+                    <FormLabel>स्थानीय निकाय शिक्षक के रूप में विशिष्ट शिक्षक के योगदान तिथि को प्राप्त मूल वेतन</FormLabel>
+                    <div className="grid grid-cols-3 gap-2">
+                        <FormField
+                            control={form.control}
+                            name="levelForDecember2024Salary"
+                            render={({ field }) => (
+                            <FormItem>
+                                <FormControl>
+                                <Input placeholder="Level" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="indexForDecember2024Salary"
+                            render={({ field }) => (
+                            <FormItem>
+                                <FormControl>
+                                <Input placeholder="Index" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="december2024Salary"
+                            render={({ field }) => (
+                            <FormItem>
+                                <FormControl>
+                                <Input type="number" placeholder="मूल वेतन" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                            )}
+                        />
+                    </div>
+                  </div>
+                   
+                  <div className="md:col-span-2 space-y-2">
+                    <FormLabel>विशिष्ट शिक्षक नियमावली 2023 के फिटमेंट मैट्रिक्स 'अनुलग्नक-क' के अनुसार योगदान तिथि को निर्धारित</FormLabel>
+                    <div className="grid grid-cols-3 gap-2">
+                         <FormField
+                            control={form.control}
+                            name="levelForNewSalary"
+                            render={({ field }) => (
+                            <FormItem>
+                                <FormControl>
+                                <Input placeholder="Level" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="indexForNewSalary"
+                            render={({ field }) => (
+                            <FormItem>
+                                <FormControl>
+                                <Input placeholder="Index" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="newSalaryWithIncrement"
+                            render={({ field }) => (
+                            <FormItem>
+                                <FormControl>
+                                <Input type="number" placeholder="मूल वेतन" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                            )}
+                        />
+                    </div>
+                  </div>
                   <FormField
                     control={form.control}
                     name="nextIncrementDate"
@@ -514,7 +571,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
                             <Calendar
                               captionLayout="dropdown-buttons"
                               fromYear={1980}
-                              toYear={new Date().getFullYear()}
+                              toYear={new Date().getFullYear()+5}
                               mode="single"
                               selected={field.value}
                               onSelect={field.onChange}

@@ -20,9 +20,6 @@ function toSnakeCase(str: string) {
 
 function buildAIInput(data: FormValues): ValidateInputDataInput {
   const {
-    office,
-    districtEducationOfficer,
-    district,
     teacherName,
     schoolName,
     udiseCode,
@@ -40,9 +37,9 @@ function buildAIInput(data: FormValues): ValidateInputDataInput {
 
   return {
     officeDetails: {
-      office: office || '',
-      districtEducationOfficer: districtEducationOfficer || '',
-      district: district || '',
+      office: '',
+      districtEducationOfficer: '',
+      district: '',
     },
     teacherInfo: {
       teacherName,

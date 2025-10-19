@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { formSchema, type FormValues } from '@/lib/schema';
 import { Button } from '@/components/ui/button';
-import { Eye, Loader2, Printer, Save, ShieldCheck } from 'lucide-react';
+import { Loader2, Printer, Save, ShieldCheck } from 'lucide-react';
 import { SalaryForm } from '@/components/salary-form';
 import { PrintPreview } from '@/components/print-preview';
 import { Logo } from '@/components/logo';
@@ -39,6 +39,10 @@ export default function SalaryFormEditorPage() {
       newSalaryWithIncrement: '',
       payMatrixSalary: '',
       block: '',
+      levelForDecember2024Salary: '',
+      indexForDecember2024Salary: '',
+      levelForNewSalary: '',
+      indexForNewSalary: '',
     },
   });
 
@@ -102,6 +106,7 @@ export default function SalaryFormEditorPage() {
           description: 'आपका डेटा सफलतापूर्वक सहेज लिया गया है।',
           variant: 'default',
         });
+        form.reset();
       } else {
         toast({
           title: 'त्रुटि सहेजी जा रही है',

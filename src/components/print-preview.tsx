@@ -38,6 +38,10 @@ export function PrintPreview({ data }: PrintPreviewProps) {
       return '-';
     }
   }
+  
+  const salaryText = `Level ${data.levelForDecember2024Salary || '..........'} Index ${data.indexForDecember2024Salary || '..........'} में प्राप्त मूल वेतन ${data.december2024Salary || ''}`;
+  const newSalaryText = `Level-${data.levelForNewSalary || '2/3/5/6'}, Index ${data.indexForNewSalary || '............'} मूल वेतन ${data.newSalaryWithIncrement || ''}`;
+
 
   return (
     <div id="print-area" className="p-6 bg-white text-black font-body text-[10px]">
@@ -76,8 +80,8 @@ export function PrintPreview({ data }: PrintPreviewProps) {
             </tr>
             <DataRow number="18." label="प्रशिक्षित वेतनमान प्राप्त करने की तिथि" value={data.dateOfReceivingTrainedPayScale ? formatDate(data.dateOfReceivingTrainedPayScale) : '-'} />
             <DataRow number="19." label="क्या स्थानीय निकाय शिक्षक के रूप में योगदान तिथि से अध्यावधि तक कोई सेवा में टूट है (हाँ/नही)?" value={data.serviceBreak} />
-            <DataRow number="20." label="स्थानीय निकाय शिक्षक के रूप में विशिष्ट शिक्षक के योगदान तिथि को Level..........Index..........में प्राप्त मूल वेतन" value={data.december2024Salary} />
-            <DataRow number="21." label="विशिष्ट शिक्षक नियमावली 2023 (यथा संशोधित) के फिटमेंट मैट्रिक्स 'अनुलग्नक-क' के अनुसार योगदान तिथि को निर्धारित Level-2/3/5/6, Index............मूल वेतन" value={data.newSalaryWithIncrement} />
+            <DataRow number="20." label="स्थानीय निकाय शिक्षक के रूप में विशिष्ट शिक्षक के योगदान तिथि को" value={salaryText} />
+            <DataRow number="21." label="विशिष्ट शिक्षक नियमावली 2023 (यथा संशोधित) के फिटमेंट मैट्रिक्स 'अनुलग्नक-क' के अनुसार योगदान तिथि को निर्धारित" value={newSalaryText} />
             <DataRow number="22." label="अगली वेतन वृद्धि तिथि" value={data.nextIncrementDate ? formatDate(data.nextIncrementDate) : '-'} />
           </tbody>
         </table>
