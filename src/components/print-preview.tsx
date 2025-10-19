@@ -70,7 +70,7 @@ export function PrintPreview({ data }: PrintPreviewProps) {
             <DataRow number="11." label="विशिष्ट शिक्षक के रूप में योगदान तिथि" value={data.dateOfJoiningAsSpecificTeacher ? formatDate(data.dateOfJoiningAsSpecificTeacher) : '..............................'} />
             <DataRow number="12." label="प्रशिक्षण तिथि" value={data.dateOfTraining ? formatDate(data.dateOfTraining) : '..............................'} />
             <DataRow number="13." label="दक्षता/BTET/CTET का प्रकार" value={data.efficiencyType} />
-            <DataRow number="14." label="दक्षता/BTET/CTET उत्तीर्णता की तिथि" value={data.dateOfReceivingTrainedPayScale ? formatDate(data.dateOfReceivingTrainedPayScale) : '..............................'} />
+            <DataRow number="14." label="दक्षता/BTET/CTET उत्तीर्णता की तिथि" value={data.dateOfPassingEfficiency ? formatDate(data.dateOfPassingEfficiency) : '..............................'} />
             <DataRow number="15." label="बैंक खाता संख्या" value={data.bankAccountNumber} />
             <DataRow number="16." label="IFSC कोड" value={data.ifscCode} />
             <DataRow number="17." label="स्थानीय निकाय शिक्षक के रूप में प्रथम योगदान तिथि" value={data.dateOfFirstJoiningAsLocalBodyTeacher ? formatDate(data.dateOfFirstJoiningAsLocalBodyTeacher) : '..............................'} />
