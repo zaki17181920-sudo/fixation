@@ -111,20 +111,16 @@ export function PrintPreview({ data }: PrintPreviewProps) {
         <footer className="mt-16 text-[13px]">
             <div className="flex justify-between items-end text-center px-4">
                 <div>
-                    <div className="border-t border-black mb-1 w-full" style={{borderStyle: 'dotted'}}></div>
-                    <p>शिक्षक का हस्ताक्षर</p>
+                    <p className="pt-4">शिक्षक का हस्ताक्षर</p>
                 </div>
                  <div>
-                    <div className="border-t border-black mb-1 w-full" style={{borderStyle: 'dotted'}}></div>
-                    <p>प्रधानाध्यापक का <br/> हस्ताक्षर</p>
+                    <p className="pt-4">प्रधानाध्यापक का <br/> हस्ताक्षर</p>
                 </div>
                 <div>
-                    <div className="border-t border-black mb-1 w-full" style={{borderStyle: 'dotted'}}></div>
-                    <p>प्रखंड शिक्षा पदाधिकारी <br/> का हस्ताक्षर</p>
+                    <p className="pt-4">प्रखंड शिक्षा पदाधिकारी <br/> का हस्ताक्षर</p>
                 </div>
                  <div>
-                    <div className="border-t border-black mb-1 w-full" style={{borderStyle: 'dotted'}}></div>
-                    <p>जिला कार्यक्रम पदाधिकारी <br/> स्थापना, पूर्वी चम्पारण, मोतिहारी</p>
+                    <p className="pt-4">जिला कार्यक्रम पदाधिकारी <br/> स्थापना, पूर्वी चम्पारण, मोतिहारी</p>
                 </div>
             </div>
         </footer>
