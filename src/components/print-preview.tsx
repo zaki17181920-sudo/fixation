@@ -41,7 +41,7 @@ export function PrintPreview({ data }: PrintPreviewProps) {
   }
   
   const salaryText = `को Level ${data.levelForDecember2024Salary || '..........'} Index ${data.indexForDecember2024Salary || '..........'} में प्राप्त मूल वेतन ${data.december2024Salary || '..............................'}`;
-  const newSalaryText = `को निर्धारित Level-${data.levelForNewSalary || '.....'}, Index ${data.indexForNewSalary || '............'} मूल वेतन ${data.newSalaryWithIncrement || '..............................'}`;
+  const newSalaryText = `को निर्धारित Level-${data.levelForNewSalary || '2/3/5/6'}, Index ${data.indexForNewSalary || '............'} मूल वेतन ${data.newSalaryWithIncrement || '..............................'}`;
   const contributionDate = data.dateOfJoiningForNewSalary ? formatDate(data.dateOfJoiningForNewSalary) : '..............................';
 
   return (
@@ -66,21 +66,21 @@ export function PrintPreview({ data }: PrintPreviewProps) {
             <DataRow number="7." label="विद्यालय का U-DISE CODE" value={data.udiseCode} />
             <DataRow number="8." label="प्रखंड" value={data.block} />
             <DataRow number="9." label="विशिष्ट शिक्षक का आई०डी०सं०" value={data.competencyApplicationNumber} />
-            <DataRow number="10." label="जन्म तिथि" value={data.dateOfBirth ? formatDate(data.dateOfBirth) : '..............................'} />
-            <DataRow number="11." label="विशिष्ट शिक्षक के रूप में योगदान तिथि" value={data.dateOfJoiningAsSpecificTeacher ? formatDate(data.dateOfJoiningAsSpecificTeacher) : '..............................'} />
-            <DataRow number="12." label="प्रशिक्षण तिथि" value={data.dateOfTraining ? formatDate(data.dateOfTraining) : '..............................'} />
+            <DataRow number="10." label="जन्म तिथि" value={data.dateOfBirth ? formatDate(data.dateOfBirth) : ''} />
+            <DataRow number="11." label="विशिष्ट शिक्षक के रूप में योगदान तिथि" value={data.dateOfJoiningAsSpecificTeacher ? formatDate(data.dateOfJoiningAsSpecificTeacher) : ''} />
+            <DataRow number="12." label="प्रशिक्षण तिथि" value={data.dateOfTraining ? formatDate(data.dateOfTraining) : ''} />
             <DataRow number="13." label="दक्षता/BTET/CTET का प्रकार" value={data.efficiencyType} />
-            <DataRow number="14." label="दक्षता/BTET/CTET उत्तीर्णता की तिथि" value={data.dateOfPassingEfficiency ? formatDate(data.dateOfPassingEfficiency) : '..............................'} />
+            <DataRow number="14." label="दक्षता/BTET/CTET उत्तीर्णता तिथि" value={data.dateOfPassingEfficiency ? formatDate(data.dateOfPassingEfficiency) : ''} />
             <DataRow number="15." label="बैंक खाता संख्या" value={data.bankAccountNumber} />
             <DataRow number="16." label="IFSC कोड" value={data.ifscCode} />
-            <DataRow number="17." label="स्थानीय निकाय शिक्षक के रूप में प्रथम योगदान तिथि" value={data.dateOfFirstJoiningAsLocalBodyTeacher ? formatDate(data.dateOfFirstJoiningAsLocalBodyTeacher) : '..............................'} />
+            <DataRow number="17." label="स्थानीय निकाय शिक्षक के रूप में प्रथम योगदान तिथि" value={data.dateOfFirstJoiningAsLocalBodyTeacher ? formatDate(data.dateOfFirstJoiningAsLocalBodyTeacher) : ''} />
             <tr>
               <td colSpan={4} className="text-[10px] pl-8 pb-1 pt-0">
               (शिक्षा मित्र के रूप में जो दिनांक 01.07.2006 के पूर्व नियोजित हैं, वे योगदान की तिथि 01.07.2006 अंकित करेंगे।)
               </td>
             </tr>
-            <DataRow number="18." label="प्रशिक्षित वेतनमान प्राप्त करने की तिथि" value={data.dateOfReceivingTrainedPayScale ? formatDate(data.dateOfReceivingTrainedPayScale) : '..............................'} />
-            <DataRow number="19." label="क्या स्थानीय निकाय शिक्षक के रूप में योगदान तिथि से अध्यावधि तक कोई सेवा में टूट है (हाँ/नही)?" value={data.serviceBreak || '..............................'} wideLabel/>
+            <DataRow number="18." label="प्रशिक्षित वेतनमान प्राप्त करने की तिथि" value={data.dateOfReceivingTrainedPayScale ? formatDate(data.dateOfReceivingTrainedPayScale) : ''} />
+            <DataRow number="19." label="क्या स्थानीय निकाय शिक्षक के रूप में योगदान तिथि से अध्यावधि तक कोई सेवा में टूट है (हाँ/नही)?" value={data.serviceBreak || ''} wideLabel/>
             
             <tr>
               <td className="py-1 pr-2 w-8 align-top">20.</td>
@@ -95,7 +95,7 @@ export function PrintPreview({ data }: PrintPreviewProps) {
               </td>
             </tr>
 
-            <DataRow number="22." label="अगली वेतन वृद्धि तिथि" value={data.nextIncrementDate ? formatDate(data.nextIncrementDate) : '..............................'} />
+            <DataRow number="22." label="अगली वेतन वृद्धि तिथि" value={data.nextIncrementDate ? formatDate(data.nextIncrementDate) : ''} />
           </tbody>
         </table>
         
