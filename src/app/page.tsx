@@ -13,6 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 import { saveAndValidateForm, validateFormWithAI } from './actions';
 import { FirebaseClientProvider } from '@/firebase';
 import Link from 'next/link';
+import { payMatrix } from '@/lib/pay-matrix';
 
 export default function SalaryFormEditorPage() {
   const [isValidationPending, startValidationTransition] = React.useTransition();
@@ -52,6 +53,23 @@ export default function SalaryFormEditorPage() {
     control: form.control,
     name: 'dateOfJoiningAsSpecificTeacher',
   });
+
+  const levelForDecember = useWatch({ control: form.control, name: 'levelForDecember2024Salary' });
+  const indexForDecember = useWatch({ control: form.control, name: 'indexForDecember2024Salary' });
+
+  React.useEffect(() => {
+    if (levelForDecember && indexForDecember) {
+      const gradePay = parseInt(levelForDecember, 10);
+      const index = parseInt(indexForDecember, 10);
+      if (!isNaN(gradePay) && !isNaN(index) && payMatrix[gradePay] && payMatrix[gradePay][index]) {
+        const salary = payMatrix[gradePay][index];
+        form.setValue('december2024Salary', String(salary), { shouldValidate: true });
+      } else {
+        form.setValue('december2024Salary', '', { shouldValidate: true });
+      }
+    }
+  }, [levelForDecember, indexForDecember, form]);
+
 
   React.useEffect(() => {
     if (dateOfJoiningAsSpecificTeacher) {

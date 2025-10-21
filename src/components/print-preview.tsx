@@ -45,6 +45,7 @@ export function PrintPreview({ data }: PrintPreviewProps) {
     }
   }
   
+  const contributionDateForSalary = data.dateOfJoiningAsSpecificTeacher ? formatDate(data.dateOfJoiningAsSpecificTeacher) : '..............................';
   const salaryText = `को Level ${data.levelForDecember2024Salary || '..........'} Index ${data.indexForDecember2024Salary || '..........'} में प्राप्त मूल वेतन ${data.december2024Salary || '..............................'}`;
   const newSalaryText = `को निर्धारित Level-${data.levelForNewSalary || '.....'}, Index ${data.indexForNewSalary || '............'} मूल वेतन ${data.newSalaryWithIncrement || '..............................'}`;
   const contributionDate = data.dateOfJoiningForNewSalary ? formatDate(data.dateOfJoiningForNewSalary) : '..............................';
@@ -52,8 +53,8 @@ export function PrintPreview({ data }: PrintPreviewProps) {
   return (
     <div id="print-area" className="p-10 bg-white text-black font-body text-[13px] leading-tight">
       <header className="text-center mb-4">
-        <h1 className="text-[17px] font-bold">कार्यालय, जिला शिक्षा पदाधिकारी, पूर्वी चम्पारण, मोतिहारी</h1>
-        <h2 className="text-[16px] font-bold">(स्थापना शाखा)</h2>
+        <h1 className="text-[17px] font-bold uppercase">कार्यालय, जिला शिक्षा पदाधिकारी, पूर्वी चम्पारण, मोतिहारी</h1>
+        <h2 className="text-[16px] font-bold uppercase">(स्थापना शाखा)</h2>
         <p className="text-[14px] mt-1 max-w-2xl mx-auto">
         (निदेशक (प्रा०शि०), शिक्षा विभाग, बिहार सरकार के पत्रांक-281 दिनांक 23.01.2025 के आलोक में)
         </p>
@@ -61,7 +62,7 @@ export function PrintPreview({ data }: PrintPreviewProps) {
       
       <main>
         <table className="w-full border-collapse">
-          <tbody>
+          <tbody className="uppercase">
             <DataRow number="1." label="विशिष्ट शिक्षक का नाम" value={data.teacherName} />
             <DataRow number="2." label="PRAN संख्या" value={data.pran} />
             <DataRow number="3." label="वर्ग" value={data.className} />
@@ -80,7 +81,7 @@ export function PrintPreview({ data }: PrintPreviewProps) {
             <DataRow number="16." label="IFSC कोड" value={data.ifscCode} />
             <DataRow number="17." label="स्थानीय निकाय शिक्षक के रूप में प्रथम योगदान तिथि" value={formatDate(data.dateOfFirstJoiningAsLocalBodyTeacher)} />
             <tr>
-              <td colSpan={4} className="text-[10px] pl-8 pb-1 pt-0">
+              <td colSpan={4} className="text-[10px] pl-8 pb-1 pt-0 normal-case">
               (शिक्षा मित्र के रूप में जो दिनांक 01.07.2006 के पूर्व नियोजित हैं, वे योगदान की तिथि 01.07.2006 अंकित करेंगे।)
               </td>
             </tr>
@@ -90,7 +91,7 @@ export function PrintPreview({ data }: PrintPreviewProps) {
             <tr>
               <td className="py-1 pr-2 w-8 align-top">20.</td>
               <td colSpan={3} className="w-auto py-1 uppercase">
-                स्थानीय निकाय शिक्षक के रूप में विशिष्ट शिक्षक के योगदान तिथि {salaryText}
+                स्थानीय निकाय शिक्षक के रूप में विशिष्ट शिक्षक के योगदान तिथि {contributionDateForSalary} {salaryText}
               </td>
             </tr>
             <tr>
@@ -104,7 +105,7 @@ export function PrintPreview({ data }: PrintPreviewProps) {
           </tbody>
         </table>
         
-        <p className="mt-4 text-[12px]">
+        <p className="mt-4 text-[12px] normal-case">
             नोट :- स्थानीय निकाय शिक्षक के रूप में निर्धारित वेतन प्रपत्र, प्रशिक्षण प्रमाण पत्र, दक्षता/BTET/CTET प्रमाण पत्र एवं विशिष्ट शिक्षक का योगदान पत्र (स्व-अभिप्रमाणित छाया प्रति) संलग्न करें।
         </p>
 
