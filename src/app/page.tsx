@@ -265,9 +265,6 @@ export default function SalaryFormEditorPage() {
         <header className="flex flex-col sm:flex-row justify-between sm:items-center mb-8 gap-4 no-print">
           <Logo />
           <div className="flex items-center gap-2 flex-wrap">
-            <Button asChild variant="outline">
-                <Link href="/payslips">सभी पर्चियाँ देखें</Link>
-            </Button>
             <Button
               onClick={form.handleSubmit(handleSave)}
               disabled={isSavePending}
@@ -278,17 +275,6 @@ export default function SalaryFormEditorPage() {
                 <Save className="mr-2 h-4 w-4" />
               )}
               सहेजें और प्रिंट करें
-            </Button>
-            <Button
-              onClick={form.handleSubmit(handleValidation)}
-              disabled={isValidationPending}
-            >
-              {isValidationPending ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <ShieldCheck className="mr-2 h-4 w-4" />
-              )}
-              सत्यापित करें
             </Button>
           </div>
         </header>
