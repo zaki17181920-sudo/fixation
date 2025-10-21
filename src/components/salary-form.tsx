@@ -28,6 +28,7 @@ import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { Calendar } from './ui/calendar';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 type SalaryFormProps = {
   form: UseFormReturn<FormValues>;
@@ -167,9 +168,21 @@ export function SalaryForm({ form }: SalaryFormProps) {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>नियुक्ति की कोटि (UR/BC/EBC/SC/ST/EWS)</FormLabel>
-                        <FormControl>
-                          <Input placeholder="नियुक्ति कोटि" {...field} />
-                        </FormControl>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="एक कोटि चुनें" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="UR">UR</SelectItem>
+                            <SelectItem value="BC">BC</SelectItem>
+                            <SelectItem value="EBC">EBC</SelectItem>
+                            <SelectItem value="SC">SC</SelectItem>
+                            <SelectItem value="ST">ST</SelectItem>
+                            <SelectItem value="EWS">EWS</SelectItem>
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
