@@ -61,58 +61,63 @@ export default function SalaryFormEditorPage() {
   const oldSalary = useWatch({ control: form.control, name: 'december2024Salary' });
 
   React.useEffect(() => {
-    if (!oldSalary) return;
-  
+    if (!oldSalary || !levelForDecember) return;
+
     const oldSalaryNum = parseInt(oldSalary, 10);
-    if (isNaN(oldSalaryNum)) return;
-  
+    const oldLevelNum = parseInt(levelForDecember, 10);
+    if (isNaN(oldSalaryNum) || isNaN(oldLevelNum)) return;
+
+    // The new level should be one less than the old level.
+    // The level in fitmentMatrix is 2-7, but form expects 1-6 for newSalary.
+    // The level in payMatrix is 1-4 for oldSalary.
+    // Fitment Matrix Level = oldLevel + 1. So, new level in fitmentMatrix is oldLevel.
+    const targetFitmentLevel = oldLevelNum;
+    
+    if (!fitmentMatrix[targetFitmentLevel]) return;
+    
     let bestMatch = {
-      level: '',
-      index: '',
-      salary: Infinity,
+        level: '',
+        index: '',
+        salary: Infinity,
     };
-  
-    // Iterate through the fitmentMatrix to find the smallest salary >= oldSalary
-    for (const level in fitmentMatrix) {
-      for (const index in fitmentMatrix[level]) {
-        const currentSalary = fitmentMatrix[level][index];
-  
+
+    const targetSalaries = fitmentMatrix[targetFitmentLevel];
+
+    // Find the smallest salary in the target level that is >= oldSalary
+    for (const index in targetSalaries) {
+        const currentSalary = targetSalaries[index];
         if (currentSalary >= oldSalaryNum && currentSalary < bestMatch.salary) {
-          bestMatch = {
-            level: level,
-            index: index,
-            salary: currentSalary,
-          };
+            bestMatch = {
+                level: String(targetFitmentLevel), // This is the level from fitmentMatrix keys (2-7)
+                index: index,
+                salary: currentSalary,
+            };
         }
-      }
     }
-  
-    // If a suitable salary was found, update the form.
+    
     if (bestMatch.salary !== Infinity) {
-      // The level in fitment matrix is 2-7, but form expects 1-6. So subtract 1.
-      form.setValue('levelForNewSalary', String(Number(bestMatch.level) - 1), { shouldValidate: true });
-      form.setValue('indexForNewSalary', bestMatch.index, { shouldValidate: true });
-      form.setValue('newSalaryWithIncrement', String(bestMatch.salary), { shouldValidate: true });
+        // The level in fitment matrix is 2-7, but form expects 1-6 for newSalary level. So subtract 1.
+        form.setValue('levelForNewSalary', String(Number(bestMatch.level) - 1), { shouldValidate: true });
+        form.setValue('indexForNewSalary', bestMatch.index, { shouldValidate: true });
+        form.setValue('newSalaryWithIncrement', String(bestMatch.salary), { shouldValidate: true });
     } else {
-      // If old salary is higher than any value in the matrix, find the highest possible salary and set it.
-      let maxSalary = 0;
-      let maxLevel = '';
-      let maxIndex = '';
-      for (const level in fitmentMatrix) {
-          for (const index in fitmentMatrix[level]) {
-              if (fitmentMatrix[level][index] > maxSalary) {
-                  maxSalary = fitmentMatrix[level][index];
-                  maxLevel = level;
-                  maxIndex = index;
-              }
-          }
-      }
-      form.setValue('levelForNewSalary', String(Number(maxLevel) - 1), { shouldValidate: true });
-      form.setValue('indexForNewSalary', maxIndex, { shouldValidate: true });
-      form.setValue('newSalaryWithIncrement', String(maxSalary), { shouldValidate: true });
+       // If no salary in the target level is >= old salary, it means the old salary is very high.
+       // In this case, we should find the highest salary in that target level and set it.
+        let maxSalary = 0;
+        let maxIndex = '';
+        for (const index in targetSalaries) {
+            if (targetSalaries[index] > maxSalary) {
+                maxSalary = targetSalaries[index];
+                maxIndex = index;
+            }
+        }
+        if (maxSalary > 0) {
+            form.setValue('levelForNewSalary', String(targetFitmentLevel - 1), { shouldValidate: true });
+            form.setValue('indexForNewSalary', maxIndex, { shouldValidate: true });
+            form.setValue('newSalaryWithIncrement', String(maxSalary), { shouldValidate: true });
+        }
     }
-  
-  }, [oldSalary, form]);
+  }, [oldSalary, levelForDecember, form]);
 
   React.useEffect(() => {
     if (levelForDecember && indexForDecember) {
