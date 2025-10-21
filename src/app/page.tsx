@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { formSchema, type FormValues } from '@/lib/schema';
 import { Button } from '@/components/ui/button';
@@ -47,6 +47,30 @@ export default function SalaryFormEditorPage() {
   });
 
   const watchedData = form.watch();
+
+  const dateOfJoiningAsSpecificTeacher = useWatch({
+    control: form.control,
+    name: 'dateOfJoiningAsSpecificTeacher',
+  });
+
+  React.useEffect(() => {
+    if (dateOfJoiningAsSpecificTeacher) {
+      const joiningDate = new Date(dateOfJoiningAsSpecificTeacher);
+      const joiningYear = joiningDate.getFullYear();
+      const julyFirst = new Date(joiningYear, 6, 1); // Month is 0-indexed, so 6 is July
+
+      let nextIncrementDate;
+      if (joiningDate <= julyFirst) {
+        nextIncrementDate = new Date(joiningYear + 1, 0, 1); // January 1st of next year
+      } else {
+        nextIncrementDate = new Date(joiningYear + 1, 6, 1); // July 1st of next year
+      }
+      form.setValue('nextIncrementDate', nextIncrementDate, {
+        shouldValidate: true,
+      });
+    }
+  }, [dateOfJoiningAsSpecificTeacher, form]);
+
 
   const handlePrint = () => {
     window.print();
