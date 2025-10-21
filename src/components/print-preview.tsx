@@ -29,7 +29,7 @@ const DataRow = ({ label, value, number, wideLabel = false }: { label: string; v
       <td className="py-1 pr-2 w-8 align-top">{number}</td>
       <td className={`py-1 pr-2 font-medium align-top ${wideLabel ? 'w-2/5' : 'w-1/3'}`}>{label}</td>
       <td className="w-4 py-1 text-center align-top">:</td>
-      <td className="w-auto py-1 font-body">{displayValue}</td>
+      <td className="w-auto py-1 font-body uppercase">{displayValue}</td>
     </tr>
   );
 };
@@ -89,13 +89,13 @@ export function PrintPreview({ data }: PrintPreviewProps) {
             
             <tr>
               <td className="py-1 pr-2 w-8 align-top">20.</td>
-              <td colSpan={3} className="w-auto py-1">
+              <td colSpan={3} className="w-auto py-1 uppercase">
                 स्थानीय निकाय शिक्षक के रूप में विशिष्ट शिक्षक के योगदान तिथि {salaryText}
               </td>
             </tr>
             <tr>
                <td className="py-1 pr-2 w-8 align-top">21.</td>
-              <td colSpan={3} className="w-auto py-1">
+              <td colSpan={3} className="w-auto py-1 uppercase">
                 विशिष्ट शिक्षक नियमावली 2023 (यथा संशोधित) के फिटमेंट मैट्रिक्स 'अनुलग्नक-क' के अनुसार योगदान तिथि {contributionDate} {newSalaryText}
               </td>
             </tr>
