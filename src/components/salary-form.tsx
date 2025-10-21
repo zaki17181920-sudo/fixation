@@ -175,18 +175,18 @@ export function SalaryForm({ form }: SalaryFormProps) {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="ur">ur</SelectItem>
-                            <SelectItem value="ur female">ur female</SelectItem>
-                            <SelectItem value="bc">bc</SelectItem>
-                            <SelectItem value="bc female">bc female</SelectItem>
-                            <SelectItem value="ebc">ebc</SelectItem>
-                            <SelectItem value="ebc female">ebc female</SelectItem>
-                            <SelectItem value="sc">sc</SelectItem>
-                            <SelectItem value="sc female">sc female</SelectItem>
-                            <SelectItem value="st">st</SelectItem>
-                            <SelectItem value="st female">st female</SelectItem>
-                            <SelectItem value="ews">ews</SelectItem>
-                            <SelectItem value="ews female">ews female</SelectItem>
+                            <SelectItem value="UR">UR</SelectItem>
+                            <SelectItem value="UR FEMALE">UR FEMALE</SelectItem>
+                            <SelectItem value="BC">BC</SelectItem>
+                            <SelectItem value="BC FEMALE">BC FEMALE</SelectItem>
+                            <SelectItem value="EBC">EBC</SelectItem>
+                            <SelectItem value="EBC FEMALE">EBC FEMALE</SelectItem>
+                            <SelectItem value="SC">SC</SelectItem>
+                            <SelectItem value="SC FEMALE">SC FEMALE</SelectItem>
+                            <SelectItem value="ST">ST</SelectItem>
+                            <SelectItem value="ST FEMALE">ST FEMALE</SelectItem>
+                            <SelectItem value="EWS">EWS</SelectItem>
+                            <SelectItem value="EWS FEMALE">EWS FEMALE</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
