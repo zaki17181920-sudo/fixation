@@ -121,12 +121,12 @@ export default function SalaryFormEditorPage() {
 
       let nextIncrementDate;
 
-      // Rule 1: If joining date is January 1st of any year
+      // Rule: if joining date is 1st Jan of any year, next increment is 1st July of same year.
       if (joiningMonth === 0 && joiningDay === 1) {
-        nextIncrementDate = new Date(joiningYear, 6, 1); // July 1st of the same year
+        nextIncrementDate = new Date(joiningYear, 6, 1);
       } else {
-        // Rule 2: If joining date is after January 1st of any year
-        nextIncrementDate = new Date(joiningYear + 1, 0, 1); // January 1st of the next year
+      // if joining date is after 2nd Jan of any year, next increment is 1st Jan of next year.
+        nextIncrementDate = new Date(joiningYear + 1, 0, 1);
       }
       
       form.setValue('nextIncrementDate', nextIncrementDate, {
