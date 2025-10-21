@@ -12,6 +12,7 @@ import { Logo } from '@/components/logo';
 import { useToast } from '@/hooks/use-toast';
 import { saveAndValidateForm, validateFormWithAI } from './actions';
 import { FirebaseClientProvider } from '@/firebase';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { payMatrix } from '@/lib/pay-matrix';
 import { fitmentMatrix } from '@/lib/fitment-matrix';
@@ -21,6 +22,7 @@ export default function SalaryFormEditorPage() {
   const [isValidationPending, startValidationTransition] = React.useTransition();
   const [isSavePending, startSaveTransition] = React.useTransition();
   const { toast } = useToast();
+  const router = useRouter();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -95,12 +97,6 @@ export default function SalaryFormEditorPage() {
     const oldLevelNum = parseInt(levelForDecember, 10);
     if (isNaN(oldSalaryNum) || isNaN(oldLevelNum)) return;
   
-    // "स्थानीय निकाय शिक्षक के level से एक level नीचे वाले में ही होना चाहिए"
-    // payMatrix levels (grade pay) map to fitmentMatrix levels like this:
-    // gradePay 2000 (level 2) -> fitmentMatrix level 2
-    // The form value for newSalary level is 1-based index (1-5, 6-8, etc), while fitment matrix is keyed 2-7
-    // So if old level is 2, target fitment level is 2 (I-V), which corresponds to new form level 1.
-    // So the targetFitmentLevel is the oldLevelNum. The new form level is oldLevelNum - 1.
     const targetFitmentLevel = oldLevelNum; 
     
     const targetSalaries = fitmentMatrix[targetFitmentLevel];
@@ -112,7 +108,6 @@ export default function SalaryFormEditorPage() {
         salary: Infinity,
     };
   
-    // Find the smallest salary in the target level that is >= oldSalary
     for (const index in targetSalaries) {
         const currentSalary = targetSalaries[index];
         if (currentSalary >= oldSalaryNum && currentSalary < bestMatch.salary) {
@@ -121,19 +116,15 @@ export default function SalaryFormEditorPage() {
                 index: index,
                 salary: currentSalary,
             };
-            // Since the salaries are sorted, the first match is the best match.
             break;
         }
     }
     
     if (bestMatch.salary !== Infinity) {
-        // The level in fitment matrix is 2-7, but form expects 1-6 for newSalary level. So subtract 1.
         form.setValue('levelForNewSalary', String(Number(bestMatch.level) - 1), { shouldValidate: true });
         form.setValue('indexForNewSalary', bestMatch.index, { shouldValidate: true });
         form.setValue('newSalaryWithIncrement', String(bestMatch.salary), { shouldValidate: true });
     } else {
-       // If no salary in the target level is >= old salary (i.e., old salary is higher than any in that level),
-       // find the highest salary in that target level and set it.
         let maxSalary = 0;
         let maxIndex = '';
         for (const index in targetSalaries) {
@@ -161,7 +152,7 @@ export default function SalaryFormEditorPage() {
       const levelKey = levelForDecember;
       const index = parseInt(indexForDecember, 10);
 
-      if (levelMap[levelKey] !== undefined && !isNaN(index) && index >= 0) { // Changed index > 0 to index >= 0 to include index 0
+      if (levelMap[levelKey] !== undefined && !isNaN(index) && index >= 0) {
         const gradePay = levelMap[levelKey];
         if (payMatrix[gradePay] && payMatrix[gradePay][index] !== undefined) {
             const salary = payMatrix[gradePay][index];
@@ -185,11 +176,9 @@ export default function SalaryFormEditorPage() {
 
       let nextIncrementDate;
 
-      // Rule: if joining date is 1st Jan of any year, next increment is 1st July of same year.
       if (joiningMonth === 0 && joiningDay === 1) {
         nextIncrementDate = new Date(joiningYear, 6, 1);
       } else {
-      // if joining date is after 2nd Jan of any year, next increment is 1st Jan of next year.
         nextIncrementDate = new Date(joiningYear + 1, 0, 1);
       }
       
@@ -222,16 +211,13 @@ export default function SalaryFormEditorPage() {
         });
         if (result.errors) {
           Object.entries(result.errors).forEach(([key, message]) => {
-            // Flatten nested keys for react-hook-form
             let fieldKey = key as keyof FormValues;
             if (key.includes('.')) {
                 const [parent, child] = key.split('.');
-                // This is a simple flattening logic. It might need to be more robust.
                 const keyMap: { [key: string]: string } = {
                   'officeDetails.office': 'office',
                   'teacherInfo.teacherName': 'teacherName',
                   'teacherInfo.schoolName': 'schoolName',
-                   // ... and so on for all fields
                 };
                 fieldKey = (keyMap[key] || key) as keyof FormValues;
             }
@@ -252,13 +238,13 @@ export default function SalaryFormEditorPage() {
     startSaveTransition(async () => {
       const result = await saveAndValidateForm(data);
 
-      if (result.success) {
+      if (result.success && result.id) {
         toast({
           title: 'सफलतापूर्वक सहेजा गया',
           description: 'आपका डेटा सफलतापूर्वक सहेज लिया गया है।',
           variant: 'default',
         });
-        form.reset();
+        router.push(`/payslip/${result.id}`);
       } else {
         toast({
           title: 'त्रुटि सहेजी जा रही है',
@@ -286,6 +272,9 @@ export default function SalaryFormEditorPage() {
         <header className="flex flex-col sm:flex-row justify-between sm:items-center mb-8 gap-4 no-print">
           <Logo />
           <div className="flex items-center gap-2 flex-wrap">
+            <Button asChild variant="outline">
+                <Link href="/payslips">सभी पर्चियाँ देखें</Link>
+            </Button>
             <Button
               onClick={form.handleSubmit(handleSave)}
               disabled={isSavePending}
@@ -295,7 +284,7 @@ export default function SalaryFormEditorPage() {
               ) : (
                 <Save className="mr-2 h-4 w-4" />
               )}
-              सहेजें
+              सहेजें और प्रिंट करें
             </Button>
             <Button
               onClick={form.handleSubmit(handleValidation)}
@@ -309,7 +298,7 @@ export default function SalaryFormEditorPage() {
               सत्यापित करें
             </Button>
             <Button onClick={handlePrint}>
-              <Printer className="mr-2 h-4 w-4" /> प्रिंट करें
+              <Printer className="mr-2 h-4 w-4" /> संपादक प्रिंट करें
             </Button>
           </div>
         </header>

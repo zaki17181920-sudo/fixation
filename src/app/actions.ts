@@ -12,6 +12,7 @@ import { collection, addDoc } from 'firebase/firestore';
 type AIValidationResult = {
   success: boolean;
   errors?: Record<string, unknown>;
+  id?: string;
 };
 
 function toSnakeCase(str: string) {
@@ -147,8 +148,8 @@ export async function saveAndValidateForm(
       createdAt: new Date().toISOString(),
     };
     
-    await addDoc(collection(firestore, 'payslips'), dataToSave);
-    return { success: true };
+    const docRef = await addDoc(collection(firestore, 'payslips'), dataToSave);
+    return { success: true, id: docRef.id };
   } catch (error) {
     console.error('Firestore Error:', error);
     return {

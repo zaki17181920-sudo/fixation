@@ -99,31 +99,15 @@
       display: none !important;
     }
     body {
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        height: 100%;
-        width: 100%;
+        display: block;
         background: white;
     }
-    body * {
-      visibility: hidden;
-    }
-    #print-area,
-    #print-area * {
-      visibility: visible;
+    html, body {
+        height: auto;
+        width: 100%;
     }
     #print-area {
-      position: relative;
-      width: 100%;
-      height: auto;
-      margin: 0;
-      padding: 0;
-      background: white;
-    }
-    @page {
-      size: A4;
-      margin: 0mm;
+      display: block;
     }
   }
 }
