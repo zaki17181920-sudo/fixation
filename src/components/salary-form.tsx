@@ -29,12 +29,27 @@ import { format } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { Calendar } from './ui/calendar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { useWatch } from 'react-hook-form';
 
 type SalaryFormProps = {
   form: UseFormReturn<FormValues>;
 };
 
+const subjectsFor1To5 = ['GENERAL', 'URDU', 'BANGLA'];
+const allSubjects = [
+  'HINDI', 'ENGLISH', 'MATHS', 'SCIENCE', 'SOCIAL SCIENCE', 'SANSKRIT', 'URDU',
+  'PHYSICS', 'CHEMISTRY', 'BIOLOGY', 'HISTORY', 'GEOGRAPHY', 'POLITICAL SCIENCE',
+  'ECONOMICS', 'COMPUTER SCIENCE', 'ACCOUNTANCY', 'BUSINESS STUDIES', 'MUSIC',
+  'FINE ARTS', 'HOME SCIENCE', 'PSYCHOLOGY', 'SOCIOLOGY', 'PHILOSOPHY', 'PHYSICAL EDUCATION'
+];
+
+
 export function SalaryForm({ form }: SalaryFormProps) {
+  const selectedClass = useWatch({
+    control: form.control,
+    name: 'className',
+  });
+
   return (
     <Form {...form}>
       <form className="space-y-6">
@@ -165,9 +180,24 @@ export function SalaryForm({ form }: SalaryFormProps) {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>विषय</FormLabel>
-                        <FormControl>
-                          <Input placeholder="जैसे सामान्य" {...field} />
-                        </FormControl>
+                        <Select onValueChange={field.onChange} defaultValue={field.value} key={selectedClass}>
+                            <FormControl>
+                                <SelectTrigger>
+                                <SelectValue placeholder="एक विषय चुनें" />
+                                </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                                {selectedClass === '1-5' ? (
+                                    subjectsFor1To5.map(subject => (
+                                        <SelectItem key={subject} value={subject}>{subject}</SelectItem>
+                                    ))
+                                ) : (
+                                    allSubjects.map(subject => (
+                                        <SelectItem key={subject} value={subject}>{subject}</SelectItem>
+                                    ))
+                                )}
+                            </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
