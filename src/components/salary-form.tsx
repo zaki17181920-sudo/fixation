@@ -181,8 +181,6 @@ export function SalaryForm({ form }: SalaryFormProps) {
                             <SelectItem value="SC">SC</SelectItem>
                             <SelectItem value="ST">ST</SelectItem>
                             <SelectItem value="EWS">EWS</SelectItem>
-                            <SelectItem value="Male">Male</SelectItem>
-                            <SelectItem value="Female">Female</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
