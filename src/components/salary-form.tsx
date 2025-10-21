@@ -142,9 +142,19 @@ export function SalaryForm({ form }: SalaryFormProps) {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>वर्ग</FormLabel>
-                        <FormControl>
-                          <Input placeholder="जैसे 1-5" {...field} />
-                        </FormControl>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="एक वर्ग चुनें" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="1-5">1-5</SelectItem>
+                            <SelectItem value="6-8">6-8</SelectItem>
+                            <SelectItem value="9-10">9-10</SelectItem>
+                            <SelectItem value="11-12">11-12</SelectItem>
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
