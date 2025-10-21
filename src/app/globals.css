@@ -82,6 +82,12 @@
   body {
     @apply bg-background text-foreground;
   }
+  input, textarea {
+    @apply uppercase;
+  }
+  input::placeholder, textarea::placeholder {
+    @apply normal-case;
+  }
 }
 
 @layer utilities {
