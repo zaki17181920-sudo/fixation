@@ -70,7 +70,9 @@ export default function SalaryFormEditorPage() {
 
   React.useEffect(() => {
     if (udiseCode && schoolData[udiseCode]) {
-      form.setValue('schoolName', schoolData[udiseCode], { shouldValidate: true });
+      const { name, block } = schoolData[udiseCode];
+      form.setValue('schoolName', name, { shouldValidate: true });
+      form.setValue('block', block, { shouldValidate: true });
     }
   }, [udiseCode, form]);
 
@@ -93,12 +95,13 @@ export default function SalaryFormEditorPage() {
     const oldLevelNum = parseInt(levelForDecember, 10);
     if (isNaN(oldSalaryNum) || isNaN(oldLevelNum)) return;
   
-    // Map the old payMatrix level to the target fitmentMatrix level.
     // "स्थानीय निकाय शिक्षक के level से एक level नीचे वाले में ही होना चाहिए"
     // payMatrix levels (grade pay) map to fitmentMatrix levels like this:
-    // gradePay 2000 (level 2) -> fitmentMatrix level 2 (which is for 1-5, form value `levelForNewSalary` will be 1)
-    // gradePay 2400 (level 3) -> fitmentMatrix level 3 (which is for 6-8, form value `levelForNewSalary` will be 2)
-    // So the target fitmentMatrix level is the same as the payMatrix level.
+    // gradePay 2000 (level 2) -> fitmentMatrix level 2
+    // gradePay 2400 (level 3) -> fitmentMatrix level 3
+    // The form value for newSalary level is 1-based index (1-5, 6-8, etc), while fitment matrix is keyed 2-7
+    // So if old level is 2, target fitment level is 2 (I-V), which corresponds to new form level 1.
+    // So the targetFitmentLevel is the oldLevelNum. The new form level is oldLevelNum - 1.
     const targetFitmentLevel = oldLevelNum; 
     
     const targetSalaries = fitmentMatrix[targetFitmentLevel];
