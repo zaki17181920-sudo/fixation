@@ -74,7 +74,7 @@ export default function SalaryFormEditorPage() {
       form.setValue('schoolName', name, { shouldValidate: true });
       form.setValue('block', block, { shouldValidate: true });
     }
-  }, [udiseCode, form]);
+  }, [udiseCode, form, schoolData]);
 
   React.useEffect(() => {
     if (dateOfTraining) {
@@ -98,7 +98,6 @@ export default function SalaryFormEditorPage() {
     // "स्थानीय निकाय शिक्षक के level से एक level नीचे वाले में ही होना चाहिए"
     // payMatrix levels (grade pay) map to fitmentMatrix levels like this:
     // gradePay 2000 (level 2) -> fitmentMatrix level 2
-    // gradePay 2400 (level 3) -> fitmentMatrix level 3
     // The form value for newSalary level is 1-based index (1-5, 6-8, etc), while fitment matrix is keyed 2-7
     // So if old level is 2, target fitment level is 2 (I-V), which corresponds to new form level 1.
     // So the targetFitmentLevel is the oldLevelNum. The new form level is oldLevelNum - 1.
