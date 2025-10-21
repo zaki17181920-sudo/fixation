@@ -94,12 +94,22 @@ export default function SalaryFormEditorPage() {
       form.setValue('indexForNewSalary', bestMatch.index, { shouldValidate: true });
       form.setValue('newSalaryWithIncrement', String(bestMatch.salary), { shouldValidate: true });
     } else {
-      // Handle the case where no salary in the matrix is high enough
-      // Maybe find the highest possible salary and set it?
-      // For now, we clear if no match found.
-      form.setValue('levelForNewSalary', '', { shouldValidate: true });
-      form.setValue('indexForNewSalary', '', { shouldValidate: true });
-      form.setValue('newSalaryWithIncrement', '', { shouldValidate: true });
+      // If old salary is higher than any value in the matrix, find the highest possible salary and set it.
+      let maxSalary = 0;
+      let maxLevel = '';
+      let maxIndex = '';
+      for (const level in fitmentMatrix) {
+          for (const index in fitmentMatrix[level]) {
+              if (fitmentMatrix[level][index] > maxSalary) {
+                  maxSalary = fitmentMatrix[level][index];
+                  maxLevel = level;
+                  maxIndex = index;
+              }
+          }
+      }
+      form.setValue('levelForNewSalary', String(Number(maxLevel) - 1), { shouldValidate: true });
+      form.setValue('indexForNewSalary', maxIndex, { shouldValidate: true });
+      form.setValue('newSalaryWithIncrement', String(maxSalary), { shouldValidate: true });
     }
   
   }, [oldSalary, form]);
@@ -115,7 +125,7 @@ export default function SalaryFormEditorPage() {
       const levelKey = levelForDecember;
       const index = parseInt(indexForDecember, 10);
 
-      if (levelMap[levelKey] !== undefined && !isNaN(index)) {
+      if (levelMap[levelKey] !== undefined && !isNaN(index) && index > 0) {
         const gradePay = levelMap[levelKey];
         if (payMatrix[gradePay] && payMatrix[gradePay][index]) {
             const salary = payMatrix[gradePay][index];
