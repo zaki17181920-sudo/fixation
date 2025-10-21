@@ -55,10 +55,21 @@ export default function SalaryFormEditorPage() {
     name: 'dateOfJoiningAsSpecificTeacher',
   });
 
+  const dateOfTraining = useWatch({
+    control: form.control,
+    name: 'dateOfTraining',
+  });
+
   const levelForDecember = useWatch({ control: form.control, name: 'levelForDecember2024Salary' });
   const indexForDecember = useWatch({ control: form.control, name: 'indexForDecember2024Salary' });
   
   const oldSalary = useWatch({ control: form.control, name: 'december2024Salary' });
+
+  React.useEffect(() => {
+    if (dateOfTraining) {
+      form.setValue('dateOfReceivingTrainedPayScale', dateOfTraining, { shouldValidate: true });
+    }
+  }, [dateOfTraining, form]);
 
   React.useEffect(() => {
     if (dateOfJoiningAsSpecificTeacher) {
@@ -68,27 +79,39 @@ export default function SalaryFormEditorPage() {
 
   React.useEffect(() => {
     if (!oldSalary || !levelForDecember) return;
-
+  
     const oldSalaryNum = parseInt(oldSalary, 10);
     const oldLevelNum = parseInt(levelForDecember, 10);
     if (isNaN(oldSalaryNum) || isNaN(oldLevelNum)) return;
-
+  
     // The new level should be one less than the old level.
     // The level in fitmentMatrix is 2-7, but form expects 1-6 for newSalary.
     // The level in payMatrix is 1-4 for oldSalary.
     // Fitment Matrix Level = oldLevel + 1. So, new level in fitmentMatrix is oldLevel.
-    const targetFitmentLevel = oldLevelNum;
+    const targetFitmentLevel = oldLevelNum; // This is the level from payMatrix (1-4)
     
-    if (!fitmentMatrix[targetFitmentLevel]) return;
+    // We need to map the payMatrix level (1-4) to fitmentMatrix level (2-5 for I-VIII)
+    // Assuming a direct mapping for now like old level 2 -> fitment level 3.
+    // The user said: "स्थानीय निकाय शिक्षक के level से एक level नीचे वाले में ही होना चाहिए"
+    // "It should be in the level one below the level of the local body teacher"
+    // paymatrix levels: 1(0), 2(2000), 3(2400), 4(2800) -> these correspond to fitment matrix levels 2,3,4,5
+    // So if old level is 2, new fitment level should be 2. if old is 3, new should be 3.
+    // Wait, the user said "level 2 का level 1 में, level 3 का level 2 में".
+    // This means `targetFitmentLevel = oldLevelNum`.  But fitment matrix keys are 2-7.
+    // And form `levelForNewSalary` is 1-6.
+    // `levelForNewSalary` = `fitmentMatrixLevel` - 1.
+    // So, if `oldLevelNum` is 2, we should look in `fitmentMatrix[2]`. The form value for new level will be `2-1 = 1`.
+    // This seems correct.
+
+    const targetSalaries = fitmentMatrix[targetFitmentLevel];
+    if (!targetSalaries) return;
     
     let bestMatch = {
         level: '',
         index: '',
         salary: Infinity,
     };
-
-    const targetSalaries = fitmentMatrix[targetFitmentLevel];
-
+  
     // Find the smallest salary in the target level that is >= oldSalary
     for (const index in targetSalaries) {
         const currentSalary = targetSalaries[index];
@@ -306,3 +329,5 @@ export default function SalaryFormEditorPage() {
     </FirebaseClientProvider>
   );
 }
+
+    
