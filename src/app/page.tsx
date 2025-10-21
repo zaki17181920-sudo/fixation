@@ -56,15 +56,9 @@ export default function SalaryFormEditorPage() {
   React.useEffect(() => {
     if (dateOfJoiningAsSpecificTeacher) {
       const joiningDate = new Date(dateOfJoiningAsSpecificTeacher);
-      const joiningYear = joiningDate.getFullYear();
-      const julyFirst = new Date(joiningYear, 6, 1); // Month is 0-indexed, so 6 is July
-
-      let nextIncrementDate;
-      if (joiningDate <= julyFirst) {
-        nextIncrementDate = new Date(joiningYear + 1, 0, 1); // January 1st of next year
-      } else {
-        nextIncrementDate = new Date(joiningYear + 1, 6, 1); // July 1st of next year
-      }
+      const nextIncrementDate = new Date(joiningDate);
+      nextIncrementDate.setMonth(nextIncrementDate.getMonth() + 6);
+      
       form.setValue('nextIncrementDate', nextIncrementDate, {
         shouldValidate: true,
       });
