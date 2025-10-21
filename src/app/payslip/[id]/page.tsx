@@ -16,7 +16,6 @@ import { PrintPreview } from '@/components/print-preview';
 import { Loader2 } from 'lucide-react';
 import type { PaySlip } from '@/lib/schema';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
 
 // Helper to convert string dates back to Date objects for PrintPreview
 const parsePaySlipDates = (data: PaySlip | undefined) => {
@@ -84,9 +83,6 @@ function PayslipPrintPage({ params }: { params: { id: string } }) {
     return (
       <div className="flex h-screen flex-col items-center justify-center text-center">
          <p className="text-destructive text-lg mb-4">वेतन पर्ची नहीं मिली।</p>
-         <Button asChild>
-            <Link href="/">होम पर वापस जाएं</Link>
-         </Button>
       </div>
     );
   }
