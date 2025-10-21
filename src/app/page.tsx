@@ -125,9 +125,9 @@ export default function SalaryFormEditorPage() {
       const levelKey = levelForDecember;
       const index = parseInt(indexForDecember, 10);
 
-      if (levelMap[levelKey] !== undefined && !isNaN(index) && index > 0) {
+      if (levelMap[levelKey] !== undefined && !isNaN(index) && index >= 0) { // Changed index > 0 to index >= 0 to include index 0
         const gradePay = levelMap[levelKey];
-        if (payMatrix[gradePay] && payMatrix[gradePay][index]) {
+        if (payMatrix[gradePay] && payMatrix[gradePay][index] !== undefined) {
             const salary = payMatrix[gradePay][index];
             form.setValue('december2024Salary', String(salary), { shouldValidate: true });
         } else {
