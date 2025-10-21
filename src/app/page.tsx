@@ -7,7 +7,6 @@ import { formSchema, type FormValues } from '@/lib/schema';
 import { Button } from '@/components/ui/button';
 import { Loader2, Printer, Save, ShieldCheck } from 'lucide-react';
 import { SalaryForm } from '@/components/salary-form';
-import { PrintPreview } from '@/components/print-preview';
 import { Logo } from '@/components/logo';
 import { useToast } from '@/hooks/use-toast';
 import { saveAndValidateForm, validateFormWithAI } from './actions';
@@ -50,8 +49,6 @@ export default function SalaryFormEditorPage() {
       indexForNewSalary: '',
     },
   });
-
-  const watchedData = form.watch();
 
   const dateOfJoiningAsSpecificTeacher = useWatch({
     control: form.control,
@@ -189,10 +186,6 @@ export default function SalaryFormEditorPage() {
   }, [dateOfJoiningAsSpecificTeacher, form]);
 
 
-  const handlePrint = () => {
-    window.print();
-  };
-
   const handleValidation = async (data: FormValues) => {
     startValidationTransition(async () => {
       const result = await validateFormWithAI(data);
@@ -297,23 +290,12 @@ export default function SalaryFormEditorPage() {
               )}
               सत्यापित करें
             </Button>
-            <Button onClick={handlePrint}>
-              <Printer className="mr-2 h-4 w-4" /> संपादक प्रिंट करें
-            </Button>
           </div>
         </header>
 
-        <main className="grid grid-cols-1 lg:grid-cols-5 xl:grid-cols-2 gap-8">
-          <div className="lg:col-span-3 xl:col-span-1 no-print">
+        <main className="max-w-4xl mx-auto">
+          <div className="no-print">
             <SalaryForm form={form} />
-          </div>
-          <div className="lg:col-span-2 xl:col-span-1">
-            <h2 className="text-2xl font-bold mb-4 font-headline no-print">
-              प्रिंट पूर्वावलोकन
-            </h2>
-            <div className="rounded-lg shadow-lg bg-white">
-              <PrintPreview data={watchedData} />
-            </div>
           </div>
         </main>
       </div>
