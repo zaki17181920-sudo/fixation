@@ -265,17 +265,6 @@ export default function SalaryFormEditorPage() {
         <header className="flex flex-col sm:flex-row justify-between sm:items-center mb-8 gap-4 no-print">
           <Logo />
           <div className="flex items-center gap-2 flex-wrap">
-            <Button
-              onClick={form.handleSubmit(handleSave)}
-              disabled={isSavePending}
-            >
-              {isSavePending ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Save className="mr-2 h-4 w-4" />
-              )}
-              सहेजें और प्रिंट करें
-            </Button>
           </div>
         </header>
 
