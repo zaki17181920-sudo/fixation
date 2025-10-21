@@ -61,6 +61,12 @@ export default function SalaryFormEditorPage() {
   const oldSalary = useWatch({ control: form.control, name: 'december2024Salary' });
 
   React.useEffect(() => {
+    if (dateOfJoiningAsSpecificTeacher) {
+      form.setValue('dateOfJoiningForNewSalary', dateOfJoiningAsSpecificTeacher, { shouldValidate: true });
+    }
+  }, [dateOfJoiningAsSpecificTeacher, form]);
+
+  React.useEffect(() => {
     if (!oldSalary || !levelForDecember) return;
 
     const oldSalaryNum = parseInt(oldSalary, 10);
