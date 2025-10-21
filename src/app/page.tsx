@@ -59,11 +59,23 @@ export default function SalaryFormEditorPage() {
 
   React.useEffect(() => {
     if (levelForDecember && indexForDecember) {
-      const gradePay = parseInt(levelForDecember, 10);
+      const levelMap: { [key: string]: number } = {
+        '1': 0,
+        '2': 2000,
+        '3': 2400,
+        '4': 2800,
+      };
+      const level = parseInt(levelForDecember, 10);
       const index = parseInt(indexForDecember, 10);
-      if (!isNaN(gradePay) && !isNaN(index) && payMatrix[gradePay] && payMatrix[gradePay][index]) {
-        const salary = payMatrix[gradePay][index];
-        form.setValue('december2024Salary', String(salary), { shouldValidate: true });
+
+      if (!isNaN(level) && levelMap[level] !== undefined && !isNaN(index)) {
+        const gradePay = levelMap[level];
+        if (payMatrix[gradePay] && payMatrix[gradePay][index]) {
+            const salary = payMatrix[gradePay][index];
+            form.setValue('december2024Salary', String(salary), { shouldValidate: true });
+        } else {
+            form.setValue('december2024Salary', '', { shouldValidate: true });
+        }
       } else {
         form.setValue('december2024Salary', '', { shouldValidate: true });
       }
