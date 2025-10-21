@@ -52,7 +52,7 @@ export function PrintPreview({ data }: PrintPreviewProps) {
 
   return (
     <div id="print-area" className="p-10 bg-white text-black font-body text-[13px] leading-tight">
-      <header className="text-center mb-4">
+      <header className="text-center mb-4 mt-8">
         <h1 className="text-[20px] font-bold uppercase">कार्यालय, जिला शिक्षा पदाधिकारी, पूर्वी चम्पारण, मोतिहारी</h1>
         <h2 className="text-[18px] font-bold uppercase">(स्थापना शाखा)</h2>
         <p className="text-[14px] mt-1 max-w-2xl mx-auto">
