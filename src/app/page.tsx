@@ -89,6 +89,7 @@ export default function SalaryFormEditorPage() {
   
     // If a suitable salary was found, update the form.
     if (bestMatch.salary !== Infinity) {
+      // The level in fitment matrix is 2-7, but form expects 1-6. So subtract 1.
       form.setValue('levelForNewSalary', String(Number(bestMatch.level) - 1), { shouldValidate: true });
       form.setValue('indexForNewSalary', bestMatch.index, { shouldValidate: true });
       form.setValue('newSalaryWithIncrement', String(bestMatch.salary), { shouldValidate: true });
