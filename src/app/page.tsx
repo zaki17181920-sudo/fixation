@@ -16,10 +16,12 @@ import Link from 'next/link';
 import { payMatrix } from '@/lib/pay-matrix';
 import { fitmentMatrix } from '@/lib/fitment-matrix';
 import { schoolData } from '@/lib/school-data';
+import { PrintPreview } from '@/components/print-preview';
 
 export default function SalaryFormEditorPage() {
   const [isValidationPending, startValidationTransition] = React.useTransition();
   const [isSavePending, startSaveTransition] = React.useTransition();
+  const [printData, setPrintData] = React.useState<FormValues | null>(null);
   const { toast } = useToast();
   const router = useRouter();
 
@@ -186,94 +188,41 @@ export default function SalaryFormEditorPage() {
   }, [dateOfJoiningAsSpecificTeacher, form]);
 
 
-  const handleValidation = async (data: FormValues) => {
-    startValidationTransition(async () => {
-      const result = await validateFormWithAI(data);
-
-      if (result.success) {
-        toast({
-          title: 'सत्यापन सफल',
-          description: 'डेटा वैध प्रतीत होता है।',
-          variant: 'default',
-        });
-      } else {
-        toast({
-          title: 'सत्यापन में त्रुटियाँ',
-          description: 'कृपया हाइलाइट किए गए फ़ील्ड की समीक्षा करें।',
-          variant: 'destructive',
-        });
-        if (result.errors) {
-          Object.entries(result.errors).forEach(([key, message]) => {
-            let fieldKey = key as keyof FormValues;
-            if (key.includes('.')) {
-                const [parent, child] = key.split('.');
-                const keyMap: { [key: string]: string } = {
-                  'officeDetails.office': 'office',
-                  'teacherInfo.teacherName': 'teacherName',
-                  'teacherInfo.schoolName': 'schoolName',
-                };
-                fieldKey = (keyMap[key] || key) as keyof FormValues;
-            }
-
-            if (fieldKey in form.getValues()){
-                 form.setError(fieldKey, {
-                    type: 'manual',
-                    message: message as string,
-                });
-            }
-          });
-        }
-      }
-    });
-  };
-
-  const handleSave = async (data: FormValues) => {
-    startSaveTransition(async () => {
-      const result = await saveAndValidateForm(data);
-
-      if (result.success && result.id) {
-        toast({
-          title: 'सफलतापूर्वक सहेजा गया',
-          description: 'आपका डेटा सफलतापूर्वक सहेज लिया गया है।',
-          variant: 'default',
-        });
-        router.push(`/payslip/${result.id}`);
-      } else {
-        toast({
-          title: 'त्रुटि सहेजी जा रही है',
-          description: result.errors?.form || 'डेटा सहेजते समय एक त्रुटि हुई।',
-          variant: 'destructive',
-        });
-        if (result.errors) {
-          Object.entries(result.errors).forEach(([key, message]) => {
-            if (key !== 'form' && key in form.getValues()) {
-              form.setError(key as keyof FormValues, {
-                type: 'manual',
-                message: message as string,
-              });
-            }
-          });
-        }
-      }
-    });
+  const handlePrint = () => {
+    const data = form.getValues();
+    setPrintData(data);
+    setTimeout(() => {
+      window.print();
+    }, 100);
   };
 
 
   return (
     <FirebaseClientProvider>
-      <div className="container mx-auto p-4 md:p-8">
-        <header className="flex flex-col sm:flex-row justify-between sm:items-center mb-8 gap-4 no-print">
+      <div id="form-container" className="container mx-auto p-4 md:p-8 no-print">
+        <header className="flex flex-col sm:flex-row justify-between sm:items-center mb-8 gap-4">
           <Logo />
           <div className="flex items-center gap-2 flex-wrap">
+            <Button onClick={handlePrint} disabled={isSavePending}>
+              {isSavePending ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <Printer />
+              )}
+              प्रिंट
+            </Button>
           </div>
         </header>
 
         <main className="max-w-4xl mx-auto">
-          <div className="no-print">
-            <SalaryForm form={form} />
-          </div>
+          <SalaryForm form={form} />
         </main>
       </div>
+      {printData && (
+        <div className="hidden print:block">
+          <PrintPreview data={printData} />
+        </div>
+      )}
     </FirebaseClientProvider>
   );
 }

@@ -106,6 +106,9 @@
         height: auto;
         width: 100%;
     }
+    #form-container {
+      display: none;
+    }
     #print-area {
       display: block;
     }
