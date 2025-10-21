@@ -64,11 +64,15 @@ export default function SalaryFormEditorPage() {
 
   React.useEffect(() => {
     if (levelForNewSalary && indexForNewSalary) {
-      const level = parseInt(levelForNewSalary, 10);
+      const levelNum = parseInt(levelForNewSalary, 10);
       const index = parseInt(indexForNewSalary, 10);
       
-      if (!isNaN(level) && !isNaN(index) && fitmentMatrix[level] && fitmentMatrix[level][index]) {
-        const salary = fitmentMatrix[level][index];
+      // Mapping level input to fitmentMatrix keys
+      // Level 1 -> Key 2, Level 2 -> Key 3, ..., Level 6 -> Key 7
+      const matrixLevel = levelNum + 1;
+
+      if (!isNaN(matrixLevel) && !isNaN(index) && fitmentMatrix[matrixLevel] && fitmentMatrix[matrixLevel][index]) {
+        const salary = fitmentMatrix[matrixLevel][index];
         form.setValue('newSalaryWithIncrement', String(salary), { shouldValidate: true });
       } else {
         form.setValue('newSalaryWithIncrement', '', { shouldValidate: true });
@@ -84,11 +88,11 @@ export default function SalaryFormEditorPage() {
         '3': 2400,
         '4': 2800,
       };
-      const level = parseInt(levelForDecember, 10);
+      const levelKey = levelForDecember;
       const index = parseInt(indexForDecember, 10);
 
-      if (!isNaN(level) && levelMap[level] !== undefined && !isNaN(index)) {
-        const gradePay = levelMap[level];
+      if (levelMap[levelKey] !== undefined && !isNaN(index)) {
+        const gradePay = levelMap[levelKey];
         if (payMatrix[gradePay] && payMatrix[gradePay][index]) {
             const salary = payMatrix[gradePay][index];
             form.setValue('december2024Salary', String(salary), { shouldValidate: true });
