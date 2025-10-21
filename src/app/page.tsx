@@ -57,6 +57,8 @@ export default function SalaryFormEditorPage() {
 
   const levelForDecember = useWatch({ control: form.control, name: 'levelForDecember2024Salary' });
   const indexForDecember = useWatch({ control: form.control, name: 'indexForDecember2024Salary' });
+  
+  const oldSalary = useWatch({ control: form.control, name: 'december2024Salary' });
 
   const levelForNewSalary = useWatch({ control: form.control, name: 'levelForNewSalary' });
   const indexForNewSalary = useWatch({ control: form.control, name: 'indexForNewSalary' });
@@ -67,18 +69,22 @@ export default function SalaryFormEditorPage() {
       const levelNum = parseInt(levelForNewSalary, 10);
       const index = parseInt(indexForNewSalary, 10);
       
-      // Mapping level input to fitmentMatrix keys
-      // Level 1 -> Key 2, Level 2 -> Key 3, ..., Level 6 -> Key 7
       const matrixLevel = levelNum + 1;
 
       if (!isNaN(matrixLevel) && !isNaN(index) && fitmentMatrix[matrixLevel] && fitmentMatrix[matrixLevel][index]) {
-        const salary = fitmentMatrix[matrixLevel][index];
+        let salary = fitmentMatrix[matrixLevel][index];
+        const oldSalaryNum = parseInt(oldSalary, 10);
+        
+        if (!isNaN(oldSalaryNum) && salary < oldSalaryNum) {
+            salary = oldSalaryNum;
+        }
+
         form.setValue('newSalaryWithIncrement', String(salary), { shouldValidate: true });
       } else {
         form.setValue('newSalaryWithIncrement', '', { shouldValidate: true });
       }
     }
-  }, [levelForNewSalary, indexForNewSalary, form]);
+  }, [levelForNewSalary, indexForNewSalary, oldSalary, form]);
 
   React.useEffect(() => {
     if (levelForDecember && indexForDecember) {
@@ -261,3 +267,5 @@ export default function SalaryFormEditorPage() {
     </FirebaseClientProvider>
   );
 }
+
+    
