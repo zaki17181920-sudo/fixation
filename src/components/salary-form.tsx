@@ -378,9 +378,19 @@ export function SalaryForm({ form }: SalaryFormProps) {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>दक्षता/BTET/CTET का प्रकार</FormLabel>
-                        <FormControl>
-                          <Input placeholder="दक्षता / पात्रता" {...field} />
-                        </FormControl>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="एक प्रकार चुनें" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="दक्षता">दक्षता</SelectItem>
+                            <SelectItem value="BTET">BTET</SelectItem>
+                            <SelectItem value="CTET">CTET</SelectItem>
+                            <SelectItem value="STET">STET</SelectItem>
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
