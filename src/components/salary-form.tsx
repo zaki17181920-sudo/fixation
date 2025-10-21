@@ -167,7 +167,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
                     name="appointmentCategory"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>नियुक्ति की कोटि (UR/BC/EBC/SC/ST/EWS)</FormLabel>
+                        <FormLabel>नियुक्ति की कोटि</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger>
@@ -175,12 +175,18 @@ export function SalaryForm({ form }: SalaryFormProps) {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="UR">UR</SelectItem>
-                            <SelectItem value="BC">BC</SelectItem>
-                            <SelectItem value="EBC">EBC</SelectItem>
-                            <SelectItem value="SC">SC</SelectItem>
-                            <SelectItem value="ST">ST</SelectItem>
-                            <SelectItem value="EWS">EWS</SelectItem>
+                            <SelectItem value="ur">ur</SelectItem>
+                            <SelectItem value="ur female">ur female</SelectItem>
+                            <SelectItem value="bc">bc</SelectItem>
+                            <SelectItem value="bc female">bc female</SelectItem>
+                            <SelectItem value="ebc">ebc</SelectItem>
+                            <SelectItem value="ebc female">ebc female</SelectItem>
+                            <SelectItem value="sc">sc</SelectItem>
+                            <SelectItem value="sc female">sc female</SelectItem>
+                            <SelectItem value="st">st</SelectItem>
+                            <SelectItem value="st female">st female</SelectItem>
+                            <SelectItem value="ews">ews</SelectItem>
+                            <SelectItem value="ews female">ews female</SelectItem>
                           </SelectContent>
                         </Select>
                         <FormMessage />
@@ -644,8 +650,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
                     name="nextIncrementDate"
                     render={({ field }) => (
                       <FormItem className="flex flex-col">
-                        <FormLabel>अगली वेतन वृद्धि तिथि</FormLabel>
-                         <Popover>
+                        <FormLabel>अगली वेतन वृद्धि तिथि</FormLabel>                         <Popover>
                           <PopoverTrigger asChild>
                             <FormControl>
                               <Button
