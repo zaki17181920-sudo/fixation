@@ -89,7 +89,7 @@ export default function SalaryFormEditorPage() {
   
     // If a suitable salary was found, update the form.
     if (bestMatch.salary !== Infinity) {
-      form.setValue('levelForNewSalary', bestMatch.level, { shouldValidate: true });
+      form.setValue('levelForNewSalary', String(Number(bestMatch.level) - 1), { shouldValidate: true });
       form.setValue('indexForNewSalary', bestMatch.index, { shouldValidate: true });
       form.setValue('newSalaryWithIncrement', String(bestMatch.salary), { shouldValidate: true });
     } else {
@@ -284,5 +284,3 @@ export default function SalaryFormEditorPage() {
     </FirebaseClientProvider>
   );
 }
-
-    
