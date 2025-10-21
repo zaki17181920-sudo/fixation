@@ -15,6 +15,7 @@ import { FirebaseClientProvider } from '@/firebase';
 import Link from 'next/link';
 import { payMatrix } from '@/lib/pay-matrix';
 import { fitmentMatrix } from '@/lib/fitment-matrix';
+import { schoolData } from '@/lib/school-data';
 
 export default function SalaryFormEditorPage() {
   const [isValidationPending, startValidationTransition] = React.useTransition();
@@ -65,6 +66,14 @@ export default function SalaryFormEditorPage() {
   
   const oldSalary = useWatch({ control: form.control, name: 'december2024Salary' });
 
+  const udiseCode = useWatch({ control: form.control, name: 'udiseCode' });
+
+  React.useEffect(() => {
+    if (udiseCode && schoolData[udiseCode]) {
+      form.setValue('schoolName', schoolData[udiseCode], { shouldValidate: true });
+    }
+  }, [udiseCode, form]);
+
   React.useEffect(() => {
     if (dateOfTraining) {
       form.setValue('dateOfReceivingTrainedPayScale', dateOfTraining, { shouldValidate: true });
@@ -84,25 +93,14 @@ export default function SalaryFormEditorPage() {
     const oldLevelNum = parseInt(levelForDecember, 10);
     if (isNaN(oldSalaryNum) || isNaN(oldLevelNum)) return;
   
-    // The new level should be one less than the old level.
-    // The level in fitmentMatrix is 2-7, but form expects 1-6 for newSalary.
-    // The level in payMatrix is 1-4 for oldSalary.
-    // Fitment Matrix Level = oldLevel + 1. So, new level in fitmentMatrix is oldLevel.
-    const targetFitmentLevel = oldLevelNum; // This is the level from payMatrix (1-4)
+    // Map the old payMatrix level to the target fitmentMatrix level.
+    // "स्थानीय निकाय शिक्षक के level से एक level नीचे वाले में ही होना चाहिए"
+    // payMatrix levels (grade pay) map to fitmentMatrix levels like this:
+    // gradePay 2000 (level 2) -> fitmentMatrix level 2 (which is for 1-5, form value `levelForNewSalary` will be 1)
+    // gradePay 2400 (level 3) -> fitmentMatrix level 3 (which is for 6-8, form value `levelForNewSalary` will be 2)
+    // So the target fitmentMatrix level is the same as the payMatrix level.
+    const targetFitmentLevel = oldLevelNum; 
     
-    // We need to map the payMatrix level (1-4) to fitmentMatrix level (2-5 for I-VIII)
-    // Assuming a direct mapping for now like old level 2 -> fitment level 3.
-    // The user said: "स्थानीय निकाय शिक्षक के level से एक level नीचे वाले में ही होना चाहिए"
-    // "It should be in the level one below the level of the local body teacher"
-    // paymatrix levels: 1(0), 2(2000), 3(2400), 4(2800) -> these correspond to fitment matrix levels 2,3,4,5
-    // So if old level is 2, new fitment level should be 2. if old is 3, new should be 3.
-    // Wait, the user said "level 2 का level 1 में, level 3 का level 2 में".
-    // This means `targetFitmentLevel = oldLevelNum`.  But fitment matrix keys are 2-7.
-    // And form `levelForNewSalary` is 1-6.
-    // `levelForNewSalary` = `fitmentMatrixLevel` - 1.
-    // So, if `oldLevelNum` is 2, we should look in `fitmentMatrix[2]`. The form value for new level will be `2-1 = 1`.
-    // This seems correct.
-
     const targetSalaries = fitmentMatrix[targetFitmentLevel];
     if (!targetSalaries) return;
     
@@ -117,10 +115,12 @@ export default function SalaryFormEditorPage() {
         const currentSalary = targetSalaries[index];
         if (currentSalary >= oldSalaryNum && currentSalary < bestMatch.salary) {
             bestMatch = {
-                level: String(targetFitmentLevel), // This is the level from fitmentMatrix keys (2-7)
+                level: String(targetFitmentLevel), 
                 index: index,
                 salary: currentSalary,
             };
+            // Since the salaries are sorted, the first match is the best match.
+            break;
         }
     }
     
@@ -130,8 +130,8 @@ export default function SalaryFormEditorPage() {
         form.setValue('indexForNewSalary', bestMatch.index, { shouldValidate: true });
         form.setValue('newSalaryWithIncrement', String(bestMatch.salary), { shouldValidate: true });
     } else {
-       // If no salary in the target level is >= old salary, it means the old salary is very high.
-       // In this case, we should find the highest salary in that target level and set it.
+       // If no salary in the target level is >= old salary (i.e., old salary is higher than any in that level),
+       // find the highest salary in that target level and set it.
         let maxSalary = 0;
         let maxIndex = '';
         for (const index in targetSalaries) {
@@ -329,5 +329,3 @@ export default function SalaryFormEditorPage() {
     </FirebaseClientProvider>
   );
 }
-
-    
