@@ -60,31 +60,48 @@ export default function SalaryFormEditorPage() {
   
   const oldSalary = useWatch({ control: form.control, name: 'december2024Salary' });
 
-  const levelForNewSalary = useWatch({ control: form.control, name: 'levelForNewSalary' });
-  const indexForNewSalary = useWatch({ control: form.control, name: 'indexForNewSalary' });
-
-
   React.useEffect(() => {
-    if (levelForNewSalary && indexForNewSalary) {
-      const levelNum = parseInt(levelForNewSalary, 10);
-      const index = parseInt(indexForNewSalary, 10);
-      
-      const matrixLevel = levelNum + 1;
-
-      if (!isNaN(matrixLevel) && !isNaN(index) && fitmentMatrix[matrixLevel] && fitmentMatrix[matrixLevel][index]) {
-        let salary = fitmentMatrix[matrixLevel][index];
-        const oldSalaryNum = parseInt(oldSalary, 10);
-        
-        if (!isNaN(oldSalaryNum) && salary < oldSalaryNum) {
-            salary = oldSalaryNum;
+    if (!oldSalary) return;
+  
+    const oldSalaryNum = parseInt(oldSalary, 10);
+    if (isNaN(oldSalaryNum)) return;
+  
+    let bestMatch = {
+      level: '',
+      index: '',
+      salary: Infinity,
+    };
+  
+    // Iterate through the fitmentMatrix to find the smallest salary >= oldSalary
+    for (const level in fitmentMatrix) {
+      for (const index in fitmentMatrix[level]) {
+        const currentSalary = fitmentMatrix[level][index];
+  
+        if (currentSalary >= oldSalaryNum && currentSalary < bestMatch.salary) {
+          bestMatch = {
+            level: level,
+            index: index,
+            salary: currentSalary,
+          };
         }
-
-        form.setValue('newSalaryWithIncrement', String(salary), { shouldValidate: true });
-      } else {
-        form.setValue('newSalaryWithIncrement', '', { shouldValidate: true });
       }
     }
-  }, [levelForNewSalary, indexForNewSalary, oldSalary, form]);
+  
+    // If a suitable salary was found, update the form.
+    if (bestMatch.salary !== Infinity) {
+      form.setValue('levelForNewSalary', bestMatch.level, { shouldValidate: true });
+      form.setValue('indexForNewSalary', bestMatch.index, { shouldValidate: true });
+      form.setValue('newSalaryWithIncrement', String(bestMatch.salary), { shouldValidate: true });
+    } else {
+      // Handle the case where no salary in the matrix is high enough
+      // Maybe find the highest possible salary and set it?
+      // For now, we clear if no match found.
+      form.setValue('levelForNewSalary', '', { shouldValidate: true });
+      form.setValue('indexForNewSalary', '', { shouldValidate: true });
+      form.setValue('newSalaryWithIncrement', '', { shouldValidate: true });
+    }
+  
+  }, [oldSalary, form]);
 
   React.useEffect(() => {
     if (levelForDecember && indexForDecember) {
@@ -267,3 +284,5 @@ export default function SalaryFormEditorPage() {
     </FirebaseClientProvider>
   );
 }
+
+    
