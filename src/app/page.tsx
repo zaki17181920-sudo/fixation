@@ -14,6 +14,7 @@ import { saveAndValidateForm, validateFormWithAI } from './actions';
 import { FirebaseClientProvider } from '@/firebase';
 import Link from 'next/link';
 import { payMatrix } from '@/lib/pay-matrix';
+import { fitmentMatrix } from '@/lib/fitment-matrix';
 
 export default function SalaryFormEditorPage() {
   const [isValidationPending, startValidationTransition] = React.useTransition();
@@ -56,6 +57,24 @@ export default function SalaryFormEditorPage() {
 
   const levelForDecember = useWatch({ control: form.control, name: 'levelForDecember2024Salary' });
   const indexForDecember = useWatch({ control: form.control, name: 'indexForDecember2024Salary' });
+
+  const levelForNewSalary = useWatch({ control: form.control, name: 'levelForNewSalary' });
+  const indexForNewSalary = useWatch({ control: form.control, name: 'indexForNewSalary' });
+
+
+  React.useEffect(() => {
+    if (levelForNewSalary && indexForNewSalary) {
+      const level = parseInt(levelForNewSalary, 10);
+      const index = parseInt(indexForNewSalary, 10);
+      
+      if (!isNaN(level) && !isNaN(index) && fitmentMatrix[level] && fitmentMatrix[level][index]) {
+        const salary = fitmentMatrix[level][index];
+        form.setValue('newSalaryWithIncrement', String(salary), { shouldValidate: true });
+      } else {
+        form.setValue('newSalaryWithIncrement', '', { shouldValidate: true });
+      }
+    }
+  }, [levelForNewSalary, indexForNewSalary, form]);
 
   React.useEffect(() => {
     if (levelForDecember && indexForDecember) {
