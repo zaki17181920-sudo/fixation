@@ -23,13 +23,17 @@ const parsePaySlipDates = (data: PaySlip | undefined) => {
     
     const parseDate = (dateString: string | undefined) => {
         if (!dateString) return new Date(NaN); // Invalid date
+        // Handles both dd-MM-yyyy and yyyy-MM-dd
         const parts = dateString.split('-');
         if (parts.length === 3) {
-            // dd-MM-yyyy
-            const [day, month, year] = parts;
-            return new Date(`${year}-${month}-${day}`);
+            const [p1, p2, p3] = parts;
+            if (p1.length === 4) { // yyyy-MM-dd
+                return new Date(dateString);
+            }
+             // dd-MM-yyyy
+            return new Date(`${p3}-${p2}-${p1}`);
         }
-        return new Date(dateString); // Fallback for ISO strings
+        return new Date(dateString); // Fallback for ISO strings or other formats
     }
 
     return {
@@ -55,12 +59,6 @@ function PayslipPrintPage({ params }: { params: { id: string } }) {
   }, [firestore, params.id]) as DocumentReference<DocumentData> | null;
 
   const { data: payslip, isLoading, error } = useDoc<PaySlip>(payslipRef);
-
-  React.useEffect(() => {
-    if (payslip && !isLoading) {
-      setTimeout(() => window.print(), 500); // Delay to allow rendering
-    }
-  }, [payslip, isLoading]);
 
   if (isLoading) {
     return (
@@ -91,7 +89,9 @@ function PayslipPrintPage({ params }: { params: { id: string } }) {
 
   return (
     <div>
-        <PrintPreview data={formattedData as any} />
+        <div id="print-area">
+          <PrintPreview data={formattedData as any} />
+        </div>
         <div className="absolute top-4 right-4 no-print">
             <Button onClick={() => window.print()}>प्रिंट</Button>
         </div>
