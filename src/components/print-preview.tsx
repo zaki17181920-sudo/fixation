@@ -53,7 +53,7 @@ export const PrintPreview = React.forwardRef<HTMLDivElement, PrintPreviewProps>(
   }
 
   return (
-    <div ref={ref} className="px-4 py-10 bg-white text-black font-body text-[13px] leading-tight">
+    <div ref={ref} className="p-10 bg-white text-black font-body text-[13px] leading-tight">
       <header className="text-center mb-4">
         <h1 className="text-[20px] font-bold uppercase">कार्यालय, जिला शिक्षा पदाधिकारी, मुजफ्फरपुर</h1>
         <h2 className="text-[18px] font-bold uppercase">(स्थापना-शाखा)</h2>
