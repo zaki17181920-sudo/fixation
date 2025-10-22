@@ -175,13 +175,6 @@ export default function SalaryFormEditorPage() {
     }
   }, [dateOfJoiningAsSpecificTeacher, setValue]);
 
-  React.useEffect(() => {
-    if (printData) {
-      window.print();
-      setPrintData(null); // Reset after printing
-    }
-  }, [printData]);
-
   const handlePrint = async () => {
     const isValid = await form.trigger();
     if (!isValid) {
@@ -194,6 +187,10 @@ export default function SalaryFormEditorPage() {
     }
     const data = form.getValues();
     setPrintData(data);
+    setTimeout(() => {
+        window.print();
+        setPrintData(null); // Optional: reset after printing
+    }, 100);
   };
 
   return (
@@ -214,7 +211,7 @@ export default function SalaryFormEditorPage() {
         </main>
       </div>
       {printData && (
-        <div id="print-area" className="hidden print:block">
+        <div id="print-area" className="print-only">
           <PrintPreview data={printData} />
         </div>
       )}
