@@ -53,7 +53,7 @@ export const PrintPreview = React.forwardRef<HTMLDivElement, PrintPreviewProps>(
   }
 
   return (
-    <div ref={ref} className="p-10 bg-white text-black font-body text-[13px] leading-tight">
+    <div ref={ref} className="px-4 py-10 bg-white text-black font-body text-[13px] leading-tight">
       <header className="text-center mb-4">
         <h1 className="text-[20px] font-bold uppercase">कार्यालय, जिला शिक्षा पदाधिकारी, मुजफ्फरपुर</h1>
         <h2 className="text-[18px] font-bold uppercase">(स्थापना-शाखा)</h2>
@@ -101,26 +101,26 @@ export const PrintPreview = React.forwardRef<HTMLDivElement, PrintPreviewProps>(
         </table>
 
         <footer className="mt-20 text-[13px]">
-          <div className="flex justify-between text-center">
-              <div>
-                  <p className="pt-1">शिक्षक का हस्ताक्षर</p>
-              </div>
-              <div>
-                  <p className="pt-1">प्रधानाध्यापक का <br/> हस्ताक्षर एवं मुहर</p>
-              </div>
-              <div>
-                  <p className="pt-1">प्रधानाध्यापक</p>
-                  <p>चिन्हित मध्य</p>
-                  <p>विद्यालय का</p>
-                  <p>हस्ताक्षर एवं मुहर</p>
-              </div>
-              <div>
-                  <p className="pt-1">प्रखण्ड शिक्षा पदाधिकारी <br/> साहेबगंज मुजफ्फरपुर।</p>
-              </div>
-              <div>
-                  <p className="pt-1">जिला कार्यक्रम पदाधिकारी <br/> स्थापना, मुजफ्फरपुर।</p>
-              </div>
-          </div>
+            <div className="flex justify-between text-center">
+                <div>
+                    <p className="pt-1">शिक्षक का हस्ताक्षर</p>
+                </div>
+                <div>
+                    <p className="pt-1">प्रधानाध्यापक का <br/> हस्ताक्षर एवं मुहर</p>
+                </div>
+                <div>
+                    <p className="pt-1">प्रधानाध्यापक</p>
+                    <p>चिन्हित मध्य</p>
+                    <p>विद्यालय का</p>
+                    <p>हस्ताक्षर एवं मुहर</p>
+                </div>
+                <div>
+                    <p className="pt-1">प्रखण्ड शिक्षा पदाधिकारी <br/> साहेबगंज मुजफ्फरपुर।</p>
+                </div>
+                <div>
+                    <p className="pt-1">जिला कार्यक्रम पदाधिकारी <br/> स्थापना, मुजफ्फरपुर।</p>
+                </div>
+            </div>
         </footer>
       </main>
     </div>
