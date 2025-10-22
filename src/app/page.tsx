@@ -85,11 +85,10 @@ export default function SalaryFormEditorPage() {
   }, [dateOfJoiningAsSpecificTeacher, form]);
 
   
-  // Calculate Box 2 and Box 3 based on Box 1
+  // Calculate Box 2 based on Box 1
   React.useEffect(() => {
     if (!december2024Salary) {
         form.setValue('newSalaryWithIncrement', '');
-        form.setValue('payMatrixSalary', '');
         return;
     }
 
@@ -98,7 +97,6 @@ export default function SalaryFormEditorPage() {
 
     let foundLevel: number | null = null;
     let foundIndex: number | null = null;
-    let currentLevelNum: number | null = null;
 
     // Find the salary in the payMatrix (Anulagnak-Kha)
     for (const level in payMatrix) {
@@ -108,9 +106,6 @@ export default function SalaryFormEditorPage() {
             if (salaries[parseInt(index, 10)] === salaryNum) {
                 foundLevel = gradePay;
                 foundIndex = parseInt(index, 10);
-                // Map Grade Pay to a simple level number (1, 2, 3, 4)
-                const levelMap: Record<number, number> = { 0: 1, 2000: 2, 2400: 3, 2800: 4 };
-                currentLevelNum = levelMap[foundLevel];
                 break;
             }
         }
@@ -131,6 +126,7 @@ export default function SalaryFormEditorPage() {
     }
 }, [december2024Salary, form]);
 
+// Calculate Box 3 based on Box 2 and selected class
 React.useEffect(() => {
     if (!newSalaryWithIncrement || !selectedClass) {
         form.setValue('payMatrixSalary', '');
@@ -138,7 +134,10 @@ React.useEffect(() => {
     }
 
     const newSalaryNum = parseInt(newSalaryWithIncrement, 10);
-    if (isNaN(newSalaryNum)) return;
+    if (isNaN(newSalaryNum)) {
+        form.setValue('payMatrixSalary', '');
+        return;
+    }
 
     // Mapping class to fitment matrix level (Anulagnak-Ka)
     const classToFitmentLevel: Record<string, number> = {
@@ -149,28 +148,26 @@ React.useEffect(() => {
     };
     const targetFitmentLevel = classToFitmentLevel[selectedClass];
 
-    if (!targetFitmentLevel || !fitmentMatrix[targetFitmentLevel]) return;
-
-    const targetSalaries = fitmentMatrix[targetFitmentLevel];
-    let bestMatchSalary = Infinity;
-
-    // Find the salary in the target fitment matrix that is just >= newSalaryWithIncrement
-    for (const key in targetSalaries) {
-        const currentSalary = targetSalaries[key];
-        if (currentSalary >= newSalaryNum && currentSalary < bestMatchSalary) {
-            bestMatchSalary = currentSalary;
-        }
+    if (!targetFitmentLevel || !fitmentMatrix[targetFitmentLevel]) {
+      form.setValue('payMatrixSalary', '');
+      return;
     }
 
-    if (bestMatchSalary !== Infinity) {
+    const targetSalaries = fitmentMatrix[targetFitmentLevel];
+    const salaryValues = Object.values(targetSalaries);
+
+    // Find the salary in the target fitment matrix that is just >= newSalaryWithIncrement
+    let bestMatchSalary = salaryValues.find(salary => salary >= newSalaryNum);
+
+    if (bestMatchSalary !== undefined) {
         form.setValue('payMatrixSalary', String(bestMatchSalary), { shouldValidate: true });
     } else {
-        // If no salary is found (e.g., new salary is higher than all in matrix), find the max
-        const salaryValues = Object.values(targetSalaries);
+        // If no salary is found (e.g., new salary is higher than all in matrix), use the max salary from that level.
         if (salaryValues.length > 0) {
             const maxSalary = Math.max(...salaryValues);
-             // If the new salary is even higher than the max, use the max. Otherwise use the salary itself.
-            form.setValue('payMatrixSalary', String(newSalaryNum > maxSalary ? maxSalary : newSalaryNum), { shouldValidate: true });
+            form.setValue('payMatrixSalary', String(maxSalary), { shouldValidate: true });
+        } else {
+            form.setValue('payMatrixSalary', '', { shouldValidate: true });
         }
     }
 
