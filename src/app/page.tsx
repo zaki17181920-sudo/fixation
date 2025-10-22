@@ -14,12 +14,12 @@ import { payMatrix } from '@/lib/pay-matrix';
 import { fitmentMatrix } from '@/lib/fitment-matrix';
 import { schoolData } from '@/lib/school-data';
 import { PrintPreview } from '@/components/print-preview';
-import Link from 'next/link';
+import { useReactToPrint } from 'react-to-print';
 
 export default function SalaryFormEditorPage() {
   const [isSavePending, startSaveTransition] = React.useTransition();
   const { toast } = useToast();
-  const [printData, setPrintData] = React.useState<FormValues | null>(null);
+  const componentRef = React.useRef<HTMLDivElement>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -163,28 +163,25 @@ export default function SalaryFormEditorPage() {
     }
   }, [dateOfJoiningAsSpecificTeacher, setValue]);
   
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    onBeforeGetContent: async () => {
+      const isValid = await form.trigger();
+      if (!isValid) {
+        toast({
+          variant: 'destructive',
+          title: 'अमान्य डेटा',
+          description: 'कृपया फॉर्म में सभी आवश्यक फ़ील्ड सही-सही भरें।',
+        });
+        return Promise.reject();
+      }
+    },
+  });
 
-  const handlePrint = async () => {
-    const isValid = await form.trigger();
-    if (!isValid) {
-      toast({
-        variant: 'destructive',
-        title: 'अमान्य डेटा',
-        description: 'कृपया फॉर्म में सभी आवश्यक फ़ील्ड सही-सही भरें।',
-      });
-      return;
-    }
-    const data = form.getValues();
-    setPrintData(data);
-    setTimeout(() => {
-        window.print();
-        setPrintData(null);
-    }, 100);
-  }
 
   return (
     <>
-      <div id="form-container" className="container mx-auto p-4 md:p-8 no-print">
+      <div id="form-container" className="container mx-auto p-4 md:p-8">
         <header className="flex flex-col sm:flex-row justify-between sm:items-center mb-8 gap-4">
           <Logo />
           <div className="flex items-center gap-2 flex-wrap">
@@ -199,11 +196,9 @@ export default function SalaryFormEditorPage() {
           <SalaryForm form={form} />
         </main>
       </div>
-      {printData && (
-        <div id="print-area">
-          <PrintPreview data={printData} />
-        </div>
-      )}
+      <div style={{ display: "none" }}>
+          <PrintPreview ref={componentRef} data={form.getValues()} />
+      </div>
     </>
   );
 }

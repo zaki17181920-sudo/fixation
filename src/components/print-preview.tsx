@@ -1,5 +1,6 @@
 'use client';
 
+import * as React from 'react';
 import type { FormValues } from '@/lib/schema';
 import { format } from 'date-fns';
 
@@ -41,18 +42,18 @@ const DataRow = ({ label, value, number, subLabel }: { label: string; value?: st
 };
 
 
-export function PrintPreview({ data }: PrintPreviewProps) {
+export const PrintPreview = React.forwardRef<HTMLDivElement, PrintPreviewProps>(({ data }, ref) => {
   const formatDate = (date: Date | undefined | null) => {
-    if (!date || isNaN(date.getTime())) return '..............................';
+    if (!date || isNaN(new Date(date).getTime())) return '..............................';
     try {
-      return format(date, 'dd-MM-yyyy');
+      return format(new Date(date), 'dd-MM-yyyy');
     } catch (error) {
       return '..............................';
     }
   }
 
   return (
-    <div id="print-area" className="p-10 bg-white text-black font-body text-[13px] leading-tight">
+    <div ref={ref} className="p-10 bg-white text-black font-body text-[13px] leading-tight">
       <header className="text-center mb-4">
         <h1 className="text-[20px] font-bold uppercase">कार्यालय, जिला शिक्षा पदाधिकारी, मुजफ्फरपुर</h1>
         <h2 className="text-[18px] font-bold uppercase">(स्थापना-शाखा)</h2>
@@ -129,4 +130,6 @@ export function PrintPreview({ data }: PrintPreviewProps) {
       </main>
     </div>
   );
-}
+});
+
+PrintPreview.displayName = 'PrintPreview';

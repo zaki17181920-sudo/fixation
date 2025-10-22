@@ -92,27 +92,3 @@
     @apply normal-case;
   }
 }
-
-@layer utilities {
-  .no-print {
-    display: block;
-  }
-  
-  @media print {
-    body {
-      visibility: hidden;
-    }
-    .no-print {
-      display: none !important;
-    }
-    #print-area, #print-area * {
-      visibility: visible;
-    }
-    #print-area {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-    }
-  }
-}
