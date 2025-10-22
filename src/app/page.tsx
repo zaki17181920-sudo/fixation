@@ -5,23 +5,20 @@ import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { formSchema, type FormValues } from '@/lib/schema';
 import { Button } from '@/components/ui/button';
-import { Loader2, Printer } from 'lucide-react';
+import { Loader2, Printer, Save } from 'lucide-react';
 import { SalaryForm } from '@/components/salary-form';
 import { Logo } from '@/components/logo';
 import { useToast } from '@/hooks/use-toast';
-import { saveAndValidateForm, validateFormWithAI } from './actions';
+import { saveAndValidateForm } from './actions';
 import { FirebaseClientProvider } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { payMatrix } from '@/lib/pay-matrix';
 import { fitmentMatrix } from '@/lib/fitment-matrix';
 import { schoolData } from '@/lib/school-data';
-import { PrintPreview } from '@/components/print-preview';
 
 export default function SalaryFormEditorPage() {
-  const [isValidationPending, startValidationTransition] = React.useTransition();
   const [isSavePending, startSaveTransition] = React.useTransition();
-  const [printData, setPrintData] = React.useState<FormValues | null>(null);
   const { toast } = useToast();
   const router = useRouter();
 
@@ -77,7 +74,6 @@ export default function SalaryFormEditorPage() {
     }
   }, [dateOfJoiningAsSpecificTeacher, setValue]);
 
-  // Calculate Box 2 and 3 based on Box 1 and selected class
   React.useEffect(() => {
     const salaryNum = parseInt(december2024Salary, 10);
     if (isNaN(salaryNum) || !selectedClass) {
@@ -100,7 +96,6 @@ export default function SalaryFormEditorPage() {
     const salaryList = payMatrix[gradePay];
     let foundIndex: number | null = null;
     
-    // Find the index of the current salary
     for (const key in salaryList) {
       if (salaryList[key] === salaryNum) {
         foundIndex = parseInt(key, 10);
@@ -115,13 +110,12 @@ export default function SalaryFormEditorPage() {
       if (nextSalary !== undefined) {
         calculatedNewSalary = String(nextSalary);
       } else {
-        calculatedNewSalary = 'N/A'; // Or some other indicator for max
+        calculatedNewSalary = 'N/A';
       }
     }
     setValue('newSalaryWithIncrement', calculatedNewSalary, { shouldValidate: true });
   }, [december2024Salary, selectedClass, setValue]);
 
-  // Calculate Box 3 based on Box 2
   React.useEffect(() => {
       const newSalaryNum = parseInt(newSalaryWithIncrement, 10);
       if (isNaN(newSalaryNum) || !selectedClass) {
@@ -147,7 +141,6 @@ export default function SalaryFormEditorPage() {
       if (bestMatchSalary !== undefined) {
           setValue('payMatrixSalary', String(bestMatchSalary), { shouldValidate: true });
       } else {
-          // If no salary is greater, it means it's already the highest or beyond. Use the max.
           const maxSalary = Math.max(...targetSalaries);
           setValue('payMatrixSalary', String(maxSalary), { shouldValidate: true });
       }
@@ -157,16 +150,13 @@ export default function SalaryFormEditorPage() {
     if (dateOfJoiningAsSpecificTeacher) {
       const joiningDate = new Date(dateOfJoiningAsSpecificTeacher);
       const joiningYear = joiningDate.getFullYear();
-      const joiningMonth = joiningDate.getMonth(); // 0-11 for Jan-Dec
+      const joiningMonth = joiningDate.getMonth();
 
       let nextIncrementDate;
-
-      // If joining is between Jan 2nd and July 1st (inclusive)
-      if ((joiningMonth > 0 && joiningMonth < 6) || (joiningMonth === 0 && joiningDate.getDate() > 1) || (joiningMonth === 6 && joiningDate.getDate() === 1)) {
-        nextIncrementDate = new Date(joiningYear, 6, 1); // Same year's July 1st
+      if (joiningMonth > 0 && joiningMonth < 6) { 
+        nextIncrementDate = new Date(joiningYear, 6, 1);
       } else {
-        // If joining is between July 2nd and Jan 1st (inclusive)
-        nextIncrementDate = new Date(joiningYear + 1, 0, 1); // Next year's Jan 1st
+        nextIncrementDate = new Date(joiningYear + 1, 0, 1);
       }
       
       setValue('nextIncrementDate', nextIncrementDate, {
@@ -175,7 +165,46 @@ export default function SalaryFormEditorPage() {
     }
   }, [dateOfJoiningAsSpecificTeacher, setValue]);
 
-  const handlePrint = async () => {
+  const onSubmit = (data: FormValues, print: boolean = false) => {
+    startSaveTransition(async () => {
+      const result = await saveAndValidateForm(data);
+
+      if (result.success && result.id) {
+        toast({
+          title: 'सफलतापूर्वक सहेजा गया!',
+          description: `वेतन पर्ची आईडी ${result.id} के साथ सहेजी गई है।`,
+        });
+        if (print) {
+          router.push(`/payslip/${result.id}`);
+        } else {
+          form.reset();
+        }
+      } else {
+        let errorMessage = 'एक अज्ञात त्रुटि हुई।';
+        if (typeof result.errors?.form === 'string') {
+          errorMessage = result.errors.form;
+        } else if (result.errors) {
+            const errorKeys = Object.keys(result.errors);
+            if (errorKeys.length > 0) {
+              const firstErrorKey = errorKeys[0];
+              const firstError = result.errors[firstErrorKey];
+              if (Array.isArray(firstError)) {
+                errorMessage = `${firstErrorKey}: ${firstError[0]}`;
+              } else if(typeof firstError === 'string') {
+                errorMessage = `${firstErrorKey}: ${firstError}`;
+              }
+            }
+        }
+        toast({
+          variant: 'destructive',
+          title: 'सहेजने में विफल',
+          description: errorMessage,
+        });
+      }
+    });
+  };
+
+  const handleSaveAndPrint = async () => {
     const isValid = await form.trigger();
     if (!isValid) {
       toast({
@@ -185,13 +214,21 @@ export default function SalaryFormEditorPage() {
       });
       return;
     }
-    const data = form.getValues();
-    setPrintData(data);
-    setTimeout(() => {
-        window.print();
-        setPrintData(null); // Optional: reset after printing
-    }, 100);
-  };
+    onSubmit(form.getValues(), true);
+  }
+  
+  const handleSave = async () => {
+    const isValid = await form.trigger();
+     if (!isValid) {
+      toast({
+        variant: 'destructive',
+        title: 'अमान्य डेटा',
+        description: 'कृपया फॉर्म में सभी आवश्यक फ़ील्ड सही-सही भरें।',
+      });
+      return;
+    }
+    onSubmit(form.getValues(), false);
+  }
 
   return (
     <FirebaseClientProvider>
@@ -199,10 +236,17 @@ export default function SalaryFormEditorPage() {
         <header className="flex flex-col sm:flex-row justify-between sm:items-center mb-8 gap-4">
           <Logo />
           <div className="flex items-center gap-2 flex-wrap">
-            <Button onClick={handlePrint}>
-              <Printer />
-              प्रिंट
-            </Button>
+              <Button asChild variant="outline">
+                <Link href="/payslips">सहेजी गई पर्चियाँ देखें</Link>
+              </Button>
+              <Button onClick={handleSave} disabled={isSavePending}>
+                {isSavePending ? <Loader2 className="animate-spin"/> : <Save />}
+                सेव
+              </Button>
+              <Button onClick={handleSaveAndPrint} disabled={isSavePending}>
+                {isSavePending ? <Loader2 className="animate-spin"/> : <Printer />}
+                सहेजें और प्रिंट करें
+              </Button>
           </div>
         </header>
 
@@ -210,11 +254,6 @@ export default function SalaryFormEditorPage() {
           <SalaryForm form={form} />
         </main>
       </div>
-      {printData && (
-        <div id="print-area" className="print-only">
-          <PrintPreview data={printData} />
-        </div>
-      )}
     </FirebaseClientProvider>
   );
 }
