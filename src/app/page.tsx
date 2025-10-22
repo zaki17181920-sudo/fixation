@@ -9,18 +9,16 @@ import { Loader2, Printer } from 'lucide-react';
 import { SalaryForm } from '@/components/salary-form';
 import { Logo } from '@/components/logo';
 import { useToast } from '@/hooks/use-toast';
-import { saveAndValidateForm } from './actions';
-import { FirebaseClientProvider } from '@/firebase';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { payMatrix } from '@/lib/pay-matrix';
 import { fitmentMatrix } from '@/lib/fitment-matrix';
 import { schoolData } from '@/lib/school-data';
+import { PrintPreview } from '@/components/print-preview';
+import Link from 'next/link';
 
 export default function SalaryFormEditorPage() {
   const [isSavePending, startSaveTransition] = React.useTransition();
   const { toast } = useToast();
-  const router = useRouter();
+  const [printData, setPrintData] = React.useState<FormValues | null>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -152,10 +150,11 @@ export default function SalaryFormEditorPage() {
       const joiningMonth = joiningDate.getMonth();
 
       let nextIncrementDate;
-      if (joiningMonth >= 0 && joiningMonth <= 5) { // Jan to Jun
-        nextIncrementDate = new Date(joiningDate.getFullYear(), 6, 1); // 1st July of same year
-      } else { // Jul to Dec
+      // If joining is between Jan 2 and Jul 1 (inclusive)
+      if (joiningDate.getTime() > new Date(joiningDate.getFullYear(), 0, 1).getTime() && joiningDate.getTime() <= new Date(joiningDate.getFullYear(), 6, 1).getTime()) {
         nextIncrementDate = new Date(joiningDate.getFullYear() + 1, 0, 1); // 1st Jan of next year
+      } else {
+        nextIncrementDate = new Date(joiningDate.getFullYear() + 1, 6, 1); // 1st July of next year
       }
       
       setValue('nextIncrementDate', nextIncrementDate, {
@@ -163,41 +162,7 @@ export default function SalaryFormEditorPage() {
       });
     }
   }, [dateOfJoiningAsSpecificTeacher, setValue]);
-
-  const onSubmitAndPrint = (data: FormValues) => {
-    startSaveTransition(async () => {
-      const result = await saveAndValidateForm(data);
-
-      if (result.success && result.id) {
-        toast({
-          title: 'सफलतापूर्वक सहेजा गया!',
-          description: `वेतन पर्ची आईडी ${result.id} के साथ सहेजी गई है।`,
-        });
-        router.push(`/payslip/${result.id}`);
-      } else {
-        let errorMessage = 'एक अज्ञात त्रुटि हुई।';
-        if (typeof result.errors?.form === 'string') {
-          errorMessage = result.errors.form;
-        } else if (result.errors) {
-            const errorKeys = Object.keys(result.errors);
-            if (errorKeys.length > 0) {
-              const firstErrorKey = errorKeys[0];
-              const firstError = result.errors[firstErrorKey];
-              if (Array.isArray(firstError)) {
-                errorMessage = `${firstErrorKey}: ${firstError[0]}`;
-              } else if(typeof firstError === 'string') {
-                errorMessage = `${firstErrorKey}: ${firstError}`;
-              }
-            }
-        }
-        toast({
-          variant: 'destructive',
-          title: 'सहेजने में विफल',
-          description: errorMessage,
-        });
-      }
-    });
-  };
+  
 
   const handlePrint = async () => {
     const isValid = await form.trigger();
@@ -209,18 +174,20 @@ export default function SalaryFormEditorPage() {
       });
       return;
     }
-    onSubmitAndPrint(form.getValues());
+    const data = form.getValues();
+    setPrintData(data);
+    setTimeout(() => {
+        window.print();
+        setPrintData(null);
+    }, 100);
   }
 
   return (
-    <FirebaseClientProvider>
+    <>
       <div id="form-container" className="container mx-auto p-4 md:p-8 no-print">
         <header className="flex flex-col sm:flex-row justify-between sm:items-center mb-8 gap-4">
           <Logo />
           <div className="flex items-center gap-2 flex-wrap">
-              <Button asChild variant="outline">
-                <Link href="/payslips">सहेजी गई पर्चियाँ देखें</Link>
-              </Button>
               <Button onClick={handlePrint} disabled={isSavePending}>
                 {isSavePending ? <Loader2 className="animate-spin"/> : <Printer />}
                 प्रिंट
@@ -232,6 +199,11 @@ export default function SalaryFormEditorPage() {
           <SalaryForm form={form} />
         </main>
       </div>
-    </FirebaseClientProvider>
+      {printData && (
+        <div id="print-area">
+          <PrintPreview data={printData} />
+        </div>
+      )}
+    </>
   );
 }

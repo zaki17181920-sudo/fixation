@@ -99,11 +99,11 @@
   }
   
   @media print {
+    body {
+      visibility: hidden;
+    }
     .no-print {
       display: none !important;
-    }
-    body * {
-      visibility: hidden;
     }
     #print-area, #print-area * {
       visibility: visible;
