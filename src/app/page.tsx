@@ -81,76 +81,77 @@ export default function SalaryFormEditorPage() {
   React.useEffect(() => {
     const salaryNum = parseInt(december2024Salary, 10);
     if (isNaN(salaryNum) || !selectedClass) {
-        setValue('newSalaryWithIncrement', '');
-        setValue('payMatrixSalary', '');
-        return;
+      setValue('newSalaryWithIncrement', '');
+      return;
     }
 
     const gradePayMapping: Record<string, number> = {
-        '1-5': 2000,
-        '6-8': 2400,
-        '9-10': 2800,
-        '11-12': 2800,
+      '1-5': 2000,
+      '6-8': 2400,
+      '9-10': 2800,
+      '11-12': 2800,
     };
     const gradePay = gradePayMapping[selectedClass];
     if (gradePay === undefined || !payMatrix[gradePay]) {
-        setValue('newSalaryWithIncrement', '');
-        setValue('payMatrixSalary', '');
-        return;
+      setValue('newSalaryWithIncrement', '');
+      return;
     }
 
     const salaryList = payMatrix[gradePay];
     let foundIndex: number | null = null;
-
+    
+    // Find the index of the current salary
     for (const key in salaryList) {
-        if (salaryList[key] === salaryNum) {
-            foundIndex = parseInt(key, 10);
-            break;
-        }
+      if (salaryList[key] === salaryNum) {
+        foundIndex = parseInt(key, 10);
+        break;
+      }
     }
-
+    
     let calculatedNewSalary = '';
     if (foundIndex !== null) {
-        const nextIndex = foundIndex + 1;
-        const nextSalary = salaryList[nextIndex];
-        if (nextSalary !== undefined) {
-            calculatedNewSalary = String(nextSalary);
-        } else {
-            calculatedNewSalary = 'N/A'; // Or some other indicator for max
-        }
+      const nextIndex = foundIndex + 1;
+      const nextSalary = salaryList[nextIndex];
+      if (nextSalary !== undefined) {
+        calculatedNewSalary = String(nextSalary);
+      } else {
+        calculatedNewSalary = 'N/A'; // Or some other indicator for max
+      }
     }
     setValue('newSalaryWithIncrement', calculatedNewSalary, { shouldValidate: true });
-
-    // Now calculate Box 3
-    if (!calculatedNewSalary || isNaN(parseInt(calculatedNewSalary, 10))) {
-        setValue('payMatrixSalary', '');
-        return;
-    }
-    const newSalaryNum = parseInt(calculatedNewSalary, 10);
-
-    const classToFitmentLevel: Record<string, number> = {
-        '1-5': 2,
-        '6-8': 3,
-        '9-10': 5,
-        '11-12': 6,
-    };
-    const targetFitmentLevel = classToFitmentLevel[selectedClass];
-    if (!targetFitmentLevel || !fitmentMatrix[targetFitmentLevel]) {
-        setValue('payMatrixSalary', '');
-        return;
-    }
-
-    const targetSalaries = Object.values(fitmentMatrix[targetFitmentLevel]);
-    let bestMatchSalary = targetSalaries.find(salary => salary >= newSalaryNum);
-
-    if (bestMatchSalary !== undefined) {
-        setValue('payMatrixSalary', String(bestMatchSalary), { shouldValidate: true });
-    } else {
-        const maxSalary = Math.max(...targetSalaries);
-        setValue('payMatrixSalary', String(maxSalary), { shouldValidate: true });
-    }
-
   }, [december2024Salary, selectedClass, setValue]);
+
+  // Calculate Box 3 based on Box 2
+  React.useEffect(() => {
+      const newSalaryNum = parseInt(newSalaryWithIncrement, 10);
+      if (isNaN(newSalaryNum) || !selectedClass) {
+        setValue('payMatrixSalary', '');
+        return;
+      }
+
+      const classToFitmentLevel: Record<string, number> = {
+          '1-5': 2,
+          '6-8': 3,
+          '9-10': 5,
+          '11-12': 6,
+      };
+      const targetFitmentLevel = classToFitmentLevel[selectedClass];
+      if (!targetFitmentLevel || !fitmentMatrix[targetFitmentLevel]) {
+          setValue('payMatrixSalary', '');
+          return;
+      }
+
+      const targetSalaries = Object.values(fitmentMatrix[targetFitmentLevel]);
+      let bestMatchSalary = targetSalaries.find(salary => salary >= newSalaryNum);
+
+      if (bestMatchSalary !== undefined) {
+          setValue('payMatrixSalary', String(bestMatchSalary), { shouldValidate: true });
+      } else {
+          // If no salary is greater, it means it's already the highest or beyond. Use the max.
+          const maxSalary = Math.max(...targetSalaries);
+          setValue('payMatrixSalary', String(maxSalary), { shouldValidate: true });
+      }
+  }, [newSalaryWithIncrement, selectedClass, setValue]);
 
   React.useEffect(() => {
     if (dateOfJoiningAsSpecificTeacher) {
@@ -222,5 +223,3 @@ export default function SalaryFormEditorPage() {
     </FirebaseClientProvider>
   );
 }
-
-    
