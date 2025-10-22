@@ -193,9 +193,8 @@ export default function SalaryFormEditorPage() {
           <SalaryForm form={form} />
         </main>
       </div>
-      <div id="print-area" className="container mx-auto p-4 md:p-8 mt-8 border-t">
-          <h2 className="text-2xl font-bold text-center mb-4">प्रिंट पूर्वावलोकन</h2>
-          <div className="max-w-4xl mx-auto shadow-lg border">
+      <div id="print-area" className="hidden">
+          <div className="max-w-4xl mx-auto">
             <PrintPreview ref={componentRef} data={allFormValues as FormValues} />
           </div>
       </div>

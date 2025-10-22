@@ -98,14 +98,12 @@
     display: none;
   }
   #print-area {
-    display: block;
+    display: block !important;
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-  }
-  #print-area h2, #print-area .border-t {
-    display: none;
+    padding: 0;
   }
   #print-area .max-w-4xl {
     max-width: 100%;
