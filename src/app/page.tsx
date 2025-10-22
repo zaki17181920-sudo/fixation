@@ -52,6 +52,7 @@ export default function SalaryFormEditorPage() {
   const newSalaryWithIncrement = useWatch({ control, name: 'newSalaryWithIncrement' });
   const selectedClass = useWatch({ control, name: 'className' });
   const udiseCode = useWatch({ control, name: 'udiseCode' });
+  const allFormValues = useWatch({ control });
 
   React.useEffect(() => {
     if (udiseCode && schoolData[udiseCode]) {
@@ -196,8 +197,11 @@ export default function SalaryFormEditorPage() {
           <SalaryForm form={form} />
         </main>
       </div>
-      <div style={{ display: "none" }}>
-          <PrintPreview ref={componentRef} data={form.getValues()} />
+      <div className="container mx-auto p-4 md:p-8 mt-8 border-t">
+          <h2 className="text-2xl font-bold text-center mb-4">प्रिंट पूर्वावलोकन</h2>
+          <div className="max-w-4xl mx-auto shadow-lg border">
+            <PrintPreview ref={componentRef} data={allFormValues as FormValues} />
+          </div>
       </div>
     </>
   );
