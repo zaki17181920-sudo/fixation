@@ -101,7 +101,7 @@ export const PrintPreview = React.forwardRef<HTMLDivElement, PrintPreviewProps>(
         </table>
 
         <footer className="mt-20 text-[13px]">
-          <div className="flex justify-between text-center mb-16">
+          <div className="flex justify-between text-center">
               <div>
                   <p className="pt-1">शिक्षक का हस्ताक्षर</p>
               </div>
@@ -117,8 +117,6 @@ export const PrintPreview = React.forwardRef<HTMLDivElement, PrintPreviewProps>(
               <div>
                   <p className="pt-1">प्रखण्ड शिक्षा पदाधिकारी <br/> साहेबगंज मुजफ्फरपुर।</p>
               </div>
-          </div>
-          <div className="flex justify-end text-center">
               <div>
                   <p className="pt-1">जिला कार्यक्रम पदाधिकारी <br/> स्थापना, मुजफ्फरपुर।</p>
               </div>
