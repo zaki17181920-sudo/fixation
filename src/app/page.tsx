@@ -157,18 +157,22 @@ export default function SalaryFormEditorPage() {
     if (dateOfJoiningAsSpecificTeacher) {
       const joiningDate = new Date(dateOfJoiningAsSpecificTeacher);
       const joiningYear = joiningDate.getFullYear();
-      const joiningMonth = joiningDate.getMonth();
-      const joiningDay = joiningDate.getDate();
+      const joiningMonth = joiningDate.getMonth(); // 0-11 for Jan-Dec
 
       let nextIncrementDate;
 
-      if (joiningMonth === 0 && joiningDay === 1) { 
-        nextIncrementDate = new Date(joiningYear, 6, 1); 
-      } else if (joiningMonth < 6 || (joiningMonth === 6 && joiningDay === 1)) { 
-         nextIncrementDate = new Date(joiningYear + 1, 0, 1);
-      }
-      else { 
-        nextIncrementDate = new Date(joiningYear + 1, 6, 1);
+      // If joining is between Jan 2nd and July 1st (inclusive)
+      if ((joiningMonth > 0 && joiningMonth < 6) || (joiningMonth === 0 && joiningDate.getDate() > 1) || (joiningMonth === 6 && joiningDate.getDate() === 1)) {
+        nextIncrementDate = new Date(joiningYear + 1, 0, 1); // Next year's Jan 1st
+      } else {
+        // If joining is between July 2nd and Jan 1st (inclusive)
+        nextIncrementDate = new Date(joiningYear, 6, 1); // Same year's July 1st
+        if(nextIncrementDate <= joiningDate) {
+          nextIncrementDate.setFullYear(joiningYear + 1);
+          nextIncrementDate.setMonth(6);
+        } else {
+           nextIncrementDate.setMonth(6);
+        }
       }
       
       setValue('nextIncrementDate', nextIncrementDate, {

@@ -7,7 +7,7 @@ type PrintPreviewProps = {
   data: FormValues;
 };
 
-const DataRow = ({ label, value, number }: { label: string; value?: string | Date | number | null; number?: string }) => {
+const DataRow = ({ label, value, number, subLabel }: { label: string; value?: string | Date | number | null; number?: string; subLabel?: string }) => {
   let displayValue: string;
   if (value instanceof Date && !isNaN(value.getTime())) {
     try {
@@ -22,12 +22,21 @@ const DataRow = ({ label, value, number }: { label: string; value?: string | Dat
   }
 
   return (
-    <tr>
-      <td className="py-1 pr-2 w-8 align-top">{number}</td>
-      <td className="py-1 pr-2 font-medium align-top w-2/5">{label}</td>
-      <td className="w-4 py-1 text-center align-top">:</td>
-      <td className="w-auto py-1 font-body uppercase">{displayValue}</td>
-    </tr>
+    <>
+      <tr>
+        <td className="py-1 pr-2 w-8 align-top">{number}</td>
+        <td className="py-1 pr-2 font-medium align-top w-2/5">{label}</td>
+        <td className="w-4 py-1 text-center align-top">:</td>
+        <td className="w-auto py-1 font-body uppercase">{displayValue}</td>
+      </tr>
+      {subLabel && (
+        <tr>
+          <td colSpan={4} className="text-[10px] pl-8 pb-1 pt-0 normal-case">
+            {subLabel}
+          </td>
+        </tr>
+      )}
+    </>
   );
 };
 
@@ -75,17 +84,12 @@ export function PrintPreview({ data }: PrintPreviewProps) {
             <DataRow number="12." label="बैंक का नाम" value={data.bankDetails} />
             <DataRow number="13." label="बैंक खाता संख्या" value={data.bankAccountNumber} />
             <DataRow number="14." label="IFSC कोड" value={data.ifscCode} />
-            <tr>
-              <td className="py-1 pr-2 w-8 align-top">15.</td>
-              <td className="py-1 pr-2 font-medium align-top w-2/5">स्थानीय निकाय शिक्षक के रूप में प्रथम योगदान की तिथि</td>
-              <td className="w-4 py-1 text-center align-top">:</td>
-              <td className="w-auto py-1 font-body uppercase">{formatDate(data.dateOfFirstJoiningAsLocalBodyTeacher)}</td>
-            </tr>
-             <tr>
-              <td colSpan={4} className="text-[10px] pl-8 pb-1 pt-0 normal-case">
-              (शिक्षा मित्र के रूप में जो 01/07/2006 के पूर्व नियोजित है वे पूर्व नियोजित हैं वे योगदान की तिथि 01.07.2006 अंकित करेंगे।)
-              </td>
-            </tr>
+            <DataRow 
+              number="15." 
+              label="स्थानीय निकाय शिक्षक के रूप में प्रथम योगदान की तिथि" 
+              value={formatDate(data.dateOfFirstJoiningAsLocalBodyTeacher)} 
+              subLabel="(शिक्षा मित्र के रूप में जो 01/07/2006 के पूर्व नियोजित है वे पूर्व नियोजित हैं वे योगदान की तिथि 01.07.2006 अंकित करेंगे।)"
+            />
             <DataRow number="16." label="प्रशिक्षित वेतनमान प्राप्त करने की तिथि" value={formatDate(data.dateOfReceivingTrainedPayScale)} />
             <DataRow number="17." label="क्या स्थानीय निकाय शिक्षक के रूप में योगदान तिथि से अद्यावधि तक कोई सेवा में टूट हैं (हाँ / नहीं)?" value={data.serviceBreak || ''} />
             <DataRow number="18." label="स्थानीय निकाय शिक्षक के रूप में माह दिसम्बर 2024 में प्राप्त मूल वेतन" value={data.december2024Salary} />
