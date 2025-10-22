@@ -103,22 +103,18 @@ export const PrintPreview = React.forwardRef<HTMLDivElement, PrintPreviewProps>(
         <footer className="mt-20 text-[13px]">
             <div className="grid grid-cols-4 gap-4 text-center">
                 <div>
-                    <p className="mt-8">......................................</p>
                     <p className="pt-1">शिक्षक का हस्ताक्षर</p>
                 </div>
                  <div>
-                    <p className="mt-8">......................................</p>
                     <p className="pt-1">प्रधानाध्यापक का <br/> हस्ताक्षर एवं मुहर</p>
                 </div>
                 <div>
-                    <p className="mt-8">......................................</p>
                     <p className="pt-1">प्रधानाध्यापक</p>
                     <p>चिन्हित मध्य</p>
                     <p>विद्यालय का</p>
                     <p>हस्ताक्षर एवं मुहर</p>
                 </div>
                  <div>
-                    <p className="mt-8">......................................</p>
                     <p className="pt-1">प्रखण्ड शिक्षा पदाधिकारी <br/> साहेबगंज मुजफ्फरपुर।</p>
                 </div>
                  <div className="col-start-4">
