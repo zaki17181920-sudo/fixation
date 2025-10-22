@@ -48,93 +48,85 @@ export default function SalaryFormEditorPage() {
     },
   });
 
-  const dateOfJoiningAsSpecificTeacher = useWatch({
-    control: form.control,
-    name: 'dateOfJoiningAsSpecificTeacher',
-  });
+  const { control, setValue } = form;
 
-  const dateOfTraining = useWatch({
-    control: form.control,
-    name: 'dateOfTraining',
-  });
-
-  const december2024Salary = useWatch({ control: form.control, name: 'december2024Salary' });
-  const newSalaryWithIncrement = useWatch({ control: form.control, name: 'newSalaryWithIncrement' });
-  const selectedClass = useWatch({ control: form.control, name: 'className' });
-
-  const udiseCode = useWatch({ control: form.control, name: 'udiseCode' });
+  const dateOfJoiningAsSpecificTeacher = useWatch({ control, name: 'dateOfJoiningAsSpecificTeacher' });
+  const dateOfTraining = useWatch({ control, name: 'dateOfTraining' });
+  const december2024Salary = useWatch({ control, name: 'december2024Salary' });
+  const newSalaryWithIncrement = useWatch({ control, name: 'newSalaryWithIncrement' });
+  const selectedClass = useWatch({ control, name: 'className' });
+  const udiseCode = useWatch({ control, name: 'udiseCode' });
 
   React.useEffect(() => {
     if (udiseCode && schoolData[udiseCode]) {
       const { name, block } = schoolData[udiseCode];
-      form.setValue('schoolName', name, { shouldValidate: true });
-      form.setValue('block', block, { shouldValidate: true });
+      setValue('schoolName', name, { shouldValidate: true });
+      setValue('block', block, { shouldValidate: true });
     }
-  }, [udiseCode, form]);
+  }, [udiseCode, setValue]);
 
   React.useEffect(() => {
     if (dateOfTraining) {
-      form.setValue('dateOfReceivingTrainedPayScale', dateOfTraining, { shouldValidate: true });
+      setValue('dateOfReceivingTrainedPayScale', dateOfTraining, { shouldValidate: true });
     }
-  }, [dateOfTraining, form]);
+  }, [dateOfTraining, setValue]);
 
   React.useEffect(() => {
     if (dateOfJoiningAsSpecificTeacher) {
-      form.setValue('dateOfJoiningForNewSalary', dateOfJoiningAsSpecificTeacher, { shouldValidate: true });
+      setValue('dateOfJoiningForNewSalary', dateOfJoiningAsSpecificTeacher, { shouldValidate: true });
     }
-  }, [dateOfJoiningAsSpecificTeacher, form]);
+  }, [dateOfJoiningAsSpecificTeacher, setValue]);
 
-  
-  // Calculate Box 2 based on Box 1
+  // Calculate Box 2 and 3 based on Box 1 and selected class
   React.useEffect(() => {
     const salaryNum = parseInt(december2024Salary, 10);
-    if (isNaN(salaryNum)) {
-      form.setValue('newSalaryWithIncrement', '');
-      return;
-    }
-
-    let foundLevel: number | null = null;
-    let foundIndex: number | null = null;
-
-    // Find the salary in the payMatrix (Anulagnak-Kha)
-    for (const level in payMatrix) {
-      const gradePay = parseInt(level, 10);
-      const salaries = payMatrix[gradePay];
-      const salaryValues = Object.values(salaries);
-      const index = salaryValues.indexOf(salaryNum);
-      
-      if (index !== -1) {
-        foundLevel = gradePay;
-        // The keys in payMatrix are strings, so we need to find the key for the found index
-        const foundKey = Object.keys(salaries).find(key => salaries[parseInt(key)] === salaryNum);
-        if(foundKey) {
-            foundIndex = parseInt(foundKey);
-        }
-        break;
-      }
-    }
-    
-    if (foundLevel !== null && foundIndex !== null) {
-      const nextIndex = foundIndex + 1;
-      const nextSalary = payMatrix[foundLevel][nextIndex];
-      if (nextSalary !== undefined) {
-        form.setValue('newSalaryWithIncrement', String(nextSalary), { shouldValidate: true });
-      } else {
-        form.setValue('newSalaryWithIncrement', 'N/A', { shouldValidate: true }); // Or some other indicator for max
-      }
-    } else {
-      form.setValue('newSalaryWithIncrement', '', { shouldValidate: true });
-    }
-  }, [december2024Salary, form]);
-
-// Calculate Box 3 based on Box 2 and selected class
-React.useEffect(() => {
-    if (!newSalaryWithIncrement || !selectedClass || isNaN(parseInt(newSalaryWithIncrement, 10))) {
-        form.setValue('payMatrixSalary', '');
+    if (isNaN(salaryNum) || !selectedClass) {
+        setValue('newSalaryWithIncrement', '');
+        setValue('payMatrixSalary', '');
         return;
     }
 
-    const newSalaryNum = parseInt(newSalaryWithIncrement, 10);
+    const gradePayMapping: Record<string, number> = {
+        '1-5': 2000,
+        '6-8': 2400,
+        '9-10': 2800,
+        '11-12': 2800,
+    };
+    const gradePay = gradePayMapping[selectedClass];
+    if (gradePay === undefined || !payMatrix[gradePay]) {
+        setValue('newSalaryWithIncrement', '');
+        setValue('payMatrixSalary', '');
+        return;
+    }
+
+    const salaryList = payMatrix[gradePay];
+    let foundIndex: number | null = null;
+
+    for (const key in salaryList) {
+        if (salaryList[key] === salaryNum) {
+            foundIndex = parseInt(key, 10);
+            break;
+        }
+    }
+
+    let calculatedNewSalary = '';
+    if (foundIndex !== null) {
+        const nextIndex = foundIndex + 1;
+        const nextSalary = salaryList[nextIndex];
+        if (nextSalary !== undefined) {
+            calculatedNewSalary = String(nextSalary);
+        } else {
+            calculatedNewSalary = 'N/A'; // Or some other indicator for max
+        }
+    }
+    setValue('newSalaryWithIncrement', calculatedNewSalary, { shouldValidate: true });
+
+    // Now calculate Box 3
+    if (!calculatedNewSalary || isNaN(parseInt(calculatedNewSalary, 10))) {
+        setValue('payMatrixSalary', '');
+        return;
+    }
+    const newSalaryNum = parseInt(calculatedNewSalary, 10);
 
     const classToFitmentLevel: Record<string, number> = {
         '1-5': 2,
@@ -143,31 +135,22 @@ React.useEffect(() => {
         '11-12': 6,
     };
     const targetFitmentLevel = classToFitmentLevel[selectedClass];
-    
     if (!targetFitmentLevel || !fitmentMatrix[targetFitmentLevel]) {
-      form.setValue('payMatrixSalary', '');
-      return;
+        setValue('payMatrixSalary', '');
+        return;
     }
 
     const targetSalaries = Object.values(fitmentMatrix[targetFitmentLevel]);
-
-    // Find the salary in the target fitment matrix that is just >= newSalaryWithIncrement
     let bestMatchSalary = targetSalaries.find(salary => salary >= newSalaryNum);
 
     if (bestMatchSalary !== undefined) {
-        form.setValue('payMatrixSalary', String(bestMatchSalary), { shouldValidate: true });
+        setValue('payMatrixSalary', String(bestMatchSalary), { shouldValidate: true });
     } else {
-        // If no salary is found (e.g., new salary is higher than all in matrix), use the max salary from that level.
-        if (targetSalaries.length > 0) {
-            const maxSalary = Math.max(...targetSalaries);
-            form.setValue('payMatrixSalary', String(maxSalary), { shouldValidate: true });
-        } else {
-            form.setValue('payMatrixSalary', '', { shouldValidate: true });
-        }
+        const maxSalary = Math.max(...targetSalaries);
+        setValue('payMatrixSalary', String(maxSalary), { shouldValidate: true });
     }
 
-}, [newSalaryWithIncrement, selectedClass, form]);
-
+  }, [december2024Salary, selectedClass, setValue]);
 
   React.useEffect(() => {
     if (dateOfJoiningAsSpecificTeacher) {
@@ -178,32 +161,26 @@ React.useEffect(() => {
 
       let nextIncrementDate;
 
-      // This logic seems incorrect based on standard rules (July 1st), but keeping as is.
-      // Standard rule: If joined between Jan 2 and July 1, increment is on Jan 1 of next year.
-      // If joined between July 2 and Jan 1, increment is on July 1 of next year.
-      // The current logic is simpler.
-      if (joiningMonth === 0 && joiningDay === 1) { // If joining is Jan 1st
-        nextIncrementDate = new Date(joiningYear, 6, 1); // Next increment is July 1st of same year
-      } else if (joiningMonth < 6 || (joiningMonth === 6 && joiningDay === 1)) { // If joining is between Jan 2nd and July 1st
-         nextIncrementDate = new Date(joiningYear + 1, 0, 1); // Next increment is Jan 1st of next year
+      if (joiningMonth === 0 && joiningDay === 1) { 
+        nextIncrementDate = new Date(joiningYear, 6, 1); 
+      } else if (joiningMonth < 6 || (joiningMonth === 6 && joiningDay === 1)) { 
+         nextIncrementDate = new Date(joiningYear + 1, 0, 1);
       }
-      else { // If joining is after July 1st
-        nextIncrementDate = new Date(joiningYear + 1, 6, 1); // Next increment is July 1st of next year
+      else { 
+        nextIncrementDate = new Date(joiningYear + 1, 6, 1);
       }
       
-      form.setValue('nextIncrementDate', nextIncrementDate, {
+      setValue('nextIncrementDate', nextIncrementDate, {
         shouldValidate: true,
       });
     }
-  }, [dateOfJoiningAsSpecificTeacher, form]);
-
+  }, [dateOfJoiningAsSpecificTeacher, setValue]);
 
   const handlePrint = () => {
     const data = form.getValues();
     const parsedData = formSchema.safeParse(data);
 
     if (!parsedData.success) {
-      // If validation fails, show toast with errors
       const errorMessages = Object.values(parsedData.error.flatten().fieldErrors).flat().join('\n');
       toast({
         variant: 'destructive',
@@ -216,10 +193,9 @@ React.useEffect(() => {
     setPrintData(parsedData.data);
     setTimeout(() => {
       window.print();
-      setPrintData(null); // Clear data after print dialog opens
+      setPrintData(null); 
     }, 100);
   };
-
 
   return (
     <FirebaseClientProvider>
@@ -246,3 +222,5 @@ React.useEffect(() => {
     </FirebaseClientProvider>
   );
 }
+
+    
