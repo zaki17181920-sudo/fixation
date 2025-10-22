@@ -92,41 +92,58 @@ export default function SalaryFormEditorPage() {
 
   
   React.useEffect(() => {
-    if (!newSalaryWithIncrement || !selectedClass) return;
-
+    if (!newSalaryWithIncrement || !levelForDecember) return;
+  
     const newSalaryNum = parseInt(newSalaryWithIncrement, 10);
     if (isNaN(newSalaryNum)) return;
     
+    // As per the requirement, we need to find the salary in one level *below*
+    // the current level for pay protection.
+    const currentLevelNum = parseInt(levelForDecember, 10);
+    if (isNaN(currentLevelNum) || currentLevelNum <= 1) return; // Cannot go a level below 1
+    
+    const fitmentLevel = currentLevelNum - 1;
+
+    // Mapping grade pay to fitment matrix level
+    // Assuming level 1 -> 0 grade pay, 2 -> 2000, 3 -> 2400, 4-> 2800 (from payMatrix)
+    // and fitment matrix levels are 2, 3, 4, 5, 6, 7
+    // The requirement is to go one level down.
+    // Example: If current level is 3 (2400 GP), we look at fitment level 2 (I-V).
     const classToFitmentLevel: Record<string, number> = {
         '1-5': 2,
         '6-8': 3,
         '9-10': 5,
         '11-12': 6,
     };
-    const fitmentLevel = classToFitmentLevel[selectedClass];
+    const targetFitmentLevel = classToFitmentLevel[selectedClass];
 
-    if (!fitmentLevel || !fitmentMatrix[fitmentLevel]) return;
-
-    const targetSalaries = fitmentMatrix[fitmentLevel];
+    if (!targetFitmentLevel || !fitmentMatrix[targetFitmentLevel]) return;
+  
+    const targetSalaries = fitmentMatrix[targetFitmentLevel];
     let bestMatchSalary = Infinity;
     
-    // Find the salary in the fitment matrix that is just >= newSalaryWithIncrement
+    // Find the salary in the target fitment matrix that is just >= newSalaryWithIncrement
     for (const key in targetSalaries) {
         const currentSalary = targetSalaries[key];
         if (currentSalary >= newSalaryNum && currentSalary < bestMatchSalary) {
             bestMatchSalary = currentSalary;
         }
     }
-
+  
     if (bestMatchSalary !== Infinity) {
         form.setValue('payMatrixSalary', String(bestMatchSalary), { shouldValidate: true });
     } else {
         // If no salary is found (e.g., new salary is higher than all in matrix), find the max
-        const maxSalary = Math.max(...Object.values(targetSalaries));
-        form.setValue('payMatrixSalary', String(maxSalary), { shouldValidate: true });
+        const salaryValues = Object.values(targetSalaries);
+        if (salaryValues.length > 0) {
+            const maxSalary = Math.max(...salaryValues);
+            // If the new salary is even higher than the max, use the max.
+            form.setValue('payMatrixSalary', String(newSalaryNum > maxSalary ? maxSalary : newSalaryNum), { shouldValidate: true });
+        }
     }
-
-}, [newSalaryWithIncrement, selectedClass, form]);
+  
+  }, [newSalaryWithIncrement, levelForDecember, selectedClass, form]);
+  
 
 
   React.useEffect(() => {
@@ -146,10 +163,12 @@ export default function SalaryFormEditorPage() {
           form.setValue('newSalaryWithIncrement', String(incrementedSalary), { shouldValidate: true });
         } else {
            form.setValue('newSalaryWithIncrement', '', { shouldValidate: true });
+           form.setValue('payMatrixSalary', '', { shouldValidate: true });
         }
       } else {
         form.setValue('december2024Salary', '', { shouldValidate: true });
         form.setValue('newSalaryWithIncrement', '', { shouldValidate: true });
+        form.setValue('payMatrixSalary', '', { shouldValidate: true });
       }
     }
   }, [levelForDecember, indexForDecember, form]);
