@@ -93,7 +93,10 @@ export default function SalaryFormEditorPage() {
     }
 
     const salaryNum = parseInt(december2024Salary, 10);
-    if (isNaN(salaryNum)) return;
+    if (isNaN(salaryNum)) {
+        form.setValue('newSalaryWithIncrement', '', { shouldValidate: true });
+        return;
+    }
 
     let foundLevel: number | null = null;
     let foundIndex: number | null = null;
