@@ -5,7 +5,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { formSchema, type FormValues } from '@/lib/schema';
 import { Button } from '@/components/ui/button';
-import { Loader2, Printer, Save, ShieldCheck } from 'lucide-react';
+import { Loader2, Printer } from 'lucide-react';
 import { SalaryForm } from '@/components/salary-form';
 import { Logo } from '@/components/logo';
 import { useToast } from '@/hooks/use-toast';
@@ -65,7 +65,8 @@ export default function SalaryFormEditorPage() {
   const levelForDecember = useWatch({ control: form.control, name: 'levelForDecember2024Salary' });
   const indexForDecember = useWatch({ control: form.control, name: 'indexForDecember2024Salary' });
   
-  const oldSalary = useWatch({ control: form.control, name: 'december2024Salary' });
+  const newSalaryWithIncrement = useWatch({ control: form.control, name: 'newSalaryWithIncrement' });
+  const selectedClass = useWatch({ control: form.control, name: 'className' });
 
   const udiseCode = useWatch({ control: form.control, name: 'udiseCode' });
 
@@ -75,7 +76,7 @@ export default function SalaryFormEditorPage() {
       form.setValue('schoolName', name, { shouldValidate: true });
       form.setValue('block', block, { shouldValidate: true });
     }
-  }, [udiseCode, form, schoolData]);
+  }, [udiseCode, form]);
 
   React.useEffect(() => {
     if (dateOfTraining) {
@@ -89,78 +90,66 @@ export default function SalaryFormEditorPage() {
     }
   }, [dateOfJoiningAsSpecificTeacher, form]);
 
+  
   React.useEffect(() => {
-    if (!oldSalary || !levelForDecember) return;
-  
-    const oldSalaryNum = parseInt(oldSalary, 10);
-    const oldLevelNum = parseInt(levelForDecember, 10);
-    if (isNaN(oldSalaryNum) || isNaN(oldLevelNum)) return;
-  
-    const targetFitmentLevel = oldLevelNum; 
+    if (!newSalaryWithIncrement || !selectedClass) return;
+
+    const newSalaryNum = parseInt(newSalaryWithIncrement, 10);
+    if (isNaN(newSalaryNum)) return;
     
-    const targetSalaries = fitmentMatrix[targetFitmentLevel];
-    if (!targetSalaries) return;
-    
-    let bestMatch = {
-        level: '',
-        index: '',
-        salary: Infinity,
+    const classToFitmentLevel: Record<string, number> = {
+        '1-5': 2,
+        '6-8': 3,
+        '9-10': 5,
+        '11-12': 6,
     };
-  
-    for (const index in targetSalaries) {
-        const currentSalary = targetSalaries[index];
-        if (currentSalary >= oldSalaryNum && currentSalary < bestMatch.salary) {
-            bestMatch = {
-                level: String(targetFitmentLevel), 
-                index: index,
-                salary: currentSalary,
-            };
-            break;
-        }
-    }
+    const fitmentLevel = classToFitmentLevel[selectedClass];
+
+    if (!fitmentLevel || !fitmentMatrix[fitmentLevel]) return;
+
+    const targetSalaries = fitmentMatrix[fitmentLevel];
+    let bestMatchSalary = Infinity;
     
-    if (bestMatch.salary !== Infinity) {
-        form.setValue('levelForNewSalary', String(Number(bestMatch.level) - 1), { shouldValidate: true });
-        form.setValue('indexForNewSalary', bestMatch.index, { shouldValidate: true });
-        form.setValue('newSalaryWithIncrement', String(bestMatch.salary), { shouldValidate: true });
-    } else {
-        let maxSalary = 0;
-        let maxIndex = '';
-        for (const index in targetSalaries) {
-            if (targetSalaries[index] > maxSalary) {
-                maxSalary = targetSalaries[index];
-                maxIndex = index;
-            }
-        }
-        if (maxSalary > 0) {
-            form.setValue('levelForNewSalary', String(targetFitmentLevel - 1), { shouldValidate: true });
-            form.setValue('indexForNewSalary', maxIndex, { shouldValidate: true });
-            form.setValue('newSalaryWithIncrement', String(maxSalary), { shouldValidate: true });
+    // Find the salary in the fitment matrix that is just >= newSalaryWithIncrement
+    for (const key in targetSalaries) {
+        const currentSalary = targetSalaries[key];
+        if (currentSalary >= newSalaryNum && currentSalary < bestMatchSalary) {
+            bestMatchSalary = currentSalary;
         }
     }
-  }, [oldSalary, levelForDecember, form]);
+
+    if (bestMatchSalary !== Infinity) {
+        form.setValue('payMatrixSalary', String(bestMatchSalary), { shouldValidate: true });
+    } else {
+        // If no salary is found (e.g., new salary is higher than all in matrix), find the max
+        const maxSalary = Math.max(...Object.values(targetSalaries));
+        form.setValue('payMatrixSalary', String(maxSalary), { shouldValidate: true });
+    }
+
+}, [newSalaryWithIncrement, selectedClass, form]);
+
 
   React.useEffect(() => {
     if (levelForDecember && indexForDecember) {
-      const levelMap: { [key: string]: number } = {
-        '1': 0,
-        '2': 2000,
-        '3': 2400,
-        '4': 2800,
-      };
-      const levelKey = levelForDecember;
+      const levelMap: { [key: string]: number } = { '1': 0, '2': 2000, '3': 2400, '4': 2800 };
+      const gradePay = levelMap[levelForDecember];
       const index = parseInt(indexForDecember, 10);
 
-      if (levelMap[levelKey] !== undefined && !isNaN(index) && index >= 0) {
-        const gradePay = levelMap[levelKey];
-        if (payMatrix[gradePay] && payMatrix[gradePay][index] !== undefined) {
-            const salary = payMatrix[gradePay][index];
-            form.setValue('december2024Salary', String(salary), { shouldValidate: true });
+      if (gradePay !== undefined && !isNaN(index) && payMatrix[gradePay] && payMatrix[gradePay][index] !== undefined) {
+        const baseSalary = payMatrix[gradePay][index];
+        form.setValue('december2024Salary', String(baseSalary), { shouldValidate: true });
+
+        // Calculate next increment (Box 2)
+        const nextIndex = index + 1;
+        if (payMatrix[gradePay][nextIndex] !== undefined) {
+          const incrementedSalary = payMatrix[gradePay][nextIndex];
+          form.setValue('newSalaryWithIncrement', String(incrementedSalary), { shouldValidate: true });
         } else {
-            form.setValue('december2024Salary', '', { shouldValidate: true });
+           form.setValue('newSalaryWithIncrement', '', { shouldValidate: true });
         }
       } else {
         form.setValue('december2024Salary', '', { shouldValidate: true });
+        form.setValue('newSalaryWithIncrement', '', { shouldValidate: true });
       }
     }
   }, [levelForDecember, indexForDecember, form]);
@@ -219,7 +208,7 @@ export default function SalaryFormEditorPage() {
         </main>
       </div>
       {printData && (
-        <div className="hidden print:block">
+        <div id="print-area" className="hidden print:block">
           <PrintPreview data={printData} />
         </div>
       )}
