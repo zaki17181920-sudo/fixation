@@ -66,9 +66,9 @@ export function SalaryForm({ form }: SalaryFormProps) {
                     name="competencyApplicationNumber"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>विशिष्ट शिक्षक का आई०डी०सं०</FormLabel>
+                        <FormLabel>सक्षमता आवेदन संख्या</FormLabel>
                         <FormControl>
-                          <Input placeholder="ID संख्या" {...field} />
+                          <Input placeholder="सक्षमता आवेदन संख्या" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -79,9 +79,9 @@ export function SalaryForm({ form }: SalaryFormProps) {
                     name="pran"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>PRAN संख्या</FormLabel>
+                        <FormLabel>PRAN NO.</FormLabel>
                         <FormControl>
-                          <Input placeholder="PRAN संख्या" {...field} />
+                          <Input placeholder="PRAN NO." {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -104,7 +104,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
                     name="teacherName"
                     render={({ field }) => (
                       <FormItem className="md:col-span-2">
-                        <FormLabel>विशिष्ट शिक्षक का नाम</FormLabel>
+                        <FormLabel>शिक्षक का नाम</FormLabel>
                         <FormControl>
                           <Input placeholder="पूरा नाम" {...field} />
                         </FormControl>
@@ -130,9 +130,9 @@ export function SalaryForm({ form }: SalaryFormProps) {
                     name="udiseCode"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>विद्यालय का U-DISE CODE</FormLabel>
+                        <FormLabel>विद्यालय का यू-डायस कोड</FormLabel>
                         <FormControl>
-                          <Input placeholder="U-DISE कोड" {...field} />
+                          <Input placeholder="यू-डायस कोड" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -377,7 +377,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
                     name="efficiencyType"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>दक्षता/BTET/CTET का प्रकार</FormLabel>
+                        <FormLabel>दक्षता/BTET/CTET/STET का प्रकार</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger>
@@ -400,7 +400,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
                       name="dateOfPassingEfficiency"
                       render={({ field }) => (
                         <FormItem className="flex flex-col">
-                          <FormLabel>दक्षता/BTET/CTET उत्तीर्णता की तिथि</FormLabel>
+                          <FormLabel>दक्षता/BTET/CTET/STET उतीर्णता तिथि</FormLabel>
                           <Popover>
                             <PopoverTrigger asChild>
                               <FormControl>
@@ -436,43 +436,15 @@ export function SalaryForm({ form }: SalaryFormProps) {
                         </FormItem>
                       )}
                     />
-                  <FormField
+                     <FormField
                     control={form.control}
-                    name="dateOfReceivingTrainedPayScale"
+                    name="bankDetails"
                     render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel>प्रशिक्षित वेतनमान प्राप्त करने की तिथि</FormLabel>
-                         <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant={"outline"}
-                                className={cn(
-                                  "w-full pl-3 text-left font-normal",
-                                  !field.value && "text-muted-foreground"
-                                )}
-                              >
-                                {field.value ? (
-                                  format(field.value, "dd-MM-yyyy")
-                                ) : (
-                                  <span>एक तारीख चुनें</span>
-                                )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              captionLayout="dropdown-buttons"
-                              fromYear={1980}
-                              toYear={new Date().getFullYear()}
-                              mode="single"
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
+                      <FormItem>
+                        <FormLabel>बैंक का नाम</FormLabel>
+                        <FormControl>
+                          <Input placeholder="बैंक का नाम" {...field} />
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -519,8 +491,49 @@ export function SalaryForm({ form }: SalaryFormProps) {
                     control={form.control}
                     name="dateOfFirstJoiningAsLocalBodyTeacher"
                     render={({ field }) => (
-                      <FormItem className="flex flex-col md:col-span-2">
+                      <FormItem className="flex flex-col">
                         <FormLabel>स्थानीय निकाय शिक्षक के रूप में प्रथम योगदान की तिथि</FormLabel>
+                         <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "w-full pl-3 text-left font-normal",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                {field.value ? (
+                                  format(field.value, "dd-MM-yyyy")
+                                ) : (
+                                  <span>एक तारीख चुनें</span>
+                                )}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              captionLayout="dropdown-buttons"
+                              fromYear={1980}
+                              toYear={new Date().getFullYear()}
+                              mode="single"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                   <FormField
+                    control={form.control}
+                    name="dateOfReceivingTrainedPayScale"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <FormLabel>प्रशिक्षित वेतनमान प्राप्त करने की तिथि</FormLabel>
                          <Popover>
                           <PopoverTrigger asChild>
                             <FormControl>
@@ -560,147 +573,76 @@ export function SalaryForm({ form }: SalaryFormProps) {
                     control={form.control}
                     name="serviceBreak"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="md:col-span-2">
                         <FormLabel>क्या स्थानीय निकाय शिक्षक के रूप में योगदान तिथि से अद्यावधि तक कोई सेवा में टूट हैं (हाँ / नहीं)?</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
+                         <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="चुनें" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="हाँ">हाँ</SelectItem>
+                            <SelectItem value="नहीं">नहीं</SelectItem>
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                   <div className="md:col-span-2 space-y-2">
-                    <FormLabel>स्थानीय निकाय शिक्षक के रूप में विशिष्ट शिक्षक के योगदान तिथि को प्राप्त मूल वेतन</FormLabel>
-                    <div className="grid grid-cols-3 gap-2">
-                        <FormField
-                            control={form.control}
-                            name="levelForDecember2024Salary"
-                            render={({ field }) => (
-                            <FormItem>
-                                <FormControl>
-                                <Input placeholder="Level" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="indexForDecember2024Salary"
-                            render={({ field }) => (
-                            <FormItem>
-                                <FormControl>
-                                <Input placeholder="Index" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="december2024Salary"
-                            render={({ field }) => (
-                            <FormItem>
-                                <FormControl>
-                                <Input type="number" placeholder="मूल वेतन" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                            )}
-                        />
-                    </div>
+                    <FormLabel>स्थानीय निकाय शिक्षक के रूप में माह दिसम्बर 2024 में प्राप्त मूल वेतन</FormLabel>
+                    <FormField
+                        control={form.control}
+                        name="december2024Salary"
+                        render={({ field }) => (
+                        <FormItem>
+                            <FormControl>
+                            <Input type="number" placeholder="मूल वेतन" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )}
+                    />
                   </div>
                    
                   <div className="md:col-span-2 space-y-2">
-                    <FormLabel>विशिष्ट शिक्षक नियमावली 2023 के फिटमेंट मैट्रिक्स 'अनुलग्नक-क' के अनुसार योगदान तिथि को निर्धारित</FormLabel>
-                    <div className="grid grid-cols-1 gap-4">
+                    <FormLabel>विशिष्ट शिक्षक के रूप में योगदान की तिथि को स्थानीय निकाय शिक्षक के रूप में अनुमान्य वेतन वृद्धि के साथ प्राप्त होने वाला मूल वेतन</FormLabel>
                       <FormField
                         control={form.control}
-                        name="dateOfJoiningForNewSalary"
+                        name="newSalaryWithIncrement"
                         render={({ field }) => (
-                          <FormItem className="flex flex-col">
-                            <FormLabel>योगदान तिथि</FormLabel>
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <FormControl>
-                                  <Button
-                                    variant={"outline"}
-                                    className={cn(
-                                      "w-full pl-3 text-left font-normal",
-                                      !field.value && "text-muted-foreground"
-                                    )}
-                                  >
-                                    {field.value ? (
-                                      format(field.value, "dd-MM-yyyy")
-                                    ) : (
-                                      <span>एक तारीख चुनें</span>
-                                    )}
-                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                  </Button>
-                                </FormControl>
-                              </PopoverTrigger>
-                              <PopoverContent className="w-auto p-0" align="start">
-                                <Calendar
-                                  captionLayout="dropdown-buttons"
-                                  fromYear={1980}
-                                  toYear={new Date().getFullYear()}
-                                  mode="single"
-                                  selected={field.value}
-                                  onSelect={field.onChange}
-                                  initialFocus
-                                />
-                              </PopoverContent>
-                            </Popover>
+                        <FormItem>
+                            <FormControl>
+                            <Input type="number" placeholder="मूल वेतन" {...field} />
+                            </FormControl>
                             <FormMessage />
-                          </FormItem>
+                        </FormItem>
                         )}
-                      />
-                      <div className="grid grid-cols-3 gap-2">
-                          <FormField
-                              control={form.control}
-                              name="levelForNewSalary"
-                              render={({ field }) => (
-                              <FormItem>
-                                  <FormControl>
-                                  <Input placeholder="Level" {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                              </FormItem>
-                              )}
-                          />
-                          <FormField
-                              control={form.control}
-                              name="indexForNewSalary"
-                              render={({ field }) => (
-                              <FormItem>
-                                  <FormControl>
-                                  <Input placeholder="Index" {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                              </FormItem>
-                              )}
-                          />
-                          <FormField
-                              control={form.control}
-                              name="newSalaryWithIncrement"
-                              render={({ field }) => (
-                              <FormItem>
-                                  <FormControl>
-                                  <Input type="number" placeholder="मूल वेतन" {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                              </FormItem>
-                              )}
-                          />
-                      </div>
-                    </div>
+                    />
+                  </div>
+                   <div className="md:col-span-2 space-y-2">
+                    <FormLabel>विशिष्ट शिक्षक के रूप में पे-मैट्रिक के अनुरूप में मूल वेतन</FormLabel>
+                      <FormField
+                        control={form.control}
+                        name="payMatrixSalary"
+                        render={({ field }) => (
+                        <FormItem>
+                            <FormControl>
+                            <Input type="number" placeholder="मूल वेतन" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )}
+                    />
                   </div>
                   <FormField
                     control={form.control}
                     name="nextIncrementDate"
                     render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel>अगली वेतन वृद्धि तिथि</FormLabel>                         <Popover>
+                      <FormItem className="flex flex-col md:col-span-2">
+                        <FormLabel>अगली वेतन वृद्धि तिथि</FormLabel>                         
+                        <Popover>
                           <PopoverTrigger asChild>
                             <FormControl>
                               <Button

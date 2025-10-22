@@ -7,27 +7,24 @@ type PrintPreviewProps = {
   data: FormValues;
 };
 
-const DataRow = ({ label, value, number, wideLabel = false }: { label: string; value?: string | Date | number; number?: string, wideLabel?: boolean }) => {
+const DataRow = ({ label, value, number }: { label: string; value?: string | Date | number | null; number?: string }) => {
   let displayValue: string;
-  if (value instanceof Date) {
+  if (value instanceof Date && !isNaN(value.getTime())) {
     try {
-      // Check if the date is valid before formatting
-      if (isNaN(value.getTime())) {
-        displayValue = '..............................';
-      } else {
-        displayValue = format(value, 'dd-MM-yyyy');
-      }
+      displayValue = format(value, 'dd-MM-yyyy');
     } catch (e) {
       displayValue = '..............................';
     }
+  } else if (value) {
+    displayValue = String(value);
   } else {
-    displayValue = value ? String(value) : '..............................';
+    displayValue = '..............................';
   }
 
   return (
-    <tr className="border-b-0">
+    <tr>
       <td className="py-1 pr-2 w-8 align-top">{number}</td>
-      <td className={`py-1 pr-2 font-medium align-top ${wideLabel ? 'w-2/5' : 'w-1/3'}`}>{label}</td>
+      <td className="py-1 pr-2 font-medium align-top w-2/5">{label}</td>
       <td className="w-4 py-1 text-center align-top">:</td>
       <td className="w-auto py-1 font-body uppercase">{displayValue}</td>
     </tr>
@@ -36,7 +33,7 @@ const DataRow = ({ label, value, number, wideLabel = false }: { label: string; v
 
 
 export function PrintPreview({ data }: PrintPreviewProps) {
-  const formatDate = (date: Date | undefined) => {
+  const formatDate = (date: Date | undefined | null) => {
     if (!date || isNaN(date.getTime())) return '..............................';
     try {
       return format(date, 'dd-MM-yyyy');
@@ -44,84 +41,84 @@ export function PrintPreview({ data }: PrintPreviewProps) {
       return '..............................';
     }
   }
-  
-  const contributionDateForSalary = data.dateOfJoiningAsSpecificTeacher ? formatDate(data.dateOfJoiningAsSpecificTeacher) : '..............................';
-  const salaryText = `को Level ${data.levelForDecember2024Salary || '..........'} Index ${data.indexForDecember2024Salary || '..........'} में प्राप्त मूल वेतन ${data.december2024Salary || '..............................'}`;
-  const newSalaryText = `को निर्धारित Level-${data.levelForNewSalary || '.....'}, Index ${data.indexForNewSalary || '............'} मूल वेतन ${data.newSalaryWithIncrement || '..............................'}`;
-  const contributionDate = data.dateOfJoiningForNewSalary ? formatDate(data.dateOfJoiningForNewSalary) : '..............................';
 
   return (
     <div id="print-area" className="p-10 bg-white text-black font-body text-[13px] leading-tight">
-      <header className="text-center mb-4 mt-8">
-        <h1 className="text-[20px] font-bold uppercase">कार्यालय, जिला शिक्षा पदाधिकारी, पूर्वी चम्पारण, मोतिहारी</h1>
-        <h2 className="text-[18px] font-bold uppercase">(स्थापना शाखा)</h2>
-        <p className="text-[14px] mt-1 max-w-2xl mx-auto">
-        (निदेशक (प्रा०शि०), शिक्षा विभाग, बिहार सरकार के पत्रांक-281 दिनांक 23.01.2025 के आलोक में)
+      <header className="text-center mb-4">
+        <h1 className="text-[20px] font-bold uppercase">कार्यालय, जिला शिक्षा पदाधिकारी, मुजफ्फरपुर</h1>
+        <h2 className="text-[18px] font-bold uppercase">(स्थापना-शाखा)</h2>
+        <p className="text-[14px] mt-2 max-w-3xl mx-auto">
+          निदेशक (मा.शि.), शिक्षा विभाग, बिहार सरकार, पटना के पत्रांक-2999, दिनांक 14.10.2025 एवं जिला कार्यक्रम पदाधिकारी, स्थापना, मुजफ्फरपुर के पत्रांक 5876, मुजफ्फरपुर दिनांक 15.02.2025 के आलोक में
         </p>
+        <h3 className="text-[16px] font-bold uppercase mt-2 underline">विशिष्ट शिक्षकों का वेतन निर्धारण प्रपत्र</h3>
       </header>
       
       <main>
+        <div className="flex justify-between uppercase mb-2">
+            <span>PRAN NO.:- {data.pran || '..............................'}</span>
+            <span>सक्षमता आवेदन संख्या :- {data.competencyApplicationNumber || '..............................'}</span>
+        </div>
+
         <table className="w-full border-collapse">
           <tbody className="uppercase">
-            <DataRow number="1." label="विशिष्ट शिक्षक का नाम" value={data.teacherName} />
-            <DataRow number="2." label="PRAN संख्या" value={data.pran} />
-            <DataRow number="3." label="वर्ग" value={data.className} />
-            <DataRow number="4." label="विषय" value={data.subject} />
-            <DataRow number="5." label="नियुक्ति की कोटि(UR/BC/EBC/SC/ST/EWS)" value={data.appointmentCategory} wideLabel />
-            <DataRow number="6." label="विद्यालय का नाम" value={data.schoolName} />
-            <DataRow number="7." label="विद्यालय का U-DISE CODE" value={data.udiseCode} />
-            <DataRow number="8." label="प्रखंड" value={data.block} />
-            <DataRow number="9." label="विशिष्ट शिक्षक का आई०डी०सं०" value={data.competencyApplicationNumber} />
-            <DataRow number="10." label="जन्म तिथि" value={formatDate(data.dateOfBirth)} />
-            <DataRow number="11." label="विशिष्ट शिक्षक के रूप में योगदान तिथि" value={formatDate(data.dateOfJoiningAsSpecificTeacher)} />
-            <DataRow number="12." label="प्रशिक्षण तिथि" value={formatDate(data.dateOfTraining)} />
-            <DataRow number="13." label="दक्षता/BTET/CTET का प्रकार" value={data.efficiencyType} />
-            <DataRow number="14." label="दक्षता/BTET/CTET उत्तीर्णता की तिथि" value={formatDate(data.dateOfPassingEfficiency)} />
-            <DataRow number="15." label="बैंक खाता संख्या" value={data.bankAccountNumber} />
-            <DataRow number="16." label="IFSC कोड" value={data.ifscCode} />
-            <DataRow number="17." label="स्थानीय निकाय शिक्षक के रूप में प्रथम योगदान तिथि" value={formatDate(data.dateOfFirstJoiningAsLocalBodyTeacher)} />
+            <DataRow number="1." label="शिक्षक का नाम" value={data.teacherName} />
+            <DataRow number="2." label="विद्यालय का नाम" value={data.schoolName} />
+            <DataRow number="3." label="विद्यालय का यू-डायस कोड" value={data.udiseCode} />
+            <DataRow number="4." label="वर्ग" value={data.className} />
+            <DataRow number="5." label="विषय" value={data.subject} />
+            <DataRow number="6." label="नियुक्ति की कोटि (UR/BC/EBC/SC/EWS)" value={data.appointmentCategory} />
+            <DataRow number="7." label="जन्म तिथि" value={formatDate(data.dateOfBirth)} />
+            <DataRow number="8." label="विशिष्ट शिक्षक के रूप में योगदान तिथि" value={formatDate(data.dateOfJoiningAsSpecificTeacher)} />
+            <DataRow number="9." label="प्रशिक्षण तिथि" value={formatDate(data.dateOfTraining)} />
+            <DataRow number="10." label="दक्षता/BTET/CTET/STET का प्रकार" value={data.efficiencyType} />
+            <DataRow number="11." label="दक्षता/BTET/CTET/STET उतीर्णता तिथि" value={formatDate(data.dateOfPassingEfficiency)} />
+            <DataRow number="12." label="बैंक का नाम" value={data.bankDetails} />
+            <DataRow number="13." label="बैंक खाता संख्या" value={data.bankAccountNumber} />
+            <DataRow number="14." label="IFSC कोड" value={data.ifscCode} />
             <tr>
+              <td className="py-1 pr-2 w-8 align-top">15.</td>
+              <td className="py-1 pr-2 font-medium align-top w-2/5">स्थानीय निकाय शिक्षक के रूप में प्रथम योगदान की तिथि</td>
+              <td className="w-4 py-1 text-center align-top">:</td>
+              <td className="w-auto py-1 font-body uppercase">{formatDate(data.dateOfFirstJoiningAsLocalBodyTeacher)}</td>
+            </tr>
+             <tr>
               <td colSpan={4} className="text-[10px] pl-8 pb-1 pt-0 normal-case">
-              (शिक्षा मित्र के रूप में जो दिनांक 01.07.2006 के पूर्व नियोजित हैं, वे योगदान की तिथि 01.07.2006 अंकित करेंगे।)
+              (शिक्षा मित्र के रूप में जो 01/07/2006 के पूर्व नियोजित है वे पूर्व नियोजित हैं वे योगदान की तिथि 01.07.2006 अंकित करेंगे।)
               </td>
             </tr>
-            <DataRow number="18." label="प्रशिक्षित वेतनमान प्राप्त करने की तिथि" value={formatDate(data.dateOfReceivingTrainedPayScale)} />
-            <DataRow number="19." label="क्या स्थानीय निकाय शिक्षक के रूप में योगदान तिथि से अध्यावधि तक कोई सेवा में टूट है (हाँ/नही)?" value={data.serviceBreak || ''} wideLabel/>
-            
-            <tr>
-              <td className="py-1 pr-2 w-8 align-top">20.</td>
-              <td colSpan={3} className="w-auto py-1 uppercase">
-                स्थानीय निकाय शिक्षक के रूप में विशिष्ट शिक्षक के योगदान तिथि {contributionDateForSalary} {salaryText}
-              </td>
-            </tr>
-            <tr>
-               <td className="py-1 pr-2 w-8 align-top">21.</td>
-              <td colSpan={3} className="w-auto py-1 uppercase">
-                विशिष्ट शिक्षक नियमावली 2023 (यथा संशोधित) के फिटमेंट मैट्रिक्स 'अनुलग्नक-क' के अनुसार योगदान तिथि {contributionDate} {newSalaryText}
-              </td>
-            </tr>
-
-            <DataRow number="22." label="अगली वेतन वृद्धि तिथि" value={formatDate(data.nextIncrementDate)} />
+            <DataRow number="16." label="प्रशिक्षित वेतनमान प्राप्त करने की तिथि" value={formatDate(data.dateOfReceivingTrainedPayScale)} />
+            <DataRow number="17." label="क्या स्थानीय निकाय शिक्षक के रूप में योगदान तिथि से अद्यावधि तक कोई सेवा में टूट हैं (हाँ / नहीं)?" value={data.serviceBreak || ''} />
+            <DataRow number="18." label="स्थानीय निकाय शिक्षक के रूप में माह दिसम्बर 2024 में प्राप्त मूल वेतन" value={data.december2024Salary} />
+            <DataRow number="19." label="विशिष्ट शिक्षक के रूप में योगदान की तिथि को स्थानीय निकाय शिक्षक के रूप में अनुमान्य वेतन वृद्धि के साथ प्राप्त होने वाला मूल वेतन" value={data.newSalaryWithIncrement} />
+            <DataRow number="20." label="विशिष्ट शिक्षक के रूप में पे-मैट्रिक के अनुरूप में मूल वेतन" value={data.payMatrixSalary} />
+            <DataRow number="21." label="अगली वेतन वृद्धि तिथि" value={formatDate(data.nextIncrementDate)} />
           </tbody>
         </table>
-        
-        <p className="mt-4 text-[12px] normal-case">
-            नोट :- स्थानीय निकाय शिक्षक के रूप में निर्धारित वेतन प्रपत्र, प्रशिक्षण प्रमाण पत्र, दक्षता/BTET/CTET प्रमाण पत्र एवं विशिष्ट शिक्षक का योगदान पत्र (स्व-अभिप्रमाणित छाया प्रति) संलग्न करें।
-        </p>
 
-        <footer className="mt-16 text-[13px]">
-            <div className="flex justify-between items-end text-center px-4">
+        <footer className="mt-20 text-[13px]">
+            <div className="grid grid-cols-4 gap-4 text-center">
                 <div>
-                    <p className="pt-4">शिक्षक का हस्ताक्षर</p>
+                    <p className="mt-8">......................................</p>
+                    <p className="pt-1">शिक्षक का हस्ताक्षर</p>
                 </div>
                  <div>
-                    <p className="pt-4">प्रधानाध्यापक का <br/> हस्ताक्षर</p>
+                    <p className="mt-8">......................................</p>
+                    <p className="pt-1">प्रधानाध्यापक का <br/> हस्ताक्षर एवं मुहर</p>
                 </div>
                 <div>
-                    <p className="pt-4">प्रखंड शिक्षा पदाधिकारी <br/> का हस्ताक्षर</p>
+                    <p className="mt-8">......................................</p>
+                    <p className="pt-1">प्रधानाध्यापक</p>
+                    <p>चिन्हित मध्य</p>
+                    <p>विद्यालय का</p>
+                    <p>हस्ताक्षर एवं मुहर</p>
                 </div>
                  <div>
-                    <p className="pt-4">जिला कार्यक्रम पदाधिकारी <br/> स्थापना, पूर्वी चम्पारण, मोतिहारी</p>
+                    <p className="mt-8">......................................</p>
+                    <p className="pt-1">प्रखण्ड शिक्षा पदाधिकारी <br/> साहेबगंज मुजफ्फरपुर।</p>
+                </div>
+                 <div className="col-start-4">
+                    <p className="mt-8">......................................</p>
+                    <p className="pt-1">जिला कार्यक्रम पदाधिकारी <br/> स्थापना, मुजफ्फरपुर।</p>
                 </div>
             </div>
         </footer>
