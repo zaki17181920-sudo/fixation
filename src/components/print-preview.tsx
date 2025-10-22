@@ -26,13 +26,14 @@ const DataRow = ({ label, value, number, subLabel }: { label: string; value?: st
     <>
       <tr>
         <td className="py-1 pr-2 w-8 align-top">{number}</td>
-        <td className="py-1 pr-2 font-medium align-top w-2/5">{label}</td>
+        <td className="py-1 pr-2 font-medium align-top">{label}</td>
         <td className="w-4 py-1 text-center align-top">:</td>
         <td className="w-auto py-1 font-body uppercase">{displayValue}</td>
       </tr>
       {subLabel && (
         <tr>
-          <td colSpan={4} className="text-[10px] pl-8 pb-1 pt-0 normal-case">
+          <td></td>
+          <td colSpan={3} className="text-[10px] pb-1 pt-0 normal-case">
             {subLabel}
           </td>
         </tr>
@@ -69,7 +70,13 @@ export const PrintPreview = React.forwardRef<HTMLDivElement, PrintPreviewProps>(
             <span>सक्षमता आवेदन संख्या :- {data.competencyApplicationNumber || '..............................'}</span>
         </div>
 
-        <table className="w-full border-collapse">
+        <table className="w-full border-collapse table-fixed">
+          <colgroup>
+            <col style={{ width: 'auto' }} />
+            <col style={{ width: '45%' }} />
+            <col style={{ width: 'auto' }} />
+            <col style={{ width: 'auto' }} />
+          </colgroup>
           <tbody className="uppercase">
             <DataRow number="1." label="शिक्षक का नाम" value={data.teacherName} />
             <DataRow number="2." label="विद्यालय का नाम" value={data.schoolName} />
