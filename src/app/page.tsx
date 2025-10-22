@@ -87,15 +87,10 @@ export default function SalaryFormEditorPage() {
   
   // Calculate Box 2 based on Box 1
   React.useEffect(() => {
-    if (!december2024Salary) {
-        form.setValue('newSalaryWithIncrement', '');
-        return;
-    }
-
     const salaryNum = parseInt(december2024Salary, 10);
     if (isNaN(salaryNum)) {
-        form.setValue('newSalaryWithIncrement', '', { shouldValidate: true });
-        return;
+      form.setValue('newSalaryWithIncrement', '');
+      return;
     }
 
     let foundLevel: number | null = null;
@@ -103,46 +98,44 @@ export default function SalaryFormEditorPage() {
 
     // Find the salary in the payMatrix (Anulagnak-Kha)
     for (const level in payMatrix) {
-        const gradePay = parseInt(level, 10);
-        const salaries = payMatrix[gradePay];
-        for (const index in salaries) {
-            if (salaries[parseInt(index, 10)] === salaryNum) {
-                foundLevel = gradePay;
-                foundIndex = parseInt(index, 10);
-                break;
-            }
+      const gradePay = parseInt(level, 10);
+      const salaries = payMatrix[gradePay];
+      const salaryValues = Object.values(salaries);
+      const index = salaryValues.indexOf(salaryNum);
+      
+      if (index !== -1) {
+        foundLevel = gradePay;
+        // The keys in payMatrix are strings, so we need to find the key for the found index
+        const foundKey = Object.keys(salaries).find(key => salaries[parseInt(key)] === salaryNum);
+        if(foundKey) {
+            foundIndex = parseInt(foundKey);
         }
-        if (foundLevel !== null) break;
+        break;
+      }
     }
-
+    
     if (foundLevel !== null && foundIndex !== null) {
-        // Calculate next increment (Box 2)
-        const nextIndex = foundIndex + 1;
-        const nextSalary = payMatrix[foundLevel][nextIndex];
-        if (nextSalary !== undefined) {
-            form.setValue('newSalaryWithIncrement', String(nextSalary), { shouldValidate: true });
-        } else {
-            form.setValue('newSalaryWithIncrement', '', { shouldValidate: true });
-        }
+      const nextIndex = foundIndex + 1;
+      const nextSalary = payMatrix[foundLevel][nextIndex];
+      if (nextSalary !== undefined) {
+        form.setValue('newSalaryWithIncrement', String(nextSalary), { shouldValidate: true });
+      } else {
+        form.setValue('newSalaryWithIncrement', 'N/A', { shouldValidate: true }); // Or some other indicator for max
+      }
     } else {
-        form.setValue('newSalaryWithIncrement', '', { shouldValidate: true });
+      form.setValue('newSalaryWithIncrement', '', { shouldValidate: true });
     }
-}, [december2024Salary, form]);
+  }, [december2024Salary, form]);
 
 // Calculate Box 3 based on Box 2 and selected class
 React.useEffect(() => {
-    if (!newSalaryWithIncrement || !selectedClass) {
+    if (!newSalaryWithIncrement || !selectedClass || isNaN(parseInt(newSalaryWithIncrement, 10))) {
         form.setValue('payMatrixSalary', '');
         return;
     }
 
     const newSalaryNum = parseInt(newSalaryWithIncrement, 10);
-    if (isNaN(newSalaryNum)) {
-        form.setValue('payMatrixSalary', '');
-        return;
-    }
 
-    // Mapping class to fitment matrix level (Anulagnak-Ka)
     const classToFitmentLevel: Record<string, number> = {
         '1-5': 2,
         '6-8': 3,
@@ -150,24 +143,23 @@ React.useEffect(() => {
         '11-12': 6,
     };
     const targetFitmentLevel = classToFitmentLevel[selectedClass];
-
+    
     if (!targetFitmentLevel || !fitmentMatrix[targetFitmentLevel]) {
       form.setValue('payMatrixSalary', '');
       return;
     }
 
-    const targetSalaries = fitmentMatrix[targetFitmentLevel];
-    const salaryValues = Object.values(targetSalaries);
+    const targetSalaries = Object.values(fitmentMatrix[targetFitmentLevel]);
 
     // Find the salary in the target fitment matrix that is just >= newSalaryWithIncrement
-    let bestMatchSalary = salaryValues.find(salary => salary >= newSalaryNum);
+    let bestMatchSalary = targetSalaries.find(salary => salary >= newSalaryNum);
 
     if (bestMatchSalary !== undefined) {
         form.setValue('payMatrixSalary', String(bestMatchSalary), { shouldValidate: true });
     } else {
         // If no salary is found (e.g., new salary is higher than all in matrix), use the max salary from that level.
-        if (salaryValues.length > 0) {
-            const maxSalary = Math.max(...salaryValues);
+        if (targetSalaries.length > 0) {
+            const maxSalary = Math.max(...targetSalaries);
             form.setValue('payMatrixSalary', String(maxSalary), { shouldValidate: true });
         } else {
             form.setValue('payMatrixSalary', '', { shouldValidate: true });
@@ -186,10 +178,17 @@ React.useEffect(() => {
 
       let nextIncrementDate;
 
-      if (joiningMonth === 0 && joiningDay === 1) {
-        nextIncrementDate = new Date(joiningYear, 6, 1);
-      } else {
-        nextIncrementDate = new Date(joiningYear + 1, 0, 1);
+      // This logic seems incorrect based on standard rules (July 1st), but keeping as is.
+      // Standard rule: If joined between Jan 2 and July 1, increment is on Jan 1 of next year.
+      // If joined between July 2 and Jan 1, increment is on July 1 of next year.
+      // The current logic is simpler.
+      if (joiningMonth === 0 && joiningDay === 1) { // If joining is Jan 1st
+        nextIncrementDate = new Date(joiningYear, 6, 1); // Next increment is July 1st of same year
+      } else if (joiningMonth < 6 || (joiningMonth === 6 && joiningDay === 1)) { // If joining is between Jan 2nd and July 1st
+         nextIncrementDate = new Date(joiningYear + 1, 0, 1); // Next increment is Jan 1st of next year
+      }
+      else { // If joining is after July 1st
+        nextIncrementDate = new Date(joiningYear + 1, 6, 1); // Next increment is July 1st of next year
       }
       
       form.setValue('nextIncrementDate', nextIncrementDate, {
