@@ -119,7 +119,7 @@ export const PrintPreview = React.forwardRef<HTMLDivElement, PrintPreviewProps>(
               </div>
           </div>
           <div className="flex justify-end text-center">
-              <div className="w-1/4">
+              <div>
                   <p className="pt-1">जिला कार्यक्रम पदाधिकारी <br/> स्थापना, मुजफ्फरपुर।</p>
               </div>
           </div>
