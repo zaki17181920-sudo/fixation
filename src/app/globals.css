@@ -92,3 +92,27 @@
     @apply normal-case;
   }
 }
+
+@media print {
+  body > *:not(#print-area) {
+    display: none;
+  }
+  #print-area {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+  #print-area h2, #print-area .border-t {
+    display: none;
+  }
+  #print-area .max-w-4xl {
+    max-width: 100%;
+    box-shadow: none;
+    border: none;
+  }
+  #print-area .p-10 {
+    padding: 0;
+  }
+}

@@ -14,7 +14,6 @@ import { payMatrix } from '@/lib/pay-matrix';
 import { fitmentMatrix } from '@/lib/fitment-matrix';
 import { schoolData } from '@/lib/school-data';
 import { PrintPreview } from '@/components/print-preview';
-import { useReactToPrint } from 'react-to-print';
 
 export default function SalaryFormEditorPage() {
   const [isSavePending, startSaveTransition] = React.useTransition();
@@ -164,21 +163,18 @@ export default function SalaryFormEditorPage() {
     }
   }, [dateOfJoiningAsSpecificTeacher, setValue]);
   
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-    onBeforeGetContent: async () => {
-      const isValid = await form.trigger();
-      if (!isValid) {
-        toast({
-          variant: 'destructive',
-          title: 'अमान्य डेटा',
-          description: 'कृपया फॉर्म में सभी आवश्यक फ़ील्ड सही-सही भरें।',
-        });
-        return Promise.reject();
-      }
-    },
-  });
-
+  const handlePrint = async () => {
+    const isValid = await form.trigger();
+    if (!isValid) {
+      toast({
+        variant: 'destructive',
+        title: 'अमान्य डेटा',
+        description: 'कृपया फॉर्म में सभी आवश्यक फ़ील्ड सही-सही भरें।',
+      });
+      return;
+    }
+    window.print();
+  };
 
   return (
     <>
@@ -197,7 +193,7 @@ export default function SalaryFormEditorPage() {
           <SalaryForm form={form} />
         </main>
       </div>
-      <div className="container mx-auto p-4 md:p-8 mt-8 border-t">
+      <div id="print-area" className="container mx-auto p-4 md:p-8 mt-8 border-t">
           <h2 className="text-2xl font-bold text-center mb-4">प्रिंट पूर्वावलोकन</h2>
           <div className="max-w-4xl mx-auto shadow-lg border">
             <PrintPreview ref={componentRef} data={allFormValues as FormValues} />
