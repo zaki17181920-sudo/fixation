@@ -614,7 +614,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
                         render={({ field }) => (
                         <FormItem>
                             <FormControl>
-                            <Input type="number" placeholder="मूल वेतन" {...field} />
+                            <Input type="number" placeholder="मूल वेतन" {...field} readOnly className="bg-muted"/>
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -629,7 +629,7 @@ export function SalaryForm({ form }: SalaryFormProps) {
                         render={({ field }) => (
                         <FormItem>
                             <FormControl>
-                            <Input type="number" placeholder="मूल वेतन" {...field} />
+                            <Input type="number" placeholder="मूल वेतन" {...field} readOnly className="bg-muted"/>
                             </FormControl>
                             <FormMessage />
                         </FormItem>

@@ -45,10 +45,6 @@ export default function SalaryFormEditorPage() {
       newSalaryWithIncrement: '',
       payMatrixSalary: '',
       block: '',
-      levelForDecember2024Salary: '',
-      indexForDecember2024Salary: '',
-      levelForNewSalary: '',
-      indexForNewSalary: '',
     },
   });
 
@@ -62,9 +58,7 @@ export default function SalaryFormEditorPage() {
     name: 'dateOfTraining',
   });
 
-  const levelForDecember = useWatch({ control: form.control, name: 'levelForDecember2024Salary' });
-  const indexForDecember = useWatch({ control: form.control, name: 'indexForDecember2024Salary' });
-  
+  const december2024Salary = useWatch({ control: form.control, name: 'december2024Salary' });
   const newSalaryWithIncrement = useWatch({ control: form.control, name: 'newSalaryWithIncrement' });
   const selectedClass = useWatch({ control: form.control, name: 'className' });
 
@@ -91,24 +85,62 @@ export default function SalaryFormEditorPage() {
   }, [dateOfJoiningAsSpecificTeacher, form]);
 
   
+  // Calculate Box 2 and Box 3 based on Box 1
   React.useEffect(() => {
-    if (!newSalaryWithIncrement || !levelForDecember) return;
-  
+    if (!december2024Salary) {
+        form.setValue('newSalaryWithIncrement', '');
+        form.setValue('payMatrixSalary', '');
+        return;
+    }
+
+    const salaryNum = parseInt(december2024Salary, 10);
+    if (isNaN(salaryNum)) return;
+
+    let foundLevel: number | null = null;
+    let foundIndex: number | null = null;
+    let currentLevelNum: number | null = null;
+
+    // Find the salary in the payMatrix (Anulagnak-Kha)
+    for (const level in payMatrix) {
+        const gradePay = parseInt(level, 10);
+        const salaries = payMatrix[gradePay];
+        for (const index in salaries) {
+            if (salaries[parseInt(index, 10)] === salaryNum) {
+                foundLevel = gradePay;
+                foundIndex = parseInt(index, 10);
+                // Map Grade Pay to a simple level number (1, 2, 3, 4)
+                const levelMap: Record<number, number> = { 0: 1, 2000: 2, 2400: 3, 2800: 4 };
+                currentLevelNum = levelMap[foundLevel];
+                break;
+            }
+        }
+        if (foundLevel !== null) break;
+    }
+
+    if (foundLevel !== null && foundIndex !== null) {
+        // Calculate next increment (Box 2)
+        const nextIndex = foundIndex + 1;
+        const nextSalary = payMatrix[foundLevel][nextIndex];
+        if (nextSalary !== undefined) {
+            form.setValue('newSalaryWithIncrement', String(nextSalary), { shouldValidate: true });
+        } else {
+            form.setValue('newSalaryWithIncrement', '', { shouldValidate: true });
+        }
+    } else {
+        form.setValue('newSalaryWithIncrement', '', { shouldValidate: true });
+    }
+}, [december2024Salary, form]);
+
+React.useEffect(() => {
+    if (!newSalaryWithIncrement || !selectedClass) {
+        form.setValue('payMatrixSalary', '');
+        return;
+    }
+
     const newSalaryNum = parseInt(newSalaryWithIncrement, 10);
     if (isNaN(newSalaryNum)) return;
-    
-    // As per the requirement, we need to find the salary in one level *below*
-    // the current level for pay protection.
-    const currentLevelNum = parseInt(levelForDecember, 10);
-    if (isNaN(currentLevelNum) || currentLevelNum <= 1) return; // Cannot go a level below 1
-    
-    const fitmentLevel = currentLevelNum - 1;
 
-    // Mapping grade pay to fitment matrix level
-    // Assuming level 1 -> 0 grade pay, 2 -> 2000, 3 -> 2400, 4-> 2800 (from payMatrix)
-    // and fitment matrix levels are 2, 3, 4, 5, 6, 7
-    // The requirement is to go one level down.
-    // Example: If current level is 3 (2400 GP), we look at fitment level 2 (I-V).
+    // Mapping class to fitment matrix level (Anulagnak-Ka)
     const classToFitmentLevel: Record<string, number> = {
         '1-5': 2,
         '6-8': 3,
@@ -118,10 +150,10 @@ export default function SalaryFormEditorPage() {
     const targetFitmentLevel = classToFitmentLevel[selectedClass];
 
     if (!targetFitmentLevel || !fitmentMatrix[targetFitmentLevel]) return;
-  
+
     const targetSalaries = fitmentMatrix[targetFitmentLevel];
     let bestMatchSalary = Infinity;
-    
+
     // Find the salary in the target fitment matrix that is just >= newSalaryWithIncrement
     for (const key in targetSalaries) {
         const currentSalary = targetSalaries[key];
@@ -129,7 +161,7 @@ export default function SalaryFormEditorPage() {
             bestMatchSalary = currentSalary;
         }
     }
-  
+
     if (bestMatchSalary !== Infinity) {
         form.setValue('payMatrixSalary', String(bestMatchSalary), { shouldValidate: true });
     } else {
@@ -137,41 +169,12 @@ export default function SalaryFormEditorPage() {
         const salaryValues = Object.values(targetSalaries);
         if (salaryValues.length > 0) {
             const maxSalary = Math.max(...salaryValues);
-            // If the new salary is even higher than the max, use the max.
+             // If the new salary is even higher than the max, use the max. Otherwise use the salary itself.
             form.setValue('payMatrixSalary', String(newSalaryNum > maxSalary ? maxSalary : newSalaryNum), { shouldValidate: true });
         }
     }
-  
-  }, [newSalaryWithIncrement, levelForDecember, selectedClass, form]);
-  
 
-
-  React.useEffect(() => {
-    if (levelForDecember && indexForDecember) {
-      const levelMap: { [key: string]: number } = { '1': 0, '2': 2000, '3': 2400, '4': 2800 };
-      const gradePay = levelMap[levelForDecember];
-      const index = parseInt(indexForDecember, 10);
-
-      if (gradePay !== undefined && !isNaN(index) && payMatrix[gradePay] && payMatrix[gradePay][index] !== undefined) {
-        const baseSalary = payMatrix[gradePay][index];
-        form.setValue('december2024Salary', String(baseSalary), { shouldValidate: true });
-
-        // Calculate next increment (Box 2)
-        const nextIndex = index + 1;
-        if (payMatrix[gradePay][nextIndex] !== undefined) {
-          const incrementedSalary = payMatrix[gradePay][nextIndex];
-          form.setValue('newSalaryWithIncrement', String(incrementedSalary), { shouldValidate: true });
-        } else {
-           form.setValue('newSalaryWithIncrement', '', { shouldValidate: true });
-           form.setValue('payMatrixSalary', '', { shouldValidate: true });
-        }
-      } else {
-        form.setValue('december2024Salary', '', { shouldValidate: true });
-        form.setValue('newSalaryWithIncrement', '', { shouldValidate: true });
-        form.setValue('payMatrixSalary', '', { shouldValidate: true });
-      }
-    }
-  }, [levelForDecember, indexForDecember, form]);
+}, [newSalaryWithIncrement, selectedClass, form]);
 
 
   React.useEffect(() => {
@@ -198,9 +201,23 @@ export default function SalaryFormEditorPage() {
 
   const handlePrint = () => {
     const data = form.getValues();
-    setPrintData(data);
+    const parsedData = formSchema.safeParse(data);
+
+    if (!parsedData.success) {
+      // If validation fails, show toast with errors
+      const errorMessages = Object.values(parsedData.error.flatten().fieldErrors).flat().join('\n');
+      toast({
+        variant: 'destructive',
+        title: 'अमान्य डेटा',
+        description: errorMessages || 'कृपया फॉर्म में सभी आवश्यक फ़ील्ड भरें।',
+      });
+      return;
+    }
+
+    setPrintData(parsedData.data);
     setTimeout(() => {
       window.print();
+      setPrintData(null); // Clear data after print dialog opens
     }, 100);
   };
 
@@ -211,12 +228,8 @@ export default function SalaryFormEditorPage() {
         <header className="flex flex-col sm:flex-row justify-between sm:items-center mb-8 gap-4">
           <Logo />
           <div className="flex items-center gap-2 flex-wrap">
-            <Button onClick={handlePrint} disabled={isSavePending}>
-              {isSavePending ? (
-                <Loader2 className="animate-spin" />
-              ) : (
-                <Printer />
-              )}
+            <Button onClick={handlePrint}>
+              <Printer />
               प्रिंट
             </Button>
           </div>

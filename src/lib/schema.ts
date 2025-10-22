@@ -33,12 +33,8 @@ export const formSchema = z.object({
   dateOfFirstJoiningAsLocalBodyTeacher: requiredDate,
   dateOfReceivingTrainedPayScale: requiredDate,
   serviceBreak: z.string().optional(),
-  levelForDecember2024Salary: requiredString,
-  indexForDecember2024Salary: requiredString,
   december2024Salary: requiredString, // Corresponds to item 20
   dateOfJoiningForNewSalary: requiredDate, // New field for item 21
-  levelForNewSalary: requiredString,
-  indexForNewSalary: requiredString,
   newSalaryWithIncrement: requiredString, // Corresponds to item 21
   payMatrixSalary: requiredString.optional(), // Also part of item 21
   nextIncrementDate: requiredDate,
