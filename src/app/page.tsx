@@ -1,3 +1,4 @@
+
 'use client';
 
 import * as React from 'react';
@@ -150,11 +151,10 @@ export default function SalaryFormEditorPage() {
       const joiningMonth = joiningDate.getMonth();
 
       let nextIncrementDate;
-      // If joining is between Jan 2 and Jul 1 (inclusive)
       if (joiningDate.getTime() > new Date(joiningDate.getFullYear(), 0, 1).getTime() && joiningDate.getTime() <= new Date(joiningDate.getFullYear(), 6, 1).getTime()) {
-        nextIncrementDate = new Date(joiningDate.getFullYear() + 1, 0, 1); // 1st Jan of next year
+        nextIncrementDate = new Date(joiningDate.getFullYear() + 1, 0, 1);
       } else {
-        nextIncrementDate = new Date(joiningDate.getFullYear() + 1, 6, 1); // 1st July of next year
+        nextIncrementDate = new Date(joiningDate.getFullYear() + 1, 6, 1);
       }
       
       setValue('nextIncrementDate', nextIncrementDate, {
