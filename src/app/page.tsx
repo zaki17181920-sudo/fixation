@@ -5,7 +5,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { formSchema, type FormValues } from '@/lib/schema';
 import { Button } from '@/components/ui/button';
-import { Loader2, Printer, Save } from 'lucide-react';
+import { Loader2, Printer } from 'lucide-react';
 import { SalaryForm } from '@/components/salary-form';
 import { Logo } from '@/components/logo';
 import { useToast } from '@/hooks/use-toast';
@@ -149,14 +149,13 @@ export default function SalaryFormEditorPage() {
   React.useEffect(() => {
     if (dateOfJoiningAsSpecificTeacher) {
       const joiningDate = new Date(dateOfJoiningAsSpecificTeacher);
-      const joiningYear = joiningDate.getFullYear();
       const joiningMonth = joiningDate.getMonth();
 
       let nextIncrementDate;
-      if (joiningMonth > 0 && joiningMonth < 6) { 
-        nextIncrementDate = new Date(joiningYear, 6, 1);
-      } else {
-        nextIncrementDate = new Date(joiningYear + 1, 0, 1);
+      if (joiningMonth >= 0 && joiningMonth <= 5) { // Jan to Jun
+        nextIncrementDate = new Date(joiningDate.getFullYear(), 6, 1); // 1st July of same year
+      } else { // Jul to Dec
+        nextIncrementDate = new Date(joiningDate.getFullYear() + 1, 0, 1); // 1st Jan of next year
       }
       
       setValue('nextIncrementDate', nextIncrementDate, {
@@ -165,7 +164,7 @@ export default function SalaryFormEditorPage() {
     }
   }, [dateOfJoiningAsSpecificTeacher, setValue]);
 
-  const onSubmit = (data: FormValues, print: boolean = false) => {
+  const onSubmitAndPrint = (data: FormValues) => {
     startSaveTransition(async () => {
       const result = await saveAndValidateForm(data);
 
@@ -174,11 +173,7 @@ export default function SalaryFormEditorPage() {
           title: 'सफलतापूर्वक सहेजा गया!',
           description: `वेतन पर्ची आईडी ${result.id} के साथ सहेजी गई है।`,
         });
-        if (print) {
-          router.push(`/payslip/${result.id}`);
-        } else {
-          form.reset();
-        }
+        router.push(`/payslip/${result.id}`);
       } else {
         let errorMessage = 'एक अज्ञात त्रुटि हुई।';
         if (typeof result.errors?.form === 'string') {
@@ -204,7 +199,7 @@ export default function SalaryFormEditorPage() {
     });
   };
 
-  const handleSaveAndPrint = async () => {
+  const handlePrint = async () => {
     const isValid = await form.trigger();
     if (!isValid) {
       toast({
@@ -214,20 +209,7 @@ export default function SalaryFormEditorPage() {
       });
       return;
     }
-    onSubmit(form.getValues(), true);
-  }
-  
-  const handleSave = async () => {
-    const isValid = await form.trigger();
-     if (!isValid) {
-      toast({
-        variant: 'destructive',
-        title: 'अमान्य डेटा',
-        description: 'कृपया फॉर्म में सभी आवश्यक फ़ील्ड सही-सही भरें।',
-      });
-      return;
-    }
-    onSubmit(form.getValues(), false);
+    onSubmitAndPrint(form.getValues());
   }
 
   return (
@@ -239,13 +221,9 @@ export default function SalaryFormEditorPage() {
               <Button asChild variant="outline">
                 <Link href="/payslips">सहेजी गई पर्चियाँ देखें</Link>
               </Button>
-              <Button onClick={handleSave} disabled={isSavePending}>
-                {isSavePending ? <Loader2 className="animate-spin"/> : <Save />}
-                सेव
-              </Button>
-              <Button onClick={handleSaveAndPrint} disabled={isSavePending}>
+              <Button onClick={handlePrint} disabled={isSavePending}>
                 {isSavePending ? <Loader2 className="animate-spin"/> : <Printer />}
-                सहेजें और प्रिंट करें
+                प्रिंट
               </Button>
           </div>
         </header>
