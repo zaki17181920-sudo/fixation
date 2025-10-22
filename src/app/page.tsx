@@ -169,9 +169,6 @@ export default function SalaryFormEditorPage() {
         nextIncrementDate = new Date(joiningYear, 6, 1); // Same year's July 1st
         if(nextIncrementDate <= joiningDate) {
           nextIncrementDate.setFullYear(joiningYear + 1);
-          nextIncrementDate.setMonth(6);
-        } else {
-           nextIncrementDate.setMonth(6);
         }
       }
       
@@ -180,6 +177,13 @@ export default function SalaryFormEditorPage() {
       });
     }
   }, [dateOfJoiningAsSpecificTeacher, setValue]);
+
+  React.useEffect(() => {
+    if (printData) {
+      window.print();
+      setPrintData(null);
+    }
+  }, [printData]);
 
   const handlePrint = async () => {
     const isValid = await form.trigger();
@@ -191,13 +195,8 @@ export default function SalaryFormEditorPage() {
       });
       return;
     }
-
     const data = form.getValues();
     setPrintData(data);
-    setTimeout(() => {
-      window.print();
-      setPrintData(null); 
-    }, 100);
   };
 
   return (

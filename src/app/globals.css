@@ -95,22 +95,20 @@
 
 @layer utilities {
   @media print {
-    .no-print {
-      display: none !important;
+    body * {
+      visibility: hidden;
     }
-    body {
-        display: block;
-        background: white;
-    }
-    html, body {
-        height: auto;
-        width: 100%;
-    }
-    #form-container {
-      display: none;
+    #print-area, #print-area * {
+      visibility: visible;
     }
     #print-area {
-      display: block;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+    }
+    .no-print {
+      display: none !important;
     }
   }
 }
