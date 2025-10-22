@@ -181,21 +181,19 @@ export default function SalaryFormEditorPage() {
     }
   }, [dateOfJoiningAsSpecificTeacher, setValue]);
 
-  const handlePrint = () => {
-    const data = form.getValues();
-    const parsedData = formSchema.safeParse(data);
-
-    if (!parsedData.success) {
-      const errorMessages = Object.values(parsedData.error.flatten().fieldErrors).flat().join('\n');
+  const handlePrint = async () => {
+    const isValid = await form.trigger();
+    if (!isValid) {
       toast({
         variant: 'destructive',
         title: 'अमान्य डेटा',
-        description: errorMessages || 'कृपया फॉर्म में सभी आवश्यक फ़ील्ड भरें।',
+        description: 'कृपया फॉर्म में सभी आवश्यक फ़ील्ड सही-सही भरें।',
       });
       return;
     }
 
-    setPrintData(parsedData.data);
+    const data = form.getValues();
+    setPrintData(data);
     setTimeout(() => {
       window.print();
       setPrintData(null); 
