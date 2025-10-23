@@ -7,7 +7,7 @@ export function Logo() {
         <FileText className="h-6 w-6 text-primary" />
       </div>
       <h1 className="text-2xl font-bold font-headline text-foreground">
-        Fixation Slip
+        Fixation Slip Muzaffarpur
       </h1>
     </div>
   );
