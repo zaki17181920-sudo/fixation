@@ -178,21 +178,23 @@ export default function SalaryFormEditorPage() {
 
   return (
     <>
-      <div id="form-container" className="container mx-auto p-4 md:p-8">
+      <div id="form-container" className="container mx-auto p-4 md:p-8 pb-20">
         <header className="flex flex-col sm:flex-row justify-between sm:items-center mb-8 gap-4">
           <Logo />
-          <div className="flex items-center gap-2 flex-wrap">
-              <Button onClick={handlePrint} disabled={isSavePending}>
-                {isSavePending ? <Loader2 className="animate-spin"/> : <Printer />}
-                प्रिंट
-              </Button>
-          </div>
         </header>
 
         <main className="max-w-4xl mx-auto">
           <SalaryForm form={form} />
         </main>
       </div>
+
+      <footer className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm border-t p-4 flex justify-center items-center">
+        <Button onClick={handlePrint} disabled={isSavePending}>
+          {isSavePending ? <Loader2 className="animate-spin" /> : <Printer />}
+          प्रिंट
+        </Button>
+      </footer>
+      
       <div id="print-area" className="hidden">
           <div className="max-w-4xl mx-auto">
             <PrintPreview ref={componentRef} data={allFormValues as FormValues} />
